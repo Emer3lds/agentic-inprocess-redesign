@@ -1,0 +1,10 @@
+numpy
+shapely
+trimesh
+mapbox-earcut
+manifold3d
+scipy
+networkx
+rtree
+matplotlib
+pillow
