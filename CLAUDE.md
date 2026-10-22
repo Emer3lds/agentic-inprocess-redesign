@@ -18,7 +18,7 @@
 
 ## Setup
 - This folder: `C:\Users\amber\Research\AI_Benchmark\lattices` (renamed from `lattice_week2`). Papers are in `../papers/`.
-- GitHub: private repo https://github.com/Emer3lds/lattice-defects, branch `master`. `out/` is tracked so Ma can download the STL files.
+- GitHub: private repo https://github.com/Emer3lds/agentic-inprocess-redesign (renamed from `lattice-defects`), branch `master`. `out/` is tracked so Ma can download the STL files.
 - Bambu Studio is installed (`C:\Program Files\Bambu Studio`) for viewing and slicing the STL files. To open a file, use File → Import (Ctrl+I) or drag from Windows File Explorer. Dragging from VS Code does not work.
 - Materials available: PLA, maybe TPU.
 
@@ -57,7 +57,7 @@
   - Should defect sizes differ for TPU?
   - Week 3: print these parts, or start the agent design?
 - For Amber:
-  - Rename the GitHub repo to `lattice-defect-repair` and reorganize for the whole project (project overview in `README.md`, week 2 write-up moved to `docs/week2_defects.md`, code stays at the top level for now)? Suggested, not yet answered.
+  - Repo already renamed by Amber. Reorganize for the whole project (project overview in `README.md`, week 2 write-up moved to `docs/week2_defects.md`, code stays at the top level for now)? Suggested, not yet answered.
   - Other (non-printing) defect types: Ma mentioned "small cracks". No record of what else was discussed earlier.
   - `build_defects_test.py` is out of date and can be deleted by Amber.
 
