@@ -8,11 +8,13 @@ from lattice import *
 OUT = os.path.join(os.path.dirname(__file__), "out", "base")
 os.makedirs(OUT, exist_ok=True)
 
-# Cell sizes (see README for the reasoning). Offsets centre the pattern on the specimen.
+# Cell sizes (see README for the reasoning). Option D: the triangle is the reference;
+# hexagon and re-entrant cells are shrunk so their lattice density matches it (about 0.29).
+# Offsets centre the pattern on the specimen.
 DESIGNS = {
-    "hexagon":   dict(params={"l": 5.0}),
+    "hexagon":   dict(params={"l": 4.1}),
     "triangle":  dict(params={"l": 12.0}),
-    "reentrant": dict(params={"l": 6.0, "h": 12.0, "theta": 30.0}),
+    "reentrant": dict(params={"l": 5.7, "h": 11.4, "theta": 30.0}),
 }
 
 

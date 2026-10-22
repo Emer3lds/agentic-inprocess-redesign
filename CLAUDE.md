@@ -20,7 +20,7 @@
 1. Store each lattice design as a graph. Done: `out/base/*_graph.json`.
 2. Convert each graph to STL. Done: `out/base/*.stl`.
 3. Use the literature to choose cell repetition and wall thickness. Done: see `README.md`.
-4. Inject defects, convert them to STL, and check that the defects sit on the structure and are not floating. **Next step.**
+4. Inject defects, convert them to STL, and check that the defects sit on the structure and are not floating. Done: `out/defects/`, 63 parts, all pass. Write-up in `README.md`.
 
 ## Fixed decisions
 - Specimen size: 50 × 50 mm in XY, 10 mm in Z. Set by Ma.
@@ -28,10 +28,19 @@
 - Wall thickness: 1.2 mm (3 lines of a 0.4 mm nozzle). Top and bottom plates: 1.8 mm. Both match Ma's reference STL, `ref/ma_reentrant.stl` (60 × 60 × 12 mm).
 - Defect type: **printing defects only**. These are layer shift, over-extrusion, under-extrusion, and warpage. They affect a band of layers (a height range in Z), not the full height. Inject them at different heights (for example 10% or 20% of Z) and at small, medium, and severe levels. Keep them realistic, not extreme.
 - Printer: Ma uses Bambu Studio.
+- Keep the top and bottom plates.
+- Density matching (Option D): the triangle stays at edge 12 mm. The hexagon (edge 4.1 mm) and re-entrant (5.7 / 11.4 mm, 30°) cells were shrunk to match its lattice density. All three are 0.29 to 0.30.
+
+- Defect settings (agreed Oct 21, 2026; values in `defects.py` `SEVERITY`; sources in chat and to go in `README.md`):
+  - Under-extrusion walls 1.08 / 0.96 / 0.84 mm; over-extrusion 1.32 / 1.44 / 1.56 mm (90/80/70% and 110/120/130% flow).
+  - Layer shift along X 0.4 / 0.8 / 1.0 mm (not 1.2: equals wall thickness, walls touch edge to edge); warpage corner lift 0.3 / 0.6 / 1.0 mm (both estimates, no paper numbers).
+  - Defect band 1 mm tall, whole layer in XY, starting at 10% and 20% of Z (Ma's examples). Warpage always at the bottom: corners lifted, fading to 0 at 15 mm from each corner.
+  - Extrusion defects change the end plates by the same ratio as the walls (plates may stick out past y = 0 and 50).
+  - Warpage values backed by Ramian et al. 2021 (`../papers/`): ABS cuboids 30 and 60 mm long lifted 0.86 and 1.57 mm on an open printer; height did not matter. We print PLA (maybe TPU), which warps less, so our 0.3 to 1.0 mm is reasonable.
+- Note: the plates sit at the Y ends (y 0–1.8 and 48.2–50) and run the full 10 mm in Z. Z is the print direction.
 
 ## Open questions (ask Amber)
-- Triangle trade-off: keep the current setup, or match densities. See the README section "Open choice".
-- Whether to keep the top and bottom plates.
+- None right now. Ma still to confirm sizes, shift direction, and file count (listed in `README.md`).
 
 ## Code
 - `lattice.py`:
@@ -40,6 +49,9 @@
   - `polygon_to_mesh` extrudes the cross-section.
   - `check_mesh` reports whether the mesh is watertight, how many pieces it has, and its relative density.
 - `build_base.py` builds the three base designs. Run it with `python3 build_base.py`.
+- `defects.py`: `inject(graph, type, severity, z0)` builds the part with one defect and returns the mesh and its answer-key entry. `check_defect` runs the checks.
+- `build_defects_test.py`: early test, `out/defects_test/` is out of date (made before plates changed with flow).
+- `build_defects.py`: full set, 63 parts, written to `out/defects/<shape>/` with `summary.json` and one side-view picture per shape. About 25 seconds.
 - Python packages: trimesh, shapely, manifold3d, rtree, numpy, matplotlib.
 
 ## Plan for defect injection

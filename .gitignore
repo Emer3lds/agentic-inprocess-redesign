@@ -1,2 +1,3 @@
 __pycache__/
-out/
+# out-of-date early test, safe to delete
+out/defects_test/

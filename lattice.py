@@ -136,17 +136,24 @@ def build_graph(shape, params, offset=(0.0, 0.0), t=WALL_T):
 
 
 # ---------------------------------------------------------------- geometry
-def graph_to_polygon(g, thickness_override=None):
-    """2D cross-section: each edge becomes a wall of its own thickness, plus the plates."""
+def graph_to_polygon(g, thickness_override=None, plate_scale=1.0):
+    """2D cross-section: each edge becomes a wall of its own thickness, plus the plates.
+    plate_scale grows or shrinks each plate about its centre line (used for extrusion defects);
+    a grown plate may stick out past y = 0 and y = SIZE_Y."""
     P = {n["id"]: (n["x"], n["y"]) for n in g["nodes"]}
     walls = []
     for e in g["edges"]:
         t = e["t"] if thickness_override is None else thickness_override(e)
         if t <= 0: continue
         walls.append(LineString([P[e["u"]], P[e["v"]]]).buffer(t / 2, cap_style="round", join_style="round", quad_segs=4))
-    pb, pt = g["plates"]["bottom"], g["plates"]["top"]
-    walls += [box(0, pb[0], SIZE_X, pb[1]), box(0, pt[0], SIZE_X, pt[1])]
-    poly = unary_union(walls).intersection(box(0, 0, SIZE_X, SIZE_Y))
+    plates = []
+    for y0, y1 in (g["plates"]["bottom"], g["plates"]["top"]):
+        c, half = (y0 + y1) / 2, (y1 - y0) / 2 * plate_scale
+        plates.append(box(0, c - half, SIZE_X, c + half))
+    lattice = unary_union(walls).intersection(box(0, 0, SIZE_X, SIZE_Y))
+    if plate_scale < 1:   # walls must not poke out where a shrunken plate used to be
+        lattice = lattice.intersection(box(0, plates[0].bounds[1], SIZE_X, plates[1].bounds[3]))
+    poly = unary_union([lattice] + plates)
     return poly.buffer(0)
 
 
