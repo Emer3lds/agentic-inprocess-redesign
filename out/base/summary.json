@@ -1,0 +1,74 @@
+{
+ "hexagon": {
+  "watertight": true,
+  "pieces": 1,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    50.0,
+    50.0,
+    10.0
+   ]
+  ],
+  "volume_mm3": 8762.9,
+  "relative_density": 0.351,
+  "lattice_relative_density": 0.3,
+  "cell_width_mm": 7.1,
+  "cells_across_x": 7.0,
+  "nodes": 148,
+  "edges": 186,
+  "smallest_hole_mm2": 24.3
+ },
+ "triangle": {
+  "watertight": true,
+  "pieces": 1,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    50.0,
+    50.0,
+    10.0
+   ]
+  ],
+  "volume_mm3": 8434.9,
+  "relative_density": 0.337,
+  "lattice_relative_density": 0.286,
+  "cell_width_mm": 12.0,
+  "cells_across_x": 4.2,
+  "nodes": 34,
+  "edges": 54,
+  "smallest_hole_mm2": 22.9
+ },
+ "reentrant": {
+  "watertight": true,
+  "pieces": 1,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    50.0,
+    50.0,
+    10.0
+   ]
+  ],
+  "volume_mm3": 8539.0,
+  "relative_density": 0.342,
+  "lattice_relative_density": 0.29,
+  "cell_width_mm": 9.87,
+  "cells_across_x": 5.1,
+  "nodes": 108,
+  "edges": 114,
+  "smallest_hole_mm2": 44.9
+ }
+}

@@ -1,0 +1,1199 @@
+{
+ "hexagon_under_extrusion_small_z10": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": -0.91,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    50.0,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "hexagon_under_extrusion_small_z20": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": -0.91,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    50.0,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "hexagon_under_extrusion_medium_z10": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": -1.85,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    50.0,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "hexagon_under_extrusion_medium_z20": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": -1.85,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    50.0,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "hexagon_under_extrusion_severe_z10": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": -2.79,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    50.0,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "hexagon_under_extrusion_severe_z20": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": -2.79,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    50.0,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "hexagon_over_extrusion_small_z10": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": 0.9,
+  "bounds_mm": [
+   [
+    0.0,
+    -0.09,
+    0.0
+   ],
+   [
+    50.0,
+    50.09,
+    10.0
+   ]
+  ]
+ },
+ "hexagon_over_extrusion_small_z20": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": 0.9,
+  "bounds_mm": [
+   [
+    0.0,
+    -0.09,
+    0.0
+   ],
+   [
+    50.0,
+    50.09,
+    10.0
+   ]
+  ]
+ },
+ "hexagon_over_extrusion_medium_z10": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": 1.78,
+  "bounds_mm": [
+   [
+    0.0,
+    -0.18,
+    0.0
+   ],
+   [
+    50.0,
+    50.18,
+    10.0
+   ]
+  ]
+ },
+ "hexagon_over_extrusion_medium_z20": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": 1.78,
+  "bounds_mm": [
+   [
+    0.0,
+    -0.18,
+    0.0
+   ],
+   [
+    50.0,
+    50.18,
+    10.0
+   ]
+  ]
+ },
+ "hexagon_over_extrusion_severe_z10": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": 2.64,
+  "bounds_mm": [
+   [
+    0.0,
+    -0.27,
+    0.0
+   ],
+   [
+    50.0,
+    50.27,
+    10.0
+   ]
+  ]
+ },
+ "hexagon_over_extrusion_severe_z20": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": 2.64,
+  "bounds_mm": [
+   [
+    0.0,
+    -0.27,
+    0.0
+   ],
+   [
+    50.0,
+    50.27,
+    10.0
+   ]
+  ]
+ },
+ "hexagon_layer_shift_small_z10": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": -0.0,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    50.4,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "hexagon_layer_shift_small_z20": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": -0.0,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    50.4,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "hexagon_layer_shift_medium_z10": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": -0.0,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    50.8,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "hexagon_layer_shift_medium_z20": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": -0.0,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    50.8,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "hexagon_layer_shift_severe_z10": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": -0.0,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    51.0,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "hexagon_layer_shift_severe_z20": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": -0.0,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    51.0,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "hexagon_warpage_small": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": -0.19,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    50.0,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "hexagon_warpage_medium": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": -0.39,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    50.0,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "hexagon_warpage_severe": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": -0.64,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    50.0,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "triangle_under_extrusion_small_z10": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": -0.92,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    50.0,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "triangle_under_extrusion_small_z20": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": -0.92,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    50.0,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "triangle_under_extrusion_medium_z10": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": -1.86,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    50.0,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "triangle_under_extrusion_medium_z20": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": -1.86,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    50.0,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "triangle_under_extrusion_severe_z10": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": -2.82,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    50.0,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "triangle_under_extrusion_severe_z20": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": -2.82,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    50.0,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "triangle_over_extrusion_small_z10": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": 0.91,
+  "bounds_mm": [
+   [
+    0.0,
+    -0.09,
+    0.0
+   ],
+   [
+    50.0,
+    50.09,
+    10.0
+   ]
+  ]
+ },
+ "triangle_over_extrusion_small_z20": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": 0.91,
+  "bounds_mm": [
+   [
+    0.0,
+    -0.09,
+    0.0
+   ],
+   [
+    50.0,
+    50.09,
+    10.0
+   ]
+  ]
+ },
+ "triangle_over_extrusion_medium_z10": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": 1.79,
+  "bounds_mm": [
+   [
+    0.0,
+    -0.18,
+    0.0
+   ],
+   [
+    50.0,
+    50.18,
+    10.0
+   ]
+  ]
+ },
+ "triangle_over_extrusion_medium_z20": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": 1.79,
+  "bounds_mm": [
+   [
+    0.0,
+    -0.18,
+    0.0
+   ],
+   [
+    50.0,
+    50.18,
+    10.0
+   ]
+  ]
+ },
+ "triangle_over_extrusion_severe_z10": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": 2.67,
+  "bounds_mm": [
+   [
+    0.0,
+    -0.27,
+    0.0
+   ],
+   [
+    50.0,
+    50.27,
+    10.0
+   ]
+  ]
+ },
+ "triangle_over_extrusion_severe_z20": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": 2.67,
+  "bounds_mm": [
+   [
+    0.0,
+    -0.27,
+    0.0
+   ],
+   [
+    50.0,
+    50.27,
+    10.0
+   ]
+  ]
+ },
+ "triangle_layer_shift_small_z10": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": 0.0,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    50.4,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "triangle_layer_shift_small_z20": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": 0.0,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    50.4,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "triangle_layer_shift_medium_z10": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": 0.0,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    50.8,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "triangle_layer_shift_medium_z20": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": 0.0,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    50.8,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "triangle_layer_shift_severe_z10": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": 0.0,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    51.0,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "triangle_layer_shift_severe_z20": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": 0.0,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    51.0,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "triangle_warpage_small": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": -0.18,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    50.0,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "triangle_warpage_medium": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": -0.37,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    50.0,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "triangle_warpage_severe": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": -0.61,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    50.0,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "reentrant_under_extrusion_small_z10": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": -0.91,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    50.0,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "reentrant_under_extrusion_small_z20": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": -0.91,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    50.0,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "reentrant_under_extrusion_medium_z10": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": -1.83,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    50.0,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "reentrant_under_extrusion_medium_z20": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": -1.83,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    50.0,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "reentrant_under_extrusion_severe_z10": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": -2.77,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    50.0,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "reentrant_under_extrusion_severe_z20": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": -2.77,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    50.0,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "reentrant_over_extrusion_small_z10": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": 0.9,
+  "bounds_mm": [
+   [
+    0.0,
+    -0.09,
+    0.0
+   ],
+   [
+    50.0,
+    50.09,
+    10.0
+   ]
+  ]
+ },
+ "reentrant_over_extrusion_small_z20": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": 0.9,
+  "bounds_mm": [
+   [
+    0.0,
+    -0.09,
+    0.0
+   ],
+   [
+    50.0,
+    50.09,
+    10.0
+   ]
+  ]
+ },
+ "reentrant_over_extrusion_medium_z10": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": 1.77,
+  "bounds_mm": [
+   [
+    0.0,
+    -0.18,
+    0.0
+   ],
+   [
+    50.0,
+    50.18,
+    10.0
+   ]
+  ]
+ },
+ "reentrant_over_extrusion_medium_z20": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": 1.77,
+  "bounds_mm": [
+   [
+    0.0,
+    -0.18,
+    0.0
+   ],
+   [
+    50.0,
+    50.18,
+    10.0
+   ]
+  ]
+ },
+ "reentrant_over_extrusion_severe_z10": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": 2.64,
+  "bounds_mm": [
+   [
+    0.0,
+    -0.27,
+    0.0
+   ],
+   [
+    50.0,
+    50.27,
+    10.0
+   ]
+  ]
+ },
+ "reentrant_over_extrusion_severe_z20": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": 2.64,
+  "bounds_mm": [
+   [
+    0.0,
+    -0.27,
+    0.0
+   ],
+   [
+    50.0,
+    50.27,
+    10.0
+   ]
+  ]
+ },
+ "reentrant_layer_shift_small_z10": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": -0.0,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    50.4,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "reentrant_layer_shift_small_z20": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": -0.0,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    50.4,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "reentrant_layer_shift_medium_z10": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": -0.0,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    50.8,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "reentrant_layer_shift_medium_z20": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": -0.0,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    50.8,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "reentrant_layer_shift_severe_z10": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": -0.0,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    51.0,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "reentrant_layer_shift_severe_z20": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": -0.0,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    51.0,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "reentrant_warpage_small": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": -0.19,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    50.0,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "reentrant_warpage_medium": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": -0.39,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    50.0,
+    50.0,
+    10.0
+   ]
+  ]
+ },
+ "reentrant_warpage_severe": {
+  "one_piece": true,
+  "watertight": true,
+  "defect_on_structure": true,
+  "inside_box": true,
+  "volume_change_pct": -0.64,
+  "bounds_mm": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    50.0,
+    50.0,
+    10.0
+   ]
+  ]
+ }
+}
