@@ -1,3 +1,7 @@
 __pycache__/
 # out-of-date early test, safe to delete
 out/defects_test/
+
+# personal notes, kept on Amber's computer only
+docs/learning_log.md
+docs/tutor_brief.md
