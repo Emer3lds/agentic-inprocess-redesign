@@ -55,3 +55,12 @@ One entry per real choice. Format: the question, the options, how we judged them
 - **Choice:** Z = print direction (layers stack up from the bed), Y = loading direction (crush between the end plates), X = layer shift direction. Stored once as `AXES` in `agent/scenarios.py` and written into every scenario.
 - **Why:** Ma asked that the loading axis never switch between X and Y.
 - **Status:** fixed (Ma).
+
+---
+
+# Ideas for later (not decided)
+
+## I1. Let the agent decide: continue, repair, or restart (Amber, 2026-10-27)
+- **Idea:** instead of always repairing, the agent chooses between (a) keep printing the original design, (b) repair the rest of the part, (c) throw it out and restart.
+- **What it needs first:** a way to estimate how well a repair would work (the score from session 2), and the cost of each choice (print time already spent, material, chance the repair works).
+- **Two separate questions:** which defects and heights *can* be recovered is something our experiments will show. Whether a repair is *worth it* for a given part is the per-case decision the agent could make.
