@@ -1,0 +1,491 @@
+[
+ {
+  "id": "reentrant_under_extrusion_medium_z10",
+  "shape": "reentrant",
+  "axes": {
+   "print_direction": "Z",
+   "load_direction": "Y",
+   "layer_shift_direction": "X"
+  },
+  "specimen_mm": [
+   50.0,
+   50.0,
+   10.0
+  ],
+  "layer_height_mm": 0.2,
+  "defect_start_pct": 10,
+  "z_cut_mm": 2.0,
+  "remaining_height_mm": 8.0,
+  "defect": {
+   "type": "under_extrusion",
+   "severity": "medium",
+   "xy_region": "whole layer",
+   "z_range_mm": [
+    1.0,
+    2.0
+   ],
+   "wall_thickness_mm": 0.96,
+   "normal_wall_thickness_mm": 1.2,
+   "plate_thickness_mm": 1.44,
+   "normal_plate_thickness_mm": 1.8
+  },
+  "material_budget_mm3": 6831.2,
+  "prefix_volume_mm3": 1551.1,
+  "nominal_prefix_volume_mm3": 1707.8,
+  "base_graph": "out/base/reentrant_graph.json",
+  "prefix_stl": "out/scenarios/reentrant/reentrant_under_extrusion_medium_z10_prefix.stl",
+  "prefix_checks": {
+   "one_piece": true,
+   "watertight": true,
+   "top_mm": 2.0
+  }
+ },
+ {
+  "id": "reentrant_under_extrusion_medium_z50",
+  "shape": "reentrant",
+  "axes": {
+   "print_direction": "Z",
+   "load_direction": "Y",
+   "layer_shift_direction": "X"
+  },
+  "specimen_mm": [
+   50.0,
+   50.0,
+   10.0
+  ],
+  "layer_height_mm": 0.2,
+  "defect_start_pct": 50,
+  "z_cut_mm": 6.0,
+  "remaining_height_mm": 4.0,
+  "defect": {
+   "type": "under_extrusion",
+   "severity": "medium",
+   "xy_region": "whole layer",
+   "z_range_mm": [
+    5.0,
+    6.0
+   ],
+   "wall_thickness_mm": 0.96,
+   "normal_wall_thickness_mm": 1.2,
+   "plate_thickness_mm": 1.44,
+   "normal_plate_thickness_mm": 1.8
+  },
+  "material_budget_mm3": 3415.6,
+  "prefix_volume_mm3": 4966.7,
+  "nominal_prefix_volume_mm3": 5123.4,
+  "base_graph": "out/base/reentrant_graph.json",
+  "prefix_stl": "out/scenarios/reentrant/reentrant_under_extrusion_medium_z50_prefix.stl",
+  "prefix_checks": {
+   "one_piece": true,
+   "watertight": true,
+   "top_mm": 6.0
+  }
+ },
+ {
+  "id": "reentrant_under_extrusion_medium_z80",
+  "shape": "reentrant",
+  "axes": {
+   "print_direction": "Z",
+   "load_direction": "Y",
+   "layer_shift_direction": "X"
+  },
+  "specimen_mm": [
+   50.0,
+   50.0,
+   10.0
+  ],
+  "layer_height_mm": 0.2,
+  "defect_start_pct": 80,
+  "z_cut_mm": 9.0,
+  "remaining_height_mm": 1.0,
+  "defect": {
+   "type": "under_extrusion",
+   "severity": "medium",
+   "xy_region": "whole layer",
+   "z_range_mm": [
+    8.0,
+    9.0
+   ],
+   "wall_thickness_mm": 0.96,
+   "normal_wall_thickness_mm": 1.2,
+   "plate_thickness_mm": 1.44,
+   "normal_plate_thickness_mm": 1.8
+  },
+  "material_budget_mm3": 853.9,
+  "prefix_volume_mm3": 7528.4,
+  "nominal_prefix_volume_mm3": 7685.1,
+  "base_graph": "out/base/reentrant_graph.json",
+  "prefix_stl": "out/scenarios/reentrant/reentrant_under_extrusion_medium_z80_prefix.stl",
+  "prefix_checks": {
+   "one_piece": true,
+   "watertight": true,
+   "top_mm": 9.0
+  }
+ },
+ {
+  "id": "reentrant_over_extrusion_medium_z10",
+  "shape": "reentrant",
+  "axes": {
+   "print_direction": "Z",
+   "load_direction": "Y",
+   "layer_shift_direction": "X"
+  },
+  "specimen_mm": [
+   50.0,
+   50.0,
+   10.0
+  ],
+  "layer_height_mm": 0.2,
+  "defect_start_pct": 10,
+  "z_cut_mm": 2.0,
+  "remaining_height_mm": 8.0,
+  "defect": {
+   "type": "over_extrusion",
+   "severity": "medium",
+   "xy_region": "whole layer",
+   "z_range_mm": [
+    1.0,
+    2.0
+   ],
+   "wall_thickness_mm": 1.44,
+   "normal_wall_thickness_mm": 1.2,
+   "plate_thickness_mm": 2.16,
+   "normal_plate_thickness_mm": 1.8
+  },
+  "material_budget_mm3": 6831.2,
+  "prefix_volume_mm3": 1859.2,
+  "nominal_prefix_volume_mm3": 1707.8,
+  "base_graph": "out/base/reentrant_graph.json",
+  "prefix_stl": "out/scenarios/reentrant/reentrant_over_extrusion_medium_z10_prefix.stl",
+  "prefix_checks": {
+   "one_piece": true,
+   "watertight": true,
+   "top_mm": 2.0
+  }
+ },
+ {
+  "id": "reentrant_over_extrusion_medium_z50",
+  "shape": "reentrant",
+  "axes": {
+   "print_direction": "Z",
+   "load_direction": "Y",
+   "layer_shift_direction": "X"
+  },
+  "specimen_mm": [
+   50.0,
+   50.0,
+   10.0
+  ],
+  "layer_height_mm": 0.2,
+  "defect_start_pct": 50,
+  "z_cut_mm": 6.0,
+  "remaining_height_mm": 4.0,
+  "defect": {
+   "type": "over_extrusion",
+   "severity": "medium",
+   "xy_region": "whole layer",
+   "z_range_mm": [
+    5.0,
+    6.0
+   ],
+   "wall_thickness_mm": 1.44,
+   "normal_wall_thickness_mm": 1.2,
+   "plate_thickness_mm": 2.16,
+   "normal_plate_thickness_mm": 1.8
+  },
+  "material_budget_mm3": 3415.6,
+  "prefix_volume_mm3": 5274.9,
+  "nominal_prefix_volume_mm3": 5123.4,
+  "base_graph": "out/base/reentrant_graph.json",
+  "prefix_stl": "out/scenarios/reentrant/reentrant_over_extrusion_medium_z50_prefix.stl",
+  "prefix_checks": {
+   "one_piece": true,
+   "watertight": true,
+   "top_mm": 6.0
+  }
+ },
+ {
+  "id": "reentrant_over_extrusion_medium_z80",
+  "shape": "reentrant",
+  "axes": {
+   "print_direction": "Z",
+   "load_direction": "Y",
+   "layer_shift_direction": "X"
+  },
+  "specimen_mm": [
+   50.0,
+   50.0,
+   10.0
+  ],
+  "layer_height_mm": 0.2,
+  "defect_start_pct": 80,
+  "z_cut_mm": 9.0,
+  "remaining_height_mm": 1.0,
+  "defect": {
+   "type": "over_extrusion",
+   "severity": "medium",
+   "xy_region": "whole layer",
+   "z_range_mm": [
+    8.0,
+    9.0
+   ],
+   "wall_thickness_mm": 1.44,
+   "normal_wall_thickness_mm": 1.2,
+   "plate_thickness_mm": 2.16,
+   "normal_plate_thickness_mm": 1.8
+  },
+  "material_budget_mm3": 853.9,
+  "prefix_volume_mm3": 7836.6,
+  "nominal_prefix_volume_mm3": 7685.1,
+  "base_graph": "out/base/reentrant_graph.json",
+  "prefix_stl": "out/scenarios/reentrant/reentrant_over_extrusion_medium_z80_prefix.stl",
+  "prefix_checks": {
+   "one_piece": true,
+   "watertight": true,
+   "top_mm": 9.0
+  }
+ },
+ {
+  "id": "reentrant_layer_shift_medium_z10",
+  "shape": "reentrant",
+  "axes": {
+   "print_direction": "Z",
+   "load_direction": "Y",
+   "layer_shift_direction": "X"
+  },
+  "specimen_mm": [
+   50.0,
+   50.0,
+   10.0
+  ],
+  "layer_height_mm": 0.2,
+  "defect_start_pct": 10,
+  "z_cut_mm": 2.0,
+  "remaining_height_mm": 8.0,
+  "defect": {
+   "type": "layer_shift",
+   "severity": "medium",
+   "xy_region": "whole layer",
+   "z_range_mm": [
+    1.0,
+    10.0
+   ],
+   "shift_mm": [
+    0.8,
+    0.0
+   ],
+   "shift_height_mm": 1.0
+  },
+  "material_budget_mm3": 6831.2,
+  "prefix_volume_mm3": 1707.7,
+  "nominal_prefix_volume_mm3": 1707.8,
+  "base_graph": "out/base/reentrant_graph.json",
+  "prefix_stl": "out/scenarios/reentrant/reentrant_layer_shift_medium_z10_prefix.stl",
+  "prefix_checks": {
+   "one_piece": true,
+   "watertight": true,
+   "top_mm": 2.0
+  }
+ },
+ {
+  "id": "reentrant_layer_shift_medium_z50",
+  "shape": "reentrant",
+  "axes": {
+   "print_direction": "Z",
+   "load_direction": "Y",
+   "layer_shift_direction": "X"
+  },
+  "specimen_mm": [
+   50.0,
+   50.0,
+   10.0
+  ],
+  "layer_height_mm": 0.2,
+  "defect_start_pct": 50,
+  "z_cut_mm": 6.0,
+  "remaining_height_mm": 4.0,
+  "defect": {
+   "type": "layer_shift",
+   "severity": "medium",
+   "xy_region": "whole layer",
+   "z_range_mm": [
+    5.0,
+    10.0
+   ],
+   "shift_mm": [
+    0.8,
+    0.0
+   ],
+   "shift_height_mm": 5.0
+  },
+  "material_budget_mm3": 3415.6,
+  "prefix_volume_mm3": 5123.3,
+  "nominal_prefix_volume_mm3": 5123.4,
+  "base_graph": "out/base/reentrant_graph.json",
+  "prefix_stl": "out/scenarios/reentrant/reentrant_layer_shift_medium_z50_prefix.stl",
+  "prefix_checks": {
+   "one_piece": true,
+   "watertight": true,
+   "top_mm": 6.0
+  }
+ },
+ {
+  "id": "reentrant_layer_shift_medium_z80",
+  "shape": "reentrant",
+  "axes": {
+   "print_direction": "Z",
+   "load_direction": "Y",
+   "layer_shift_direction": "X"
+  },
+  "specimen_mm": [
+   50.0,
+   50.0,
+   10.0
+  ],
+  "layer_height_mm": 0.2,
+  "defect_start_pct": 80,
+  "z_cut_mm": 9.0,
+  "remaining_height_mm": 1.0,
+  "defect": {
+   "type": "layer_shift",
+   "severity": "medium",
+   "xy_region": "whole layer",
+   "z_range_mm": [
+    8.0,
+    10.0
+   ],
+   "shift_mm": [
+    0.8,
+    0.0
+   ],
+   "shift_height_mm": 8.0
+  },
+  "material_budget_mm3": 853.9,
+  "prefix_volume_mm3": 7685.1,
+  "nominal_prefix_volume_mm3": 7685.1,
+  "base_graph": "out/base/reentrant_graph.json",
+  "prefix_stl": "out/scenarios/reentrant/reentrant_layer_shift_medium_z80_prefix.stl",
+  "prefix_checks": {
+   "one_piece": true,
+   "watertight": true,
+   "top_mm": 9.0
+  }
+ },
+ {
+  "id": "reentrant_warpage_medium_z10",
+  "shape": "reentrant",
+  "axes": {
+   "print_direction": "Z",
+   "load_direction": "Y",
+   "layer_shift_direction": "X"
+  },
+  "specimen_mm": [
+   50.0,
+   50.0,
+   10.0
+  ],
+  "layer_height_mm": 0.2,
+  "defect_start_pct": 10,
+  "z_cut_mm": 2.0,
+  "remaining_height_mm": 8.0,
+  "defect": {
+   "type": "warpage",
+   "severity": "medium",
+   "xy_region": "whole layer",
+   "z_range_mm": [
+    0.0,
+    0.6
+   ],
+   "corner_lift_mm": 0.6,
+   "lift_radius_mm": 15.0
+  },
+  "material_budget_mm3": 6831.2,
+  "prefix_volume_mm3": 1674.7,
+  "nominal_prefix_volume_mm3": 1707.8,
+  "base_graph": "out/base/reentrant_graph.json",
+  "prefix_stl": "out/scenarios/reentrant/reentrant_warpage_medium_z10_prefix.stl",
+  "prefix_checks": {
+   "one_piece": true,
+   "watertight": true,
+   "top_mm": 2.0
+  }
+ },
+ {
+  "id": "reentrant_warpage_medium_z50",
+  "shape": "reentrant",
+  "axes": {
+   "print_direction": "Z",
+   "load_direction": "Y",
+   "layer_shift_direction": "X"
+  },
+  "specimen_mm": [
+   50.0,
+   50.0,
+   10.0
+  ],
+  "layer_height_mm": 0.2,
+  "defect_start_pct": 50,
+  "z_cut_mm": 6.0,
+  "remaining_height_mm": 4.0,
+  "defect": {
+   "type": "warpage",
+   "severity": "medium",
+   "xy_region": "whole layer",
+   "z_range_mm": [
+    0.0,
+    0.6
+   ],
+   "corner_lift_mm": 0.6,
+   "lift_radius_mm": 15.0
+  },
+  "material_budget_mm3": 3415.6,
+  "prefix_volume_mm3": 5090.3,
+  "nominal_prefix_volume_mm3": 5123.4,
+  "base_graph": "out/base/reentrant_graph.json",
+  "prefix_stl": "out/scenarios/reentrant/reentrant_warpage_medium_z50_prefix.stl",
+  "prefix_checks": {
+   "one_piece": true,
+   "watertight": true,
+   "top_mm": 6.0
+  }
+ },
+ {
+  "id": "reentrant_warpage_medium_z80",
+  "shape": "reentrant",
+  "axes": {
+   "print_direction": "Z",
+   "load_direction": "Y",
+   "layer_shift_direction": "X"
+  },
+  "specimen_mm": [
+   50.0,
+   50.0,
+   10.0
+  ],
+  "layer_height_mm": 0.2,
+  "defect_start_pct": 80,
+  "z_cut_mm": 9.0,
+  "remaining_height_mm": 1.0,
+  "defect": {
+   "type": "warpage",
+   "severity": "medium",
+   "xy_region": "whole layer",
+   "z_range_mm": [
+    0.0,
+    0.6
+   ],
+   "corner_lift_mm": 0.6,
+   "lift_radius_mm": 15.0
+  },
+  "material_budget_mm3": 853.9,
+  "prefix_volume_mm3": 7652.0,
+  "nominal_prefix_volume_mm3": 7685.1,
+  "base_graph": "out/base/reentrant_graph.json",
+  "prefix_stl": "out/scenarios/reentrant/reentrant_warpage_medium_z80_prefix.stl",
+  "prefix_checks": {
+   "one_piece": true,
+   "watertight": true,
+   "top_mm": 9.0
+  }
+ }
+]
