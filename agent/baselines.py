@@ -3,7 +3,6 @@ Fixers that use no AI, run on every case and judged by evaluate.py.
 
   do_nothing  : keep printing the original design (shows how much damage the defect does)
   simple_rule : what a person would try without AI (the bar the AI agent must beat).
-                Not written yet: Amber decides the rule (session 2, choice C).
 
 Run: python agent/baselines.py   (plain Python, no AI, a few seconds)
 Writes out/results/baselines.json and prints one line per case.
@@ -18,7 +17,20 @@ def do_nothing(case):
     return {"wall_thickness_mm": [case.g["wall_thickness_mm"]] * case.n_bands}
 
 
-FIXERS = {"do_nothing": do_nothing}
+def simple_rule(case):
+    """Amber's rule, version 1 (2026-10-28), as she wrote it:
+    under-extrusion: make the rest of the walls thicker by however much they were too thin;
+    over-extrusion: make the rest of the walls thinner by however much they were too thick;
+    layer shift and warpage: do nothing (thickness cannot help / barely matters)."""
+    d = case.s["defect"]
+    t0 = case.g["wall_thickness_mm"]
+    if d["type"] in ("under_extrusion", "over_extrusion"):
+        error = d["wall_thickness_mm"] - t0          # negative = too thin
+        return {"wall_thickness_mm": [round(t0 - error, 3)] * case.n_bands}
+    return do_nothing(case)
+
+
+FIXERS = {"do_nothing": do_nothing, "simple_rule": simple_rule}
 
 
 if __name__ == "__main__":

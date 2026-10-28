@@ -28,7 +28,7 @@ BAND_H = 1.0              # mm, height of one band the fixer controls
 T_MIN, T_MAX = 0.8, 2.0   # mm, 2 nozzle lines; cells must stay open (D7)
 MAX_STEP_UP = 0.4         # mm, a wall may grow at most 0.2 mm per side from one layer to the next (overhang)
 BUDGET_TOL = 0.01         # fraction over budget allowed
-BUDGET_MODE = "total"     # "remaining": original plastic above the cut; "total": whole part = healthy part (D7)
+BUDGET_MODE = "remaining" # "remaining": original plastic above the cut (proposal 5.4); "total": whole part = healthy part (D7)
 EXPONENT = {"reentrant": 3, "hexagon": 3, "triangle": 1}
 
 
