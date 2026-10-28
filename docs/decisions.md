@@ -58,6 +58,27 @@ One entry per real choice. Format: the question, the options, how we judged them
 
 ---
 
+## D7. Checker rules (2026-10-28)
+- **Rules:** only bands above the stop height change; wall thickness 0.8 to 2.0 mm (2 nozzle lines; cells stay open); a wall may grow at most 0.4 mm from one band to the next, including from the printed top layer (0.2 mm per side, so it does not hang over air); material within budget + 1%; end plates unchanged.
+- **Budget question:** may a repair spend plastic the defect "saved"?
+  - Proposal, section 5.4: no. "Missing material already printed does not automatically increase the permitted future budget."
+  - Options: (a) "remaining": the plastic the original design would use above the cut (proposal); (b) "total": the finished part may use as much plastic as a healthy part. Under-extrusion then gets extra, over-extrusion gets less.
+  - **Choice:** (b), Amber's preference. Both values are stored for every case; switching is one setting (`BUDGET_MODE` in `agent/evaluate.py`).
+  - **Consequence:** under (b), "do nothing" breaks the budget for over-extrusion. Expected: the finished part would be heavier than a healthy one.
+  - **Change if:** Ma prefers the proposal's rule. **Ask Ma.**
+- **Status:** Amber (rules accepted 2026-10-28; budget mode leaning (b), confirm).
+
+## D8. How to score a fix, version 1 (2026-10-28)
+- **Options:** formula estimate; beam model of the walls; full simulation (FEA).
+- **Choice:** formula now; beam model next.
+- **How:** layers act like springs side by side, so part stiffness = average layer stiffness. Layer stiffness = (lattice area / healthy lattice area) to the power 3 for bending shapes (re-entrant, hexagon), power 1 for the triangle (Gibson & Ashby). Printed layers are measured by slicing the STL, not read from the defect label.
+- **Target:** 100% of a healthy part. Over 100% also counts as error (the goal is to match, not to maximize).
+- **Known blind spots:** cannot see layer shift or layer bonding; stiffness only, not peak force; thick-thin stacks score higher than they should (Goodhart's law; partly limited by the 0.8 mm minimum).
+- **Change if:** the beam model is ready, or crush tests disagree with the formula.
+- **Status:** Amber.
+
+---
+
 # Ideas for later (not decided)
 
 ## I1. Let the agent decide: continue, repair, or restart (Amber, 2026-10-27)
