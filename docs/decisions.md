@@ -49,7 +49,12 @@ One entry per real choice. Format: the question, the options, how we judged them
 - **Choice:** Level 1 to start. Code written so levels 2 and 3 can be added.
 - **Why:** easy to undo, matches section 7.1 of the proposal, quickest to check, fewest invalid proposals.
 - **Change if:** Ma wants shape changes, or thickness cannot fix a defect (likely for layer shift: thickness cannot realign shifted walls, so Level 2 is the probable next step).
-- **Status:** Amber (2026-10-27); **ask Ma** what "change the future shape" meant in the Thursday update.
+- **Status:** Amber (2026-10-27).
+- **Ma's answer (message, 2026-10-28):** "I feel like all. Think about how do you currently represent it, the design, like a graph? Image? And then let agent completely regenerate. Giving some constraints like the overall shape, size, etc. Connectivity."
+  - This goes past Level 3: the agent outputs a whole new design for the part above the stop height. We already store designs as graphs (nodes + walls with thickness), so the agent could output a new graph.
+  - Differs from the proposal (sec. 7.1 starts with thickness only; sec. 4.3 and 7.3 say a shape-editing agent must be compared with a non-AI method that has the same operations).
+  - Missing from Ma's constraint list: **support**. New walls in the first new layer must sit on printed walls. Raise with Ma.
+  - **Next:** revisit D5 after the Thursday update. Level 1 stays as the working version for now.
 
 ## D6. One axis convention (2026-10-26)
 - **Choice:** Z = print direction (layers stack up from the bed), Y = loading direction (crush between the end plates), X = layer shift direction. Stored once as `AXES` in `agent/scenarios.py` and written into every scenario.
@@ -63,10 +68,9 @@ One entry per real choice. Format: the question, the options, how we judged them
 - **Budget question:** may a repair spend plastic the defect "saved"?
   - Proposal, section 5.4: no. "Missing material already printed does not automatically increase the permitted future budget."
   - Options: (a) "remaining": the plastic the original design would use above the cut (proposal); (b) "total": the finished part may use as much plastic as a healthy part. Under-extrusion then gets extra, over-extrusion gets less.
-  - **Choice:** (b), Amber's preference. Both values are stored for every case; switching is one setting (`BUDGET_MODE` in `agent/evaluate.py`).
-  - **Consequence:** under (b), "do nothing" breaks the budget for over-extrusion. Expected: the finished part would be heavier than a healthy one.
-  - **Change if:** Ma prefers the proposal's rule. **Ask Ma.**
-- **Status:** Amber (rules accepted 2026-10-28; budget mode leaning (b), confirm).
+  - **Choice:** (a), the proposal's rule (Amber, 2026-10-28, changed from (b) the same day). Both values are still stored for every case; switching is one setting (`BUDGET_MODE` in `agent/evaluate.py`).
+  - **Consequence:** under (a), an under-extruded part can only get stiffer by moving plastic around (thicker in some bands, thinner in others), not by adding plastic.
+- **Status:** Amber.
 
 ## D8. How to score a fix, version 1 (2026-10-28)
 - **Options:** formula estimate; beam model of the walls; full simulation (FEA).
