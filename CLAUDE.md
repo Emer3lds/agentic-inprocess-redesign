@@ -3,12 +3,17 @@
 ## Working rules
 - Do only what I ask. No extra checks, backups, or comparisons unless something fails.
 - Never delete files. If something should be deleted, tell me and I will do it.
-- Only create or edit files inside this folder.
+- Only create or edit files inside `C:\Users\amber\Research\AI_Benchmark` (widened by Amber on 2026-10-26).
 - Stop after each step: summarize in a few short bullets and wait for me.
 - Ask me before generating more than 20 files or running anything expected to take more than 5 minutes.
 - Keep script output short: print summaries, not full data.
 - Don't install new packages without telling me why.
 - Write to me in plain words, short bullets, no jargon.
+- Teach before you build (agent framework, from 2026-10-26): give me a short lesson on the principle and walk me through applying it to this project, let me make the key choices, then build.
+- After every step, explain the whole pipeline: what was added, what exists vs. not yet, and one worked example with real numbers. When you say you "ran" something, name the script and say whether it is plain code or AI.
+- The learning log only records what I actually did or was walked through.
+- Commit often (after each finished step), one logical change per commit, clear message saying what and why. Briefly tell me what was committed. Never commit secrets (API keys stay in environment variables).
+- `docs/tutor_brief.md` is a briefing for a separate study-buddy chat. Keep its pipeline status and open decisions up to date when they change.
 
 ## Who and what
 - Amber, an undergraduate in industrial engineering at Georgia Tech. Codes in Python at a beginner to intermediate level. New to 3D printing, so explain printing terms.
@@ -29,7 +34,10 @@
   2. Convert each graph to STL: `out/base/*.stl`.
   3. Use the literature to choose cell repetition and wall thickness: see `README.md`.
   4. Inject defects, convert to STL, check they sit on the structure and are not floating: `out/defects/`, 63 parts, all pass. Write-up with sources in `README.md`.
-- Next: Amber meets Ma to show the parts and ask the open questions below. Week 3 task not set yet.
+- Week 3 (next meeting with Ma ~2026-11-09; interim update due Thu 2026-10-29):
+  - Ma's asks: parts cut right after the defect; a first single-agent framework that redesigns the unprinted part; keep the loading axis fixed (Y); sweep defect height 10% to 90% over several designs; track prompts; try different input formats (Ma's labmate mentioned "design as code" papers, name unknown); add more agent roles later.
+  - Amber's goal: learn nameable agent-engineering principles (decision making, experimenting, problem solving). Log every decision in `docs/decisions.md`, every experiment in `docs/experiments.md`, and an interview summary per session in `docs/learning_log.md`. Lay out options plus a recommendation; Amber makes the call.
+  - Plan: session 1 cut parts + scenario file (done), session 2 checker + simple methods (no AI), session 3 single agent v0 on Gemini free tier, session 4 results + update for Ma.
 
 ## Fixed decisions
 - Specimen size: 50 × 50 mm in XY, 10 mm in Z. Set by Ma. Z is the print direction (layers stack up from the bed).
@@ -74,6 +82,7 @@
   - Warpage: material below a curved surface at the bottom corners is cut away (same shape as lifted corners for straight-walled parts).
   - `check_defect` checks: one piece, watertight, defect region overlaps the solid, inside the box except intended overhangs (layer shift in X, grown plates in Y).
   - Meshes are kept as manifold3d outputs them (no vertex merging). Merging nearly equal points gave false "not watertight" results.
+- `agent/scenarios.py`: builds repair cases (stop rule: defect start + 1 mm detection delay). Writes `out/scenarios/<shape>/<id>_prefix.stl`, `out/scenarios/scenarios.json` and a side-view picture. 12 cases now (re-entrant, medium, 10/50/80%).
 - `build_defects.py`: full set, 63 parts, written to `out/defects/<shape>/` (STL plus `_graph.json` with the answer key in `defects` and the check results in `checks`), with `summary.json` and one side-view picture per shape. About 25 seconds.
 - Python packages: trimesh, shapely, manifold3d, rtree, numpy, matplotlib.
 
