@@ -39,16 +39,17 @@ One entry per real choice. Format: the question, the options, how we judged them
 - **Choice:** (a) for now.
 - **Why:** first test whether the agent can redesign at all when it knows the problem exactly. Measurement error is a separate question to add later; mixing both makes failures impossible to explain.
 - **Change if:** the agent works with perfect information. Then try (b).
-- **Status:** proposed.
+- **Status:** Amber (2026-10-27).
 
 ## D5. What the agent is allowed to change (2026-10-26)
 - **Question:** Ma said "change the future shape". How much freedom?
-- **Options:** (a) wall thickness only, per zone, above the cut; (b) (a) plus extra support walls; (c) a different cell shape above the cut.
+- **Options (as levels):** Level 1: wall thickness only, above the cut. Level 2: plus gradual wall moves (walls slide a little per layer). Level 3: plus new walls. Also possible but not geometry: printer settings (flow, speed).
+- **Hard limit from physics:** the printer cannot put plastic on thin air. Every wall in the first new layer must sit on a wall already printed, and walls can only move a little per layer. So "free" redesign really means gradual change from the existing walls.
 - **Judged on:** can it be printed on top of the fixed part; can our checker verify it; can a simple (non-AI) method use the same options, so the comparison is fair; build time.
-- **Choice:** (a) to start. Code written so (b) and (c) can be added.
-- **Why:** easy to undo, matches section 7.1 of the proposal, quickest to check.
-- **Change if:** Ma wants shape changes, or thickness changes cannot fix a defect (likely for layer shift).
-- **Status:** proposed; **ask Ma** in the Thursday update.
+- **Choice:** Level 1 to start. Code written so levels 2 and 3 can be added.
+- **Why:** easy to undo, matches section 7.1 of the proposal, quickest to check, fewest invalid proposals.
+- **Change if:** Ma wants shape changes, or thickness cannot fix a defect (likely for layer shift: thickness cannot realign shifted walls, so Level 2 is the probable next step).
+- **Status:** Amber (2026-10-27); **ask Ma** what "change the future shape" meant in the Thursday update.
 
 ## D6. One axis convention (2026-10-26)
 - **Choice:** Z = print direction (layers stack up from the bed), Y = loading direction (crush between the end plates), X = layer shift direction. Stored once as `AXES` in `agent/scenarios.py` and written into every scenario.
