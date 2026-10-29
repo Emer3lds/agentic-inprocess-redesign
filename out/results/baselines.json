@@ -28,29 +28,20 @@
   "fixer": "simple_rule",
   "fix": {
    "wall_thickness_mm": [
-    1.44,
-    1.44,
-    1.44,
-    1.44,
-    1.44,
-    1.44,
-    1.44,
-    1.44
+    1.0,
+    1.4,
+    1.0,
+    1.4,
+    1.0,
+    1.4,
+    1.0,
+    1.4
    ]
   },
-  "violations": [
-   {
-    "rule": "overhang",
-    "detail": "band 1: 1.44 mm sits on 0.96 mm walls, may grow at most 0.4 mm"
-   },
-   {
-    "rule": "material_budget",
-    "detail": "uses 7777 mm3, budget 6831 mm3 (+1%)"
-   }
-  ],
-  "stiffness_ratio": 1.4541,
-  "error": 0.4541,
-  "material_mm3": 7777.2,
+  "violations": [],
+  "stiffness_ratio": 1.0026,
+  "error": 0.0026,
+  "material_mm3": 6819.4,
   "budget_mm3": {
    "remaining": 6831.2,
    "total": 6987.9
@@ -81,25 +72,16 @@
   "fixer": "simple_rule",
   "fix": {
    "wall_thickness_mm": [
-    1.44,
-    1.44,
-    1.44,
-    1.44
+    1.0,
+    1.4,
+    1.0,
+    1.4
    ]
   },
-  "violations": [
-   {
-    "rule": "overhang",
-    "detail": "band 1: 1.44 mm sits on 0.96 mm walls, may grow at most 0.4 mm"
-   },
-   {
-    "rule": "material_budget",
-    "detail": "uses 3889 mm3, budget 3416 mm3 (+1%)"
-   }
-  ],
-  "stiffness_ratio": 1.2044,
-  "error": 0.2044,
-  "material_mm3": 3888.6,
+  "violations": [],
+  "stiffness_ratio": 0.9787,
+  "error": 0.0213,
+  "material_mm3": 3409.7,
   "budget_mm3": {
    "remaining": 3415.6,
    "total": 3572.3
@@ -127,22 +109,13 @@
   "fixer": "simple_rule",
   "fix": {
    "wall_thickness_mm": [
-    1.44
+    1.2
    ]
   },
-  "violations": [
-   {
-    "rule": "overhang",
-    "detail": "band 1: 1.44 mm sits on 0.96 mm walls, may grow at most 0.4 mm"
-   },
-   {
-    "rule": "material_budget",
-    "detail": "uses 972 mm3, budget 854 mm3 (+1%)"
-   }
-  ],
-  "stiffness_ratio": 1.0172,
-  "error": 0.0172,
-  "material_mm3": 972.1,
+  "violations": [],
+  "stiffness_ratio": 0.9548,
+  "error": 0.0452,
+  "material_mm3": 853.9,
   "budget_mm3": {
    "remaining": 853.9,
    "total": 1010.6
@@ -177,20 +150,20 @@
   "fixer": "simple_rule",
   "fix": {
    "wall_thickness_mm": [
-    0.96,
-    0.96,
-    0.96,
-    0.96,
-    0.96,
-    0.96,
-    0.96,
-    0.96
+    1.16,
+    1.16,
+    1.16,
+    1.16,
+    1.16,
+    1.16,
+    1.16,
+    1.16
    ]
   },
   "violations": [],
-  "stiffness_ratio": 0.7103,
-  "error": 0.2897,
-  "material_mm3": 5851.3,
+  "stiffness_ratio": 1.0025,
+  "error": 0.0025,
+  "material_mm3": 6670.3,
   "budget_mm3": {
    "remaining": 6831.2,
    "total": 6679.8
@@ -221,16 +194,16 @@
   "fixer": "simple_rule",
   "fix": {
    "wall_thickness_mm": [
-    0.96,
-    0.96,
-    0.96,
-    0.96
+    1.11,
+    1.11,
+    1.11,
+    1.11
    ]
   },
   "violations": [],
-  "stiffness_ratio": 0.8911,
-  "error": 0.1089,
-  "material_mm3": 2925.7,
+  "stiffness_ratio": 0.9964,
+  "error": 0.0036,
+  "material_mm3": 3233.9,
   "budget_mm3": {
    "remaining": 3415.6,
    "total": 3264.1
@@ -258,13 +231,13 @@
   "fixer": "simple_rule",
   "fix": {
    "wall_thickness_mm": [
-    0.96
+    0.8
    ]
   },
   "violations": [],
-  "stiffness_ratio": 1.0268,
-  "error": 0.0268,
-  "material_mm3": 731.4,
+  "stiffness_ratio": 1.0054,
+  "error": 0.0054,
+  "material_mm3": 647.4,
   "budget_mm3": {
    "remaining": 853.9,
    "total": 702.4
