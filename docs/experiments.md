@@ -47,3 +47,15 @@ Template:
 - **Failure groups:** breaks material budget: 3; breaks overhang limit: 3; overcorrects (more than 5% off target): 4 of 6.
 - **Why:** the defect affected 1 mm, but the rule corrects every remaining millimetre. With the cubed rule the correction grows with the remaining height. It is about right only at 80%, where 1 mm is left (the same size as the defect).
 - **Next:** Amber revises the rule (match the lost *stiffness*, not the lost *thickness*). Note: under the "remaining" budget, a part stopped at 80% with under-extrusion cannot be fully recovered (1 band left, no extra plastic).
+
+## E3. Simple rule version 2: fix the lost stiffness, not the lost thickness (2026-10-28)
+- **Question:** Does a rule that measures the missing (or extra) stiffness and corrects exactly that amount get close to 100% within the rules?
+- **Expectation (Claude, said before running but not written here first):** under-extrusion about 100% at 10%, about 99% at 50%, stuck at 95.5% at 80% (one band left, no spare plastic); over-extrusion about 100% at every height; layer shift and warpage unchanged.
+- **Setup:** `python agent/baselines.py`. Rule v2 (Amber asked Claude to write it): measure the stiffness gap from the printed part. Too stiff: thin all remaining bands equally. Too weak: thin/thick pairs (1.0 / 1.4 mm) right above the defect, as many as help. Budget "remaining".
+- **Result:** all 12 allowed.
+  - Under-extrusion: 100.3% / 97.9% / 95.5% at 10 / 50 / 80% (fixes: 4 pairs, 2 pairs, none possible).
+  - Over-extrusion: 100.2% / 99.6% / 100.5% (all bands thinned to 1.16 / 1.11 / 0.8 mm).
+  - Layer shift 100% (blind spot), warpage 99.5% (one pair would overshoot, so the rule does nothing).
+- **Failure groups:** more than 1% off target: 2 (under-extrusion at 50% and 80%: not enough bands left).
+- **Caveat:** the under-extrusion fix relies on thick/thin stacking, the effect flagged under D8 (Goodhart's law). The math holds for bending stiffness, but thin bands may break first in a real crush test. Strength is not scored yet.
+- **Next:** this rule is now the bar the AI agent must beat. Also missing: a non-AI search over thicknesses (proposal method B).
