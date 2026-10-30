@@ -18,6 +18,7 @@ from baselines import do_nothing
 import llm
 
 MAX_ATTEMPTS = 3   # proposal 7.3: fixed attempt limit, then a predefined fallback (decision C)
+MAX_SKIPS_IN_A_ROW = 2   # one failed run may be a hiccup; two in a row means the service is down, so stop
 
 
 def load_prompt(version):
@@ -84,6 +85,7 @@ if __name__ == "__main__":
     done = {(d["case"], d["run"]) for d in map(json.loads, open(path))} if os.path.exists(path) else set()
     print(f"{len(cases)} cases x {a.runs} runs, prompt {a.prompt}, model {a.model} -> out/runs/{name}.jsonl"
           + (f" (resuming: {len(done)} runs already logged)" if done else ""))
+    skips_in_a_row = 0
     with open(path, "a") as f:
         for case in cases:
             for r in range(1, a.runs + 1):
@@ -94,7 +96,12 @@ if __name__ == "__main__":
                            **run_agent(case, a.prompt, a.model)}
                 except urllib.error.HTTPError as e:   # service down: skip; rerunning the same command fills the gap
                     print(f"{case.s['id']:38s} run {r}  SKIPPED (model service error {e.code}); rerun to fill in")
+                    skips_in_a_row += 1
+                    if skips_in_a_row >= MAX_SKIPS_IN_A_ROW:
+                        sys.exit(f"Stopping: {skips_in_a_row} runs in a row failed, the model service looks down. "
+                                 "Rerun the same command later to resume.")
                     continue
+                skips_in_a_row = 0
                 f.write(json.dumps(res) + "\n"); f.flush()
                 print(f"{case.s['id']:38s} run {r}  {res['stiffness_ratio']:7.1%}  attempts {res['n_attempts']}  "
                       + ("allowed" if res["accepted"] else "FALLBACK (do nothing)"))

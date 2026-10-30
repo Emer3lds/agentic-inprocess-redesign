@@ -16,6 +16,17 @@ by_case = defaultdict(list)
 for r in runs:
     by_case[r["case"]].append(r)
 
+# No silent holes: every case needs the same number of runs, and every case must be there.
+all_cases = {c for c, _ in base}
+n_runs = max(len(rs) for rs in by_case.values())
+missing = {c: n_runs - len(by_case.get(c, [])) for c in sorted(all_cases) if len(by_case.get(c, [])) < n_runs}
+if missing:
+    print(f"INCOMPLETE: {sum(missing.values())} of {n_runs * len(all_cases)} runs missing "
+          f"({len(missing)} cases). Rerun the agent command to fill them in.")
+    if "--partial" not in sys.argv:
+        sys.exit("Not reporting on incomplete data. Add --partial to look anyway.")
+    print("Showing partial results (--partial); do not use these as final numbers.\n")
+
 tally, attempts_used, fail_rules = Counter(), Counter(), Counter()
 print(f"{'case':38s} {'do nothing':>10s} {'rule':>7s} {'agent runs':>24s}  spread  vs rule")
 for case, rs in by_case.items():
