@@ -15,7 +15,7 @@
 - Commit often (after each finished step), one logical change per commit, clear message saying what and why. Briefly tell me what was committed. Never commit secrets (API keys stay in environment variables).
 - The proposal `../Agentic_IPQI_AM_Research_Proposal.docx` is the main reference. Cite it for decisions; when my instructions, Ma's directions or the pipeline differ from it, say so in chat (no separate differences file).
 - `docs/learning_log.md` is personal and kept off GitHub (in `.gitignore`).
-- `docs/progress.md` is a running summary of work per week, written so I can send it to Ma. Update it after each finished step.
+- `docs/progress.md` is a running summary of work per week, written so I can send it to Ma. Each week has a short version (a few lines to paste into a message) and a detailed version; update both after each finished step.
 
 ## Who and what
 - Amber, an undergraduate in industrial engineering at Georgia Tech. Codes in Python at a beginner to intermediate level. New to 3D printing, so explain printing terms.

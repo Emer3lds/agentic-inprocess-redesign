@@ -1,10 +1,18 @@
 # Progress summary
 
-Running summary of the work, one section per week, written to send to Ma.
+Running summary of the work, one section per week, written to send to Ma. Each week has a short version (a few lines to paste into a message) and a detailed version.
 
 ---
 
 ## Week 3 (meeting 2026-10-22; next meeting about 2026-11-09)
+
+### Short version
+- Made 12 "stopped print" parts: the print pauses 1 mm after a defect starts (defect at 10%, 50% or 80% of the height, all 4 defect types).
+- Built an automatic checker for proposed fixes and a first stiffness estimate along Y (the loading axis).
+- Tested two non-AI baselines. Keeping the original design leaves under-extrusion at 95.5% of healthy stiffness and over-extrusion at 107%. A simple rule brings most cases back to about 100%, but late defects (80%) can't be fixed within the material budget.
+- Next: the first AI agent, compared against the same baselines.
+
+### Detailed version
 
 **Goal from the meeting:** make parts that stop printing right after a defect, and build a first framework where an AI agent redesigns the rest of the part.
 
