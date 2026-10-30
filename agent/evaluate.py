@@ -72,15 +72,16 @@ class Case:
 
 
 def check(case, fix):
-    """Return a list of rule violations. Empty list = the fix is allowed."""
+    """Return a list of rule violations. Empty list = the fix is allowed.
+    Reports every problem at once (not just the first), because this list is the agent's feedback."""
     v = []
     ts = fix.get("wall_thickness_mm")
-    if not isinstance(ts, list) or len(ts) != case.n_bands:
-        return [{"rule": "format", "detail": f"need a list of {case.n_bands} wall thicknesses (one per 1 mm band above {case.z_cut} mm)"}]
+    if (not isinstance(ts, list) or len(ts) != case.n_bands
+            or not all(isinstance(t, (int, float)) and not isinstance(t, bool) for t in ts)):
+        return [{"rule": "format", "detail": f"need a list of {case.n_bands} numbers, wall thicknesses in mm (one per 1 mm band above {case.z_cut} mm)"}]
     for i, t in enumerate(ts):
-        if not isinstance(t, (int, float)) or not (T_MIN <= t <= T_MAX):
+        if not (T_MIN <= t <= T_MAX):
             v.append({"rule": "thickness_range", "detail": f"band {i + 1}: {t} mm, allowed {T_MIN} to {T_MAX} mm"})
-    if v: return v
     below = [case.top_wall_t] + ts[:-1]
     for i, (tb, t) in enumerate(zip(below, ts)):
         if t - tb > MAX_STEP_UP + 1e-9:
