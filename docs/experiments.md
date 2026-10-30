@@ -70,3 +70,13 @@ Template:
   - It used the full 0.4 mm overhang step correctly (0.96 -> 1.36).
   - Google reported model version `gemini-3.6-flash`, although we asked for `gemini-3.5-flash`. The name we request is not a guarantee of the model that answers, which is why each attempt logs the reported version.
 - **Next:** the full run (12 cases x 3 runs), with Amber's prediction written first.
+
+## E5. Agent v0 on all 12 cases, 3 runs each (2026-10-29)
+- **Question:** how does the AI agent (prompt v1) compare with "do nothing" and simple rule v2, and how much do its answers vary?
+- **Expectation (Amber, written before the run):**
+  1. It beats the simple rule in about half of the 12 cases (gut guess).
+  2. It does worst on layer shift and warpage, because wall thickness changes can't do much for them.
+  3. Its 3 runs of the same case give the same answer, since it's a simple question.
+- **Setup:** `python agent/agent_v0.py --runs 3 --experiment e5_v1_full` (uses the AI). Prompt v1, `gemini-3.5-flash` requested, at most 3 attempts, fallback "do nothing". Log: `out/runs/e5_v1_full.jsonl`.
+- **Measure:** stiffness error from 100% (mean and spread of the 3 runs); allowed on which attempt; fallbacks; wins/ties/losses against simple rule v2 (a tie is within 0.5%).
+- **Result:** (pending)
