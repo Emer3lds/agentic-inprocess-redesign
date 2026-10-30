@@ -12,13 +12,19 @@ TIE = 0.005
 
 runs = [json.loads(l) for l in open(sys.argv[1])]
 base = {(b["case"], b["fixer"]): b for b in json.load(open(os.path.join(ROOT, "out", "results", "baselines.json")))}
-by_case = defaultdict(list)
+by_case, seen, dupes = defaultdict(list), set(), 0
 for r in runs:
+    if (r["case"], r["run"]) in seen:      # the same run logged twice (two processes wrote at once): keep the first
+        dupes += 1
+        continue
+    seen.add((r["case"], r["run"]))
     by_case[r["case"]].append(r)
+if dupes:
+    print(f"note: ignored {dupes} duplicate run(s), kept the first copy of each")
 
 # No silent holes: every case needs the same number of runs, and every case must be there.
 all_cases = {c for c, _ in base}
-n_runs = max(len(rs) for rs in by_case.values())
+n_runs = max(r["run"] for r in runs)
 missing = {c: n_runs - len(by_case.get(c, [])) for c in sorted(all_cases) if len(by_case.get(c, [])) < n_runs}
 if missing:
     print(f"INCOMPLETE: {sum(missing.values())} of {n_runs * len(all_cases)} runs missing "
