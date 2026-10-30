@@ -12,7 +12,11 @@ Running summary of the work, one section per week, written to send to Ma. Each w
 - Built an automatic checker for proposed fixes (wall limits, no printing over air, material budget) and the stiffness score above.
 - Tested two non-AI baselines. Keeping the original design leaves under-extrusion at 95.5% of healthy stiffness and over-extrusion at 107%. A simple rule brings most cases back to about 100%, but late defects (80%) can't be fixed within the material budget.
 - Built the first AI agent (Gemini). It proposes a fix, the checker judges it, and it retries with the checker's reasons, up to 3 times. First test on one case: allowed on the first try, 98.8% stiffness (simple rule: 100.3%).
-- Next: run the agent on all 12 cases, 3 times each, and compare it with the baselines.
+- **Next steps (please flag anything that's off before I build it):**
+  1. **Finish the first comparison:** run the agent on all 12 cases, 3 times each, against both baselines.
+  2. **Success measure:** keep stiffness along Y for now, or switch to peak force (or both)? Peak force is as easy to add. A beam model of the walls would also let the score see layer shift.
+  3. **Full redesign as a graph (your suggestion):** move from "thickness only" to the agent regenerating the whole unprinted design as a graph (points plus walls). Constraints: outer shape and size, connectivity (nothing floating), and new walls must sit on walls already printed. The checker will need a connectivity check, and the non-AI comparison method must get the same freedom so the comparison stays fair.
+  4. **Later:** more defect heights (10% to 90%), the other two lattice shapes, testing prompt and input-format changes (incl. "design as code"), and more agent roles.
 
 ### Detailed version
 
