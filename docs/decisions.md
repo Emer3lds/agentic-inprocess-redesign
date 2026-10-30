@@ -81,6 +81,14 @@ One entry per real choice. Format: the question, the options, how we judged them
 - **Change if:** the beam model is ready, or crush tests disagree with the formula.
 - **Status:** Amber.
 
+## D9. Agent version 0 setup (2026-10-29)
+- **A. What the agent sees:** the checker's feedback only, not the score. Reason: during a real print the true result (the crush test) does not exist yet (proposal 8.2), and with the exact score the AI could just try numbers, which a non-AI search (method B) does cheaper. Later: a `predict_from_history` tool with uncertainty (proposal 8.1), given to method B too.
+- **B. Stiffness formula in the prompt:** no for v1. Adding it in v2 is a clean "change one thing" experiment.
+- **C. Attempts:** at most 3, then fall back to "do nothing" (proposal 7.3). Fallbacks count as failures in the results.
+- **Model:** Gemini free tier, `gemini-3.5-flash` requested by its pinned name. Every attempt logs the version Google reports back (see E4: it reported `gemini-3.6-flash`).
+- **Prompt:** `agent/prompts/v1.md`, drafted by Amber, revised together. Versions are never edited once used.
+- **Status:** Amber.
+
 ---
 
 # Ideas for later (not decided)

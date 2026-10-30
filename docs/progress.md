@@ -10,7 +10,8 @@ Running summary of the work, one section per week, written to send to Ma. Each w
 - Made 12 "stopped print" parts: the print pauses 1 mm after a defect starts (defect at 10%, 50% or 80% of the height, all 4 defect types).
 - Built an automatic checker for proposed fixes and a first stiffness estimate along Y (the loading axis).
 - Tested two non-AI baselines. Keeping the original design leaves under-extrusion at 95.5% of healthy stiffness and over-extrusion at 107%. A simple rule brings most cases back to about 100%, but late defects (80%) can't be fixed within the material budget.
-- Next: the first AI agent, compared against the same baselines.
+- Built the first AI agent (Gemini). It proposes a fix, the checker judges it, and it retries with the checker's reasons, up to 3 times. First test on one case: allowed on the first try, 98.8% stiffness (simple rule: 100.3%).
+- Next: run the agent on all 12 cases, 3 times each, and compare it with the baselines.
 
 ### Detailed version
 
@@ -34,8 +35,11 @@ Running summary of the work, one section per week, written to send to Ma. Each w
 - Later defects leave less height to fix them: at 80%, under-extrusion cannot be recovered without extra plastic.
 - The under-extrusion fix uses alternating thinner/thicker bands. This raises bending stiffness, but thin bands may fail first in a real crush test.
 
+- **First AI agent (version 0).** One Gemini model (free tier) in a loop: it gets the case's facts, proposes one wall thickness per remaining 1 mm band, the checker judges it, and rejected answers go back with the reasons (at most 3 attempts, then fall back to the original design; failures still count). The agent sees the checker but not the stiffness score, because the real result is unknown mid-print. The prompt is stored as a versioned file, and every attempt is logged (prompt version, model version, text sent, reply, checker result).
+- **First test (one case, under-extrusion at 10%):** allowed on the first attempt, 98.8% stiffness (keeping the original design: 95.5%; simple rule: 100.3%). Without being told, the agent reasoned that stiffness scales with wall thickness cubed. It estimated the material budget slightly wrong, which explains most of the gap to 100%.
+
 ### Next
-- First single AI agent (Gemini), checked by the same checker, compared against the two baselines.
+- Run the agent on all 12 cases, 3 times each (answers vary), and compare it with the two baselines.
 - Better stiffness estimate (beam model of the walls), so layer shift and changes to individual walls can be scored.
 - Move toward letting the agent regenerate the whole remaining design as a graph (Ma's suggestion).
 

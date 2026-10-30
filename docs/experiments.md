@@ -59,3 +59,14 @@ Template:
 - **Failure groups:** more than 1% off target: 2 (under-extrusion at 50% and 80%: not enough bands left).
 - **Caveat:** the under-extrusion fix relies on thick/thin stacking, the effect flagged under D8 (Goodhart's law). The math holds for bending stiffness, but thin bands may break first in a real crush test. Strength is not scored yet.
 - **Next:** this rule is now the bar the AI agent must beat. Also missing: a non-AI search over thicknesses (proposal method B).
+
+## E4. Smoke test: does agent v0 run end to end? (2026-10-29)
+- **Question:** does the loop (prompt -> AI -> checker -> log) work on one case? This is a plumbing test, not an experiment, so no prediction.
+- **Setup:** `python agent/agent_v0.py --cases under_extrusion_medium_z10 --runs 1 --experiment smoke_v1` (uses the AI). Prompt v1, `gemini-3.5-flash`. Log: `out/runs/smoke_v1.jsonl`.
+- **Result:** allowed on the first attempt. Fix `[1.36, 1.58, 1.11 x 6]`, stiffness **98.8%** (simple rule v2: 100.3%; do nothing: 95.5%). Material 6823 of 6831 mm3. 30 s per call, about 550 tokens.
+- **Observations:**
+  - The prompt did not mention the cubed rule, but the agent used it on its own ("stiffness scales with the cube of the wall thickness").
+  - It treated the material budget as "sum of thicknesses = 8 x 1.2 = 9.6 mm". That is close, but not exact, because walls overlap at junctions. Its own math said about 100%; the score says 98.8%.
+  - It used the full 0.4 mm overhang step correctly (0.96 -> 1.36).
+  - Google reported model version `gemini-3.6-flash`, although we asked for `gemini-3.5-flash`. The name we request is not a guarantee of the model that answers, which is why each attempt logs the reported version.
+- **Next:** the full run (12 cases x 3 runs), with Amber's prediction written first.
