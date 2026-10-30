@@ -37,7 +37,7 @@ def _gemini(messages, model, temperature):
         data=json.dumps(body).encode(),
         headers={"Content-Type": "application/json", "x-goog-api-key": os.environ["GEMINI_API_KEY"]},
     )
-    for wait in (20, 60, None):              # free tier: back off when rate-limited or busy
+    for wait in (15, 30, 60, None):          # free tier: back off when rate-limited or busy (under 2 min in total)
         t0 = time.time()
         try:
             d = json.load(urllib.request.urlopen(req, timeout=120))

@@ -10,7 +10,7 @@ Every attempt is logged: prompt version, model, full text sent, raw reply, parse
 Run: python agent/agent_v0.py --cases z10 --runs 1    (uses the AI; needs GEMINI_API_KEY)
 Writes one line per run to out/runs/<experiment>.jsonl and prints one line per run.
 """
-import argparse, datetime, json, os, re, sys, time
+import argparse, datetime, json, os, re, sys, time, urllib.error
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from evaluate import *
@@ -81,12 +81,20 @@ if __name__ == "__main__":
     out_dir = os.path.join(ROOT, "out", "runs")
     os.makedirs(out_dir, exist_ok=True)
     path = os.path.join(out_dir, f"{name}.jsonl")
-    print(f"{len(cases)} cases x {a.runs} runs, prompt {a.prompt}, model {a.model} -> out/runs/{name}.jsonl")
+    done = {(d["case"], d["run"]) for d in map(json.loads, open(path))} if os.path.exists(path) else set()
+    print(f"{len(cases)} cases x {a.runs} runs, prompt {a.prompt}, model {a.model} -> out/runs/{name}.jsonl"
+          + (f" (resuming: {len(done)} runs already logged)" if done else ""))
     with open(path, "a") as f:
         for case in cases:
             for r in range(1, a.runs + 1):
-                res = {"experiment": name, "run": r, "time": datetime.datetime.now().isoformat(timespec="seconds"),
-                       **run_agent(case, a.prompt, a.model)}
+                if (case.s["id"], r) in done:
+                    continue
+                try:
+                    res = {"experiment": name, "run": r, "time": datetime.datetime.now().isoformat(timespec="seconds"),
+                           **run_agent(case, a.prompt, a.model)}
+                except urllib.error.HTTPError as e:   # service down: skip; rerunning the same command fills the gap
+                    print(f"{case.s['id']:38s} run {r}  SKIPPED (model service error {e.code}); rerun to fill in")
+                    continue
                 f.write(json.dumps(res) + "\n"); f.flush()
                 print(f"{case.s['id']:38s} run {r}  {res['stiffness_ratio']:7.1%}  attempts {res['n_attempts']}  "
                       + ("allowed" if res["accepted"] else "FALLBACK (do nothing)"))
