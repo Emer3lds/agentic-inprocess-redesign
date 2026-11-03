@@ -12,8 +12,9 @@ Running summary of the work, one section per week, written to send to Ma. Each w
 - Built an automatic checker for proposed fixes (wall limits, no printing over air, material budget) and the stiffness score above.
 - Tested two non-AI baselines. Keeping the original design leaves under-extrusion at 95.5% of healthy stiffness and over-extrusion at 107%. A simple rule brings most cases back to about 100%, but late defects (80%) can't be fixed within the material budget.
 - Built the first AI agent (Gemini). It proposes a fix, the checker judges it, and it retries with the checker's reasons, up to 3 times. First test on one case: allowed on the first try, 98.8% stiffness (simple rule: 100.3%).
+- **First full comparison (12 cases, 3 runs each):** the agent always followed the rules but never beat the simple rule (6 ties, 6 losses). Its main mistakes were correcting thickness instead of stiffness (over-extrusion), "fixing" layer shift and warpage that our score can't see, and giving different answers to the same case on different runs (6 of 12 cases).
 - **Next steps (please flag anything that's off before I build it):**
-  1. **Finish the first comparison:** run the agent on all 12 cases, 3 times each, against both baselines.
+  1. **Improve the agent one change at a time:** a prompt written as code (from the code-prompting paper), and/or a tool that lets the agent calculate plastic used or stiffness, so it can aim and not only stay within the rules.
   2. **Success measure:** keep stiffness along Y for now, or switch to peak force (or both)? Peak force is as easy to add. A beam model of the walls would also let the score see layer shift.
   3. **Full redesign as a graph (your suggestion):** move from "thickness only" to the agent regenerating the whole unprinted design as a graph (points plus walls). Constraints: outer shape and size, connectivity (nothing floating), and new walls must sit on walls already printed. The checker will need a connectivity check, and the non-AI comparison method must get the same freedom so the comparison stays fair.
   4. **Later:** more defect heights (10% to 90%), the other two lattice shapes, testing prompt and input-format changes (incl. "design as code"), and more agent roles.
@@ -42,22 +43,27 @@ Running summary of the work, one section per week, written to send to Ma. Each w
 - **First test (one case, under-extrusion at 10%):** allowed on the first attempt, 98.8% stiffness (keeping the original design: 95.5%; simple rule: 100.3%). Without being told, the agent reasoned that stiffness scales with wall thickness cubed. It estimated the material budget slightly wrong, which explains most of the gap to 100%.
 
 ### Results so far (stiffness as % of a defect-free part)
-| Defect | Keep original design | Simple rule (10% / 50% / 80% start) |
-|---|---|---|
-| Under-extrusion | 95.5% | 100.3% / 97.9% / 95.5% |
-| Over-extrusion | 107.2% | 100.2% / 99.6% / 100.5% |
-| Layer shift | 100.0% | 100.0% (the estimate cannot see layer shift yet) |
-| Warpage | 99.5% | 99.5% |
+| Defect | Keep original design | Simple rule (10% / 50% / 80% start) | AI agent, mean of 3 runs (10% / 50% / 80%) |
+|---|---|---|---|
+| Under-extrusion | 95.5% | 100.3% / 97.9% / 95.5% | 96.9% / 97.7% / 95.5% |
+| Over-extrusion | 107.2% | 100.2% / 99.6% / 100.5% | 101.0% / 101.5% / 102.7% |
+| Layer shift | 100.0% | 100.0% (the estimate cannot see layer shift yet) | 100.0% / 101.5% / 100.0% |
+| Warpage | 99.5% | 99.5% | 101.7% / 99.5% / 99.5% |
 
 - Later defects leave less height to fix them: at 80%, under-extrusion cannot be recovered without extra plastic.
 - The under-extrusion fix uses alternating thinner/thicker bands. This raises bending stiffness, but thin bands may fail first in a real crush test.
+- **AI agent:** all 36 answers passed the checker (1 of 37 attempts was rejected once, for material), but it beat the simple rule in none of the 12 cases (6 ties, 6 losses). From its logged reasoning:
+  - *Thickness instead of stiffness:* for over-extrusion it subtracted the extra thickness (1.2 - 0.24 = 0.96 mm) instead of cancelling the extra stiffness, so it stayed too stiff (102.7% at 80%; the rule gets 100.5%).
+  - *Fixing what the score can't see:* it reasoned that layer shift and warpage weaken the part, which is plausible physically, and added thick/thin bands (up to 106%). Part of this "loss" is the score's blind spot, not only an agent error.
+  - *Inconsistent:* 6 of 12 cases gave different answers across the 3 runs (spread up to 6.6 points).
+  - *Feedback only checks rules:* the checker tells it when it breaks a rule, not how far it is from 100%, so retries can't help it aim. This follows from the choice not to show it the score.
 
 ### Next
-- Run the agent on all 12 cases, 3 times each (answers vary), and compare it with the two baselines.
+- Improve the agent one change at a time and compare with this run: prompt written as code (code-prompting paper), or a calculation tool for plastic or stiffness (given to the non-AI search method too, to keep the comparison fair).
 - Better stiffness estimate (beam model of the walls), so layer shift and changes to individual walls can be scored.
 - Move toward letting the agent regenerate the whole remaining design as a graph (Ma's suggestion).
 
 ### Questions for Ma
 1. For full regeneration: new walls must still sit on walls already printed (the printer cannot print on air). Is it OK to regenerate the design as a graph with that support rule, plus shape, size and connectivity, as constraints?
 2. Is stiffness along Y a reasonable first measure of success, or would you rather we target peak force (or both) from the start?
-3. Could you send the name of the "design as code" paper your labmate presented, and the documents on prompts you mentioned?
+3. Is "Code Prompting Elicits Conditional Reasoning Abilities in Text+Code LLMs" (Puerto et al., 2024) the paper your labmate presented? Could you also send the documents on prompts you mentioned?

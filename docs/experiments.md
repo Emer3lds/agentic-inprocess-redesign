@@ -79,4 +79,21 @@ Template:
   3. Its 3 runs of the same case give the same answer, since it's a simple question.
 - **Setup:** `python agent/agent_v0.py --runs 3 --experiment e5_v1_full` (uses the AI). Prompt v1, `gemini-3.5-flash` requested, at most 3 attempts, fallback "do nothing". Log: `out/runs/e5_v1_full.jsonl`.
 - **Measure:** stiffness error from 100% (mean and spread of the 3 runs); allowed on which attempt; fallbacks; wins/ties/losses against simple rule v2 (a tie is within 0.5%).
-- **Result:** (pending)
+- **Result:** 36 runs (one duplicate log line ignored). Agent vs simple rule: **0 wins, 6 ties, 6 losses.** Every final answer passed the checker; only 1 of 37 attempts was rejected (material budget), so the retry loop was barely used.
+  | Defect | 10% | 50% | 80% | vs rule |
+  |---|---|---|---|---|
+  | Under-extrusion | 96.2 / 98.8 / 95.5 | 99.0 / 95.5 / 98.7 | 95.5 (x3) | loss, tie, tie |
+  | Over-extrusion | 102.0 / 100.6 / 100.6 | 102.1 / 102.1 / 100.4 | 102.7 (x3) | loss, loss, loss |
+  | Layer shift | 100.0 (x3) | 100.0 / 103.6 / 100.9 | 100.0 (x3) | tie, loss, tie |
+  | Warpage | 106.1 / 99.5 / 99.5 | 99.5 (x3) | 99.5 (x3) | loss, tie, tie |
+  (Do nothing: under 95.5, over 107.2, shift 100.0, warpage 99.5. Simple rule: see E3.)
+- **Predictions checked:**
+  1. "Beats the rule in about half": **wrong.** No wins.
+  2. "Worst on layer shift and warpage": **partly.** It lost one case each there, by "fixing" damage our score can't see. Its most consistent losses were over-extrusion (3 of 3).
+  3. "Same answer every run": **wrong.** 6 of 12 cases gave different answers across runs; the identical ones were mostly cases with nothing to fix.
+- **Failure groups (from the logged reasoning):**
+  - **Corrects thickness instead of stiffness (over-extrusion):** at 80% it set the last band to 1.2 - 0.24 = 0.96 mm, the same mistake as simple rule v1. Result 102.7%; the rule's stiffness-based 0.8 mm gives 100.5%.
+  - **Fixes what the score can't see (layer shift, warpage):** it reasoned that layer shift and warpage weaken the part (physically plausible) and added thick/thin bands, overshooting to 103.6% and 106.1%. This is partly a blind spot of our score (D8), not only an agent error.
+  - **Inconsistent effort (under-extrusion):** on the same case, one run redistributed plastic (98.8%), another kept the original design (95.5%).
+- **Also seen:** it knowingly used the thick/thin effect ("Jensen's inequality"), the loophole flagged under D8.
+- **Next ideas (not decided):** prompt v2 written as code (code-prompting paper); give it a tool that calculates plastic used, or the stiffness formula, so feedback helps it aim and not only stay within the rules.
