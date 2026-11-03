@@ -89,6 +89,15 @@ One entry per real choice. Format: the question, the options, how we judged them
 - **Prompt:** `agent/prompts/v1.md`, drafted by Amber, revised together. Versions are never edited once used.
 - **Status:** Amber.
 
+## D10. Agent v1: a calculation tool, a matched non-AI search, and a second measure (2026-11-02)
+- **Why:** E5 showed the agent can't aim: the checker only reports broken rules, so it estimated plastic and stiffness in its head and missed. The proposal's agent uses deterministic tools before submitting (sections 2.3, 8.1).
+- **A. Tool:** `evaluate_design` returns plastic used and budget, a stiffness *estimate*, and rule violations (option b; Amber). The stiffness estimate is the same formula as the score for now, which is a known weakness: the score's other measures (peak force; later the beam model) are not reported by the tool.
+- **B. Budget:** 10 tool calls per case, plus up to 3 submissions (Amber).
+- **C. Method B (non-AI search):** built now with the same tool and budget (proposal 8.5). COBYLA from scipy, starting from the original design. Also run at 200 calls to show what search can do with many evaluations (Amber).
+- **D. Second measure:** peak force reported for every fix: same layers-in-parallel idea, strength goes with relative area squared for bending shapes (Gibson & Ashby). Beam model later, as its own session (Amber).
+- **Change if:** the tool's estimate and the judge are made different (beam model or crush tests), or Ma prefers another measure.
+- **Status:** Amber.
+
 ---
 
 # Ideas for later (not decided)

@@ -2,6 +2,19 @@
 
 One entry per experiment. Write the first four lines **before** running.
 
+**What an "E" is:** one experiment = one question, answered by one run of the pipeline with one thing changed. It names the versions it used (agent, prompt, model, score), so results stay comparable. Versions of the code and prompts are recorded separately (git history, `agent/prompts/README.md`); an E records what we *learned* with them.
+
+## Index
+| E | Question | Versions | Main result |
+|---|---|---|---|
+| E0 | Can we build the 12 repair cases? | scenarios.py | Yes, all 12 pass checks (after one cutting bug) |
+| E1 | How much damage does each defect do? | do nothing, score v1 | Under-extrusion 95.5%, over-extrusion 107.2%; layer shift invisible to the score |
+| E2 | Does simple rule v1 fix the parts? | rule v1 | No: overcorrects, breaks budget and overhang |
+| E3 | Does simple rule v2 (fix lost stiffness) work? | rule v2 | Yes: about 100% except late under-extrusion; the bar to beat |
+| E4 | Does agent v0 run end to end? | agent v0, prompt v1 | Yes (plumbing test) |
+| E5 | How does agent v0 compare with the baselines? | agent v0, prompt v1, gemini-3.6-flash | 0 wins, 6 ties, 6 losses vs rule; answers vary between runs |
+| E6 | Does a calculation tool help the agent? | agent v1, prompt v2_tools, search (method B) | (planned) |
+
 Template:
 - **Question:** what we want to learn.
 - **Expectation:** what we think will happen, and why.
@@ -97,3 +110,11 @@ Template:
   - **Inconsistent effort (under-extrusion):** on the same case, one run redistributed plastic (98.8%), another kept the original design (95.5%).
 - **Also seen:** it knowingly used the thick/thin effect ("Jensen's inequality"), the loophole flagged under D8.
 - **Next ideas (not decided):** prompt v2 written as code (code-prompting paper); give it a tool that calculates plastic used, or the stiffness formula, so feedback helps it aim and not only stay within the rules.
+
+## E6. Does a calculation tool help the agent? (planned 2026-11-02)
+- **Question:** with a tool that reports plastic used, a stiffness estimate and rule violations (10 calls per case), does the agent get closer to 100% than v0, the simple rule, and a non-AI search with the same tool and budget?
+- **Expectation (Amber):** (to write before the run)
+- **Setup:** `python agent/agent_v1.py --runs 3 --experiment e6_v1_tools` (uses the AI). Only change from E5: the tool and the prompt section describing it (prompt v2_tools = v1 with OUTPUT replaced by TOOLS). Same model, cases, checker, attempts and fallback. Compared with `python agent/search.py` (COBYLA, same tool, same 10-call budget; also shown at 200 calls).
+- **Measure:** stiffness error (main), peak-force error (the tool does not report it), tool calls used, wins/ties/losses against rule v2 and search at 10 calls, spread across runs.
+- **Already known (no AI):** search at 10 calls: 95.9 to 101.1% (mean error 0.9%); at 200 calls it reaches about 100% except late under-extrusion (95.9%). Against E5's agent v0 the 10-call search has 4 wins, 8 ties.
+- **Result:** (pending)
