@@ -69,11 +69,13 @@ def run_agent(case, prompt_version="v1", model=llm.DEFAULT_MODEL):
             "decision_seconds": round(time.time() - t0, 1), "attempts": attempts}
 
 
-if __name__ == "__main__":
+def main(run_fn=None, default_prompt="v1"):
+    """Command line shared by every agent version: run_fn(case, prompt_version, model) -> result dict."""
+    run_fn = run_fn or run_agent
     ap = argparse.ArgumentParser()
     ap.add_argument("--cases", default="", help="only cases whose id contains this text")
     ap.add_argument("--runs", type=int, default=1, help="repeat each case this many times (answers vary)")
-    ap.add_argument("--prompt", default="v1")
+    ap.add_argument("--prompt", default=default_prompt)
     ap.add_argument("--model", default=llm.DEFAULT_MODEL)
     ap.add_argument("--experiment", default=None, help="log name; default is a timestamp")
     a = ap.parse_args()
@@ -93,7 +95,7 @@ if __name__ == "__main__":
                     continue
                 try:
                     res = {"experiment": name, "run": r, "time": datetime.datetime.now().isoformat(timespec="seconds"),
-                           **run_agent(case, a.prompt, a.model)}
+                           **run_fn(case, a.prompt, a.model)}
                 except urllib.error.HTTPError as e:   # service down: skip; rerunning the same command fills the gap
                     print(f"{case.s['id']:38s} run {r}  SKIPPED (model service error {e.code}); rerun to fill in")
                     skips_in_a_row += 1
@@ -103,5 +105,10 @@ if __name__ == "__main__":
                     continue
                 skips_in_a_row = 0
                 f.write(json.dumps(res) + "\n"); f.flush()
-                print(f"{case.s['id']:38s} run {r}  {res['stiffness_ratio']:7.1%}  attempts {res['n_attempts']}  "
+                print(f"{case.s['id']:38s} run {r}  {res['stiffness_ratio']:7.1%}  attempts {res['n_attempts']}"
+                      + (f"  tool calls {res['n_tool_calls']}" if "n_tool_calls" in res else "") + "  "
                       + ("allowed" if res["accepted"] else "FALLBACK (do nothing)"))
+
+
+if __name__ == "__main__":
+    main()

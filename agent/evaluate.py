@@ -30,6 +30,9 @@ MAX_STEP_UP = 0.4         # mm, a wall may grow at most 0.2 mm per side from one
 BUDGET_TOL = 0.01         # fraction over budget allowed
 BUDGET_MODE = "remaining" # "remaining": original plastic above the cut (proposal 5.4); "total": whole part = healthy part (D7)
 EXPONENT = {"reentrant": 3, "hexagon": 3, "triangle": 1}
+# Peak force (collapse strength), second measure (D10): Gibson & Ashby plastic collapse goes with
+# relative density squared for bending shapes, to the power 1 for stretching shapes (triangle).
+STRENGTH_EXPONENT = {"reentrant": 2, "hexagon": 2, "triangle": 1}
 
 
 def lattice_area(cs):
@@ -97,15 +100,24 @@ def material_used(case, fix):
     return sum(case.band_full_area(t) * BAND_H for t in fix["wall_thickness_mm"])
 
 
+def layer_area_ratios(case, fix):
+    """Lattice area of every 0.2 mm layer (printed, then proposed) relative to a healthy layer."""
+    per_band = round(BAND_H / case.s["layer_height_mm"])
+    ratios = [a / case.a0 for a in case.prefix_layer_areas]
+    for t in fix["wall_thickness_mm"]:
+        ratios += [case.band_lattice_area(t) / case.a0] * per_band
+    return ratios
+
+
 def score(case, fix):
-    """Stiffness along Y as a fraction of the defect-free part (1.0 = fully recovered)."""
-    h = case.s["layer_height_mm"]
-    rel = [(a / case.a0) ** case.n for a in case.prefix_layer_areas]          # printed layers
-    per_band = round(BAND_H / h)
-    for t in fix["wall_thickness_mm"]:                                         # proposed layers
-        rel += [(case.band_lattice_area(t) / case.a0) ** case.n] * per_band
-    stiffness = sum(rel) / len(rel)
+    """Stiffness along Y as a fraction of the defect-free part (1.0 = fully recovered); the main measure.
+    Also reports a peak-force estimate (same layers-in-parallel idea, strength exponent), which the
+    agent's tool does not report, so it is a check the agent cannot aim at (D10)."""
+    ratios = layer_area_ratios(case, fix)
+    stiffness = sum(r ** case.n for r in ratios) / len(ratios)
+    peak = sum(r ** STRENGTH_EXPONENT[case.s["shape"]] for r in ratios) / len(ratios)
     return {"stiffness_ratio": round(stiffness, 4), "error": round(abs(stiffness - 1), 4),
+            "peak_force_ratio": round(peak, 4), "peak_error": round(abs(peak - 1), 4),
             "material_mm3": round(material_used(case, fix), 1)}
 
 

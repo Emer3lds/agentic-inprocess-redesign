@@ -2,7 +2,9 @@
 Compare the AI agent's runs with the two baselines, case by case.
 
 Run: python agent/compare.py out/runs/<experiment>.jsonl    (plain Python, no AI, instant)
-Needs out/results/baselines.json (from python agent/baselines.py).
+Needs out/results/baselines.json (from python agent/baselines.py). If out/results/search.json exists
+(python agent/search.py), the non-AI search at the agent's tool budget is shown too.
+Works for agent v0 logs ("attempts") and v1 logs ("submissions", plus tool calls).
 A "tie" is within TIE of the simple rule's error. Error = distance from 100% stiffness.
 """
 import json, os, statistics, sys
@@ -33,27 +35,47 @@ if missing:
         sys.exit("Not reporting on incomplete data. Add --partial to look anyway.")
     print("Showing partial results (--partial); do not use these as final numbers.\n")
 
-tally, attempts_used, fail_rules = Counter(), Counter(), Counter()
-print(f"{'case':38s} {'do nothing':>10s} {'rule':>7s} {'agent runs':>24s}  spread  vs rule")
+search_path = os.path.join(ROOT, "out", "results", "search.json")
+search = {}
+if os.path.exists(search_path):
+    sr = json.load(open(search_path))
+    b = min(r["budget"] for r in sr)   # the matched budget (the agent's)
+    search = {r["case"]: r for r in sr if r["budget"] == b}
+
+tally, tally_search, attempts_used, fail_rules, tool_calls = Counter(), Counter(), Counter(), Counter(), []
+print(f"{'case':38s} {'do nothing':>10s} {'rule':>7s}" + (f" {'search':>7s}" if search else "")
+      + f" {'agent runs':>24s}  spread  vs rule" + ("  vs search" if search else ""))
 for case, rs in by_case.items():
     dn, rule = base[(case, "do_nothing")], base[(case, "simple_rule")]
     errs = [r["error"] for r in rs]
     mean_err = statistics.mean(errs)
     verdict = "tie" if abs(mean_err - rule["error"]) <= TIE else ("WIN" if mean_err < rule["error"] else "loss")
     tally[verdict] += 1
+    vs_search = ""
+    if case in search:
+        se = search[case]["error"]
+        vs_search = "tie" if abs(mean_err - se) <= TIE else ("WIN" if mean_err < se else "loss")
+        tally_search[vs_search] += 1
     for r in rs:
         attempts_used["fallback" if r["fallback_used"] else f"ok on attempt {r['n_attempts']}"] += 1
-        for a in r["attempts"]:
+        if "n_tool_calls" in r:
+            tool_calls.append(r["n_tool_calls"])
+        for a in r.get("attempts", r.get("submissions", [])):
             for v in a["violations"]:
                 fail_rules[v["rule"]] += 1
     agent = " ".join(f"{r['stiffness_ratio']:.1%}" + ("*" if r["fallback_used"] else "") for r in rs)
     spread = max(r["stiffness_ratio"] for r in rs) - min(r["stiffness_ratio"] for r in rs)
     same = len({tuple(r["final_fix"]["wall_thickness_mm"]) for r in rs}) == 1
-    print(f"{case.replace('reentrant_', ''):38s} {dn['stiffness_ratio']:10.1%} {rule['stiffness_ratio']:7.1%} {agent:>24s}  "
-          f"{spread:5.1%}{' same' if same else ''}  {verdict}")
+    print(f"{case.replace('reentrant_', ''):38s} {dn['stiffness_ratio']:10.1%} {rule['stiffness_ratio']:7.1%}"
+          + (f" {search[case]['stiffness_ratio']:7.1%}" if case in search else "")
+          + f" {agent:>24s}  {spread:5.1%}{' same' if same else '     '}  {verdict:7s} {vs_search}")
 
 print(f"\nagent vs simple rule (mean of runs, tie = within {TIE:.1%}): {dict(tally)}")
+if search:
+    print(f"agent vs non-AI search at the same budget: {dict(tally_search)}")
 print(f"runs: {dict(attempts_used)}   (* = fell back to do nothing)")
+if tool_calls:
+    print(f"tool calls per run: mean {statistics.mean(tool_calls):.1f}, max {max(tool_calls)}")
 print(f"rejected attempts by rule: {dict(fail_rules)}")
-models = Counter(a.get("model_version") for r in runs for a in r["attempts"])
+models = Counter(a.get("model_version") for r in runs for a in r.get("attempts", r.get("turns", [])))
 print(f"model versions reported: {dict(models)}")

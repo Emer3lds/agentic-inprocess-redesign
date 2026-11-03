@@ -17,6 +17,8 @@
   "violations": [],
   "stiffness_ratio": 0.9548,
   "error": 0.0452,
+  "peak_force_ratio": 0.967,
+  "peak_error": 0.033,
   "material_mm3": 6831.2,
   "budget_mm3": {
    "remaining": 6831.2,
@@ -41,6 +43,8 @@
   "violations": [],
   "stiffness_ratio": 1.0026,
   "error": 0.0026,
+  "peak_force_ratio": 0.9812,
+  "peak_error": 0.0188,
   "material_mm3": 6819.4,
   "budget_mm3": {
    "remaining": 6831.2,
@@ -61,6 +65,8 @@
   "violations": [],
   "stiffness_ratio": 0.9548,
   "error": 0.0452,
+  "peak_force_ratio": 0.967,
+  "peak_error": 0.033,
   "material_mm3": 3415.6,
   "budget_mm3": {
    "remaining": 3415.6,
@@ -81,6 +87,8 @@
   "violations": [],
   "stiffness_ratio": 0.9787,
   "error": 0.0213,
+  "peak_force_ratio": 0.9741,
+  "peak_error": 0.0259,
   "material_mm3": 3409.7,
   "budget_mm3": {
    "remaining": 3415.6,
@@ -98,6 +106,8 @@
   "violations": [],
   "stiffness_ratio": 0.9548,
   "error": 0.0452,
+  "peak_force_ratio": 0.967,
+  "peak_error": 0.033,
   "material_mm3": 853.9,
   "budget_mm3": {
    "remaining": 853.9,
@@ -115,6 +125,8 @@
   "violations": [],
   "stiffness_ratio": 0.9548,
   "error": 0.0452,
+  "peak_force_ratio": 0.967,
+  "peak_error": 0.033,
   "material_mm3": 853.9,
   "budget_mm3": {
    "remaining": 853.9,
@@ -139,6 +151,8 @@
   "violations": [],
   "stiffness_ratio": 1.072,
   "error": 0.072,
+  "peak_force_ratio": 1.0436,
+  "peak_error": 0.0436,
   "material_mm3": 6831.2,
   "budget_mm3": {
    "remaining": 6831.2,
@@ -163,6 +177,8 @@
   "violations": [],
   "stiffness_ratio": 1.0025,
   "error": 0.0025,
+  "peak_force_ratio": 0.9965,
+  "peak_error": 0.0035,
   "material_mm3": 6670.3,
   "budget_mm3": {
    "remaining": 6831.2,
@@ -183,6 +199,8 @@
   "violations": [],
   "stiffness_ratio": 1.072,
   "error": 0.072,
+  "peak_force_ratio": 1.0436,
+  "peak_error": 0.0436,
   "material_mm3": 3415.6,
   "budget_mm3": {
    "remaining": 3415.6,
@@ -203,6 +221,8 @@
   "violations": [],
   "stiffness_ratio": 0.9964,
   "error": 0.0036,
+  "peak_force_ratio": 0.9914,
+  "peak_error": 0.0086,
   "material_mm3": 3233.9,
   "budget_mm3": {
    "remaining": 3415.6,
@@ -220,6 +240,8 @@
   "violations": [],
   "stiffness_ratio": 1.072,
   "error": 0.072,
+  "peak_force_ratio": 1.0436,
+  "peak_error": 0.0436,
   "material_mm3": 853.9,
   "budget_mm3": {
    "remaining": 853.9,
@@ -237,6 +259,8 @@
   "violations": [],
   "stiffness_ratio": 1.0054,
   "error": 0.0054,
+  "peak_force_ratio": 0.9917,
+  "peak_error": 0.0083,
   "material_mm3": 647.4,
   "budget_mm3": {
    "remaining": 853.9,
@@ -261,6 +285,8 @@
   "violations": [],
   "stiffness_ratio": 1.0,
   "error": 0.0,
+  "peak_force_ratio": 1.0,
+  "peak_error": 0.0,
   "material_mm3": 6831.2,
   "budget_mm3": {
    "remaining": 6831.2,
@@ -285,6 +311,8 @@
   "violations": [],
   "stiffness_ratio": 1.0,
   "error": 0.0,
+  "peak_force_ratio": 1.0,
+  "peak_error": 0.0,
   "material_mm3": 6831.2,
   "budget_mm3": {
    "remaining": 6831.2,
@@ -305,6 +333,8 @@
   "violations": [],
   "stiffness_ratio": 1.0,
   "error": 0.0,
+  "peak_force_ratio": 1.0,
+  "peak_error": 0.0,
   "material_mm3": 3415.6,
   "budget_mm3": {
    "remaining": 3415.6,
@@ -325,6 +355,8 @@
   "violations": [],
   "stiffness_ratio": 1.0,
   "error": 0.0,
+  "peak_force_ratio": 1.0,
+  "peak_error": 0.0,
   "material_mm3": 3415.6,
   "budget_mm3": {
    "remaining": 3415.6,
@@ -342,6 +374,8 @@
   "violations": [],
   "stiffness_ratio": 1.0,
   "error": 0.0,
+  "peak_force_ratio": 1.0,
+  "peak_error": 0.0,
   "material_mm3": 853.9,
   "budget_mm3": {
    "remaining": 853.9,
@@ -359,6 +393,8 @@
   "violations": [],
   "stiffness_ratio": 1.0,
   "error": 0.0,
+  "peak_force_ratio": 1.0,
+  "peak_error": 0.0,
   "material_mm3": 853.9,
   "budget_mm3": {
    "remaining": 853.9,
@@ -383,6 +419,8 @@
   "violations": [],
   "stiffness_ratio": 0.9954,
   "error": 0.0046,
+  "peak_force_ratio": 0.9968,
+  "peak_error": 0.0032,
   "material_mm3": 6831.2,
   "budget_mm3": {
    "remaining": 6831.2,
@@ -407,6 +445,8 @@
   "violations": [],
   "stiffness_ratio": 0.9954,
   "error": 0.0046,
+  "peak_force_ratio": 0.9968,
+  "peak_error": 0.0032,
   "material_mm3": 6831.2,
   "budget_mm3": {
    "remaining": 6831.2,
@@ -427,6 +467,8 @@
   "violations": [],
   "stiffness_ratio": 0.9951,
   "error": 0.0049,
+  "peak_force_ratio": 0.9966,
+  "peak_error": 0.0034,
   "material_mm3": 3415.6,
   "budget_mm3": {
    "remaining": 3415.6,
@@ -447,6 +489,8 @@
   "violations": [],
   "stiffness_ratio": 0.9951,
   "error": 0.0049,
+  "peak_force_ratio": 0.9966,
+  "peak_error": 0.0034,
   "material_mm3": 3415.6,
   "budget_mm3": {
    "remaining": 3415.6,
@@ -464,6 +508,8 @@
   "violations": [],
   "stiffness_ratio": 0.9949,
   "error": 0.0051,
+  "peak_force_ratio": 0.9965,
+  "peak_error": 0.0035,
   "material_mm3": 853.9,
   "budget_mm3": {
    "remaining": 853.9,
@@ -481,6 +527,8 @@
   "violations": [],
   "stiffness_ratio": 0.9949,
   "error": 0.0051,
+  "peak_force_ratio": 0.9965,
+  "peak_error": 0.0035,
   "material_mm3": 853.9,
   "budget_mm3": {
    "remaining": 853.9,
