@@ -1,0 +1,159 @@
+# Pipeline diagrams
+
+One diagram per stage of the pipeline and per agent version, naming the real functions (file → function) and what goes in and comes out, with real example values. A new diagram is added for every new agent version or experiment setup, and old ones are kept, so each experiment's setup can always be looked up.
+
+The diagrams are written in Mermaid. GitHub shows them as pictures. In VS Code, install the extension "Markdown Preview Mermaid Support" and open the Markdown preview (Ctrl+Shift+V).
+
+**How to read them:**
+- Rounded boxes are **functions** (`file.py → function()`), with one line on what they do.
+- Slanted boxes are **files or data** going in or out.
+- Purple boxes are where the **AI model** is called. Teal boxes are **tools** the AI can call. Everything else is plain Python.
+- The words on an arrow say what is passed along it.
+
+Example case used throughout: `reentrant_under_extrusion_medium_z10` (under-extrusion from 1.0 to 2.0 mm, printer paused at 2.0 mm, 8 bands of 1 mm left to print).
+
+| # | Diagram | Used by experiments |
+|---|---|---|
+| 1 | Building the repair cases | E0 |
+| 2 | The judge (checker and score) | every experiment |
+| 3 | Baselines N and R | E1, E2, E3 |
+| 4 | Agent v0 (A0) | E4, E5 |
+| 5 | Agent v1 (A1) | E6 |
+| 6 | Non-AI search (B) | E6 |
+| 7 | Comparing results | E5, E6 |
+
+---
+
+## 1. Building the repair cases (E0)
+Run: `python agent/scenarios.py` (plain Python, about 9 s). Builds each defective part, cuts it where the printer would pause, and writes down the facts of each case.
+
+```mermaid
+flowchart TD
+    G[/"out/base/reentrant_graph.json<br>points + walls, 1.2 mm thick"/] --> LG("lattice.py → load_graph()<br>reads the design")
+    LG -->|design graph| MS("scenarios.py → make_scenario()<br>one case: shape, defect, start height")
+    MS -->|"defect type, severity, start z0 = 1.0 mm"| INJ("defects.py → inject()<br>builds the full 10 mm part with the defect")
+    INJ -->|"full defective part (mesh)"| CUT("scenarios.py → cut_below()<br>keeps only what is printed below the pause, z ≤ 2.0 mm")
+    CUT -->|"printed part (prefix)"| CHK("lattice.py → check_mesh()<br>one piece? closed surface? right height?")
+    CHK --> OUT1[/"out/scenarios/reentrant/..._z10_prefix.stl"/]
+    MS --> OUT2[/"out/scenarios/scenarios.json<br>z_cut 2.0, remaining 8.0 mm, budget 6831.2 mm³, axes"/]
+```
+
+---
+
+## 2. The judge: checker, then score (every experiment)
+File: `agent/evaluate.py`. Every method's fix goes through these same functions. A fix is always `{"wall_thickness_mm": [one number per remaining 1 mm band]}`.
+
+```mermaid
+flowchart TD
+    J[/"scenarios.json + prefix STL"/] --> LC("load_cases()<br>makes one Case per record")
+    LC --> CASE("Case(...)<br>slices the printed part into 0.2 mm layers<br>and measures each layer's wall area")
+    FIX[/"a fix, e.g. [1.36, 1.58, 1.11, 1.11, 1.11, 1.11, 1.11, 1.11]"/] --> CHECK
+    CASE --> CHECK("check(case, fix)<br>format · thickness 0.8–2.0 mm · overhang ≤ 0.4 mm · material ≤ budget + 1%")
+    CHECK -->|"list of violations, empty = allowed"| SCORE
+    CASE --> SCORE("score(case, fix)<br>uses layer_area_ratios() and material_used()")
+    SCORE --> RES[/"stiffness_ratio 0.988 · peak_force_ratio · error · material_mm3"/]
+```
+
+- `layer_area_ratios(case, fix)`: wall area of every 0.2 mm layer (the printed ones, then the proposed ones) divided by a healthy layer's.
+- Stiffness = average of (ratio³). Peak force = average of (ratio²). Both are relative to a healthy part, so 1.0 = 100%.
+- `material_used(case, fix)`: plastic in the proposed bands, in mm³.
+
+---
+
+## 3. Baselines N (do nothing) and R (simple rule) (E1, E2, E3)
+Run: `python agent/baselines.py` (plain Python, about 9 s). No AI.
+
+```mermaid
+flowchart TD
+    LC("evaluate.py → load_cases()") -->|each Case| DN("baselines.py → do_nothing(case)<br>original design: 1.2 mm in every band")
+    LC -->|each Case| SR("baselines.py → simple_rule(case)<br>rule v2: fix the lost stiffness")
+    SR --> GAP("stiffness_gap(case)<br>how much stiffness the printed part is missing")
+    SR --> BS("band_stiffness(case, t)<br>stiffness of one band at thickness t")
+    DN -->|"[1.2 × 8]"| JUDGE("evaluate.py → check() and score()")
+    SR -->|"[1.0, 1.4, 1.0, 1.4, 1.0, 1.4, 1.0, 1.4]"| JUDGE
+    JUDGE --> OUT[/"out/results/baselines.json<br>do nothing 95.5% · rule 100.3%"/]
+```
+
+---
+
+## 4. Agent v0, A0 (E4, E5)
+Run: `python agent/agent_v0.py --runs 3 --experiment e5_v1_full` (uses the AI). File: `agent/agent_v0.py`.
+
+```mermaid
+flowchart TD
+    MAIN("main()<br>loops over cases and runs, resumes, writes the log") -->|each Case| RA("run_agent(case)")
+    RA --> LP("load_prompt('v1')<br>reads prompts/v1.md and v1_retry.md")
+    RA --> SL("slots_for(case)<br>the case facts: z_cut 2.0, top wall 0.96, 8 bands, ...")
+    LP --> FILL("fill(template, slots)<br>puts the facts into the prompt text")
+    SL --> FILL
+    FILL -->|prompt text| CHAT("llm.chat(messages)<br>sends the conversation to the model, asks for JSON")
+    CHAT:::ai -->|"JSON text: reasoning + wall_thickness_mm"| PARSE("parse(text)<br>reads the JSON")
+    PARSE -->|fix| CHECK("evaluate.py → check(case, fix)")
+    CHECK -->|"rejected: violations (at most 3 attempts)"| RETRY("fill(retry template, violations)<br>'The checker rejected your proposal for these reasons: ...'")
+    RETRY -->|added to the conversation| CHAT
+    CHECK -->|allowed| SCORE("evaluate.py → score(case, fix)")
+    CHECK -->|"3 rejections"| FB("baselines.py → do_nothing(case)<br>fallback")
+    FB --> SCORE
+    SCORE --> LOG[/"out/runs/e5_v1_full.jsonl<br>one line per run: every attempt, reply, violations, score"/]
+    classDef ai fill:#EEEDFE,stroke:#534AB7,color:#3C3489
+```
+
+Example from E5: allowed on the first attempt in 35 of 36 runs. Mean result 0 wins, 6 ties, 6 losses against the simple rule.
+
+---
+
+## 5. Agent v1, A1 (E6)
+Run: `python agent/agent_v1.py --runs 3 --experiment e6_v1_tools` (uses the AI). File: `agent/agent_v1.py`; the tool is in `agent/tools.py`.
+
+```mermaid
+flowchart TD
+    MAIN("agent_v0.py → main(run_agent_v1)<br>same loop, resume and logging as v0") -->|each Case| RA("run_agent_v1(case)")
+    RA --> FILL("fill(prompts/v2_tools.md, slots_for(case))<br>v1 text + description of the two tools")
+    FILL -->|"prompt + tool definitions (TOOL_DECLS)"| STEP("llm.step(contents, tools)<br>one turn: the model either calls a tool or submits")
+    STEP:::ai -->|"evaluate_design([1.36, 1.36, 1.36, 1.2, ...])"| EV("tools.py → Toolbox.evaluate_design()<br>runs check(), material_used(), layer_area_ratios()<br>at most 10 calls")
+    EV:::tool -->|"material 6887.4 / 6831.2 · stiffness 99.82% · violations [] · calls left 7"| STEP
+    STEP -->|"submit_fix(wall_thickness_mm, reasoning)"| CHECK("evaluate.py → check(case, fix)")
+    CHECK -->|"rejected: violations (at most 3 submissions)"| STEP
+    CHECK -->|accepted| SCORE("evaluate.py → score(case, fix)<br>stiffness and peak force; peak force is never shown to the agent")
+    CHECK -->|"3 rejections or 16 turns"| FB("baselines.py → do_nothing(case)<br>fallback") --> SCORE
+    SCORE --> LOG[/"out/runs/e6_v1_tools.jsonl<br>every turn, every tool call and result, submissions, score, cost"/]
+    classDef ai fill:#EEEDFE,stroke:#534AB7,color:#3C3489
+    classDef tool fill:#E1F5EE,stroke:#0F6E56,color:#085041
+```
+
+Example from the one-case test (`out/runs/smoke_or_v1.jsonl`): 10 tool calls, best allowed design tried was 99.8%, but it submitted an unchecked design that scored 98.8%. Known problem: the tool shows the budget without the checker's +1%, so 6887.4 mm³ looked over budget although it was allowed.
+
+---
+
+## 6. Non-AI search, B (E6)
+Run: `python agent/search.py` (plain Python, about 40 s). File: `agent/search.py`.
+
+```mermaid
+flowchart TD
+    LC("evaluate.py → load_cases()") -->|each Case| S("search(case, budget)<br>budget = 10 (same as the agent) and 200")
+    S -->|"start: do_nothing(case) = [1.2 × 8]"| OPT("scipy COBYLA → minimize()<br>tries designs, aims for stiffness 100%")
+    OPT -->|a design to try| EVX("ev(x)<br>remembers designs already tried")
+    EVX --> EV("tools.py → Toolbox.evaluate_design()<br>the same tool the agent uses")
+    EV:::tool -->|"stiffness estimate, material, violations"| OPT
+    OPT -->|"budget used up"| BEST("pick the best allowed design it tried")
+    BEST --> JUDGE("evaluate.py → check() and score()")
+    JUDGE --> OUT[/"out/results/search.json<br>10 calls: 97.9% · 200 calls: 100.0%"/]
+    classDef tool fill:#E1F5EE,stroke:#0F6E56,color:#085041
+```
+
+The rules the prompt states in words (thickness range, overhang) the search checks itself with `overhang_margins(x)` and simple limits, just as the agent can read them in its prompt.
+
+---
+
+## 7. Comparing results (E5, E6)
+Run: `python agent/compare.py out/runs/<experiment>.jsonl` (plain Python, instant).
+
+```mermaid
+flowchart LR
+    RUNS[/"out/runs/&lt;experiment&gt;.jsonl<br>agent runs"/] --> CMP("compare.py<br>per case: mean of the runs,<br>spread, win / tie / loss")
+    BASE[/"out/results/baselines.json<br>N and R"/] --> CMP
+    SR[/"out/results/search.json<br>B at 10 calls"/] --> CMP
+    CMP --> TABLE[/"table printed per case<br>+ totals vs rule and vs search"/]
+```
+
+A tie means the agent's mean error is within 0.5 percentage points of the other method's. It refuses to report if runs are missing, unless `--partial` is given.
