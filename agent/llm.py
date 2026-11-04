@@ -54,6 +54,7 @@ def chat(messages, model=DEFAULT_MODEL, temperature=None):
 
 TIMEOUT = int(os.environ.get("LLM_TIMEOUT_S", 180))   # seconds one call may take before giving up
 RETRY_WAITS = () if os.environ.get("LLM_NO_RETRY") else (15, 30, 60)
+THINKING_OFF = os.environ.get("LLM_THINKING", "off") == "off"   # OpenRouter models: answer without long hidden reasoning (D11)
 
 
 def _with_retries(send):
@@ -98,6 +99,8 @@ def _gemini(messages, model, temperature):
 
 def _post_openrouter(body):
     url = "https://openrouter.ai/api/v1/chat/completions"
+    if THINKING_OFF:
+        body = {**body, "reasoning": {"enabled": False}}
     req = urllib.request.Request(url, data=json.dumps({**body, "usage": {"include": True}}).encode(),
                                  headers={"Content-Type": "application/json",
                                           "Authorization": "Bearer " + os.environ["OPENROUTER_API_KEY"]})
@@ -114,7 +117,7 @@ def _post_openrouter(body):
 def _openrouter_meta(d, model, seconds, temperature=None):
     u = d.get("usage", {})
     return {"provider": "openrouter", "model": model, "model_version": d.get("model"),
-            "served_by": d.get("provider"), "temperature": temperature, "seconds": seconds,
+            "served_by": d.get("provider"), "thinking_off": THINKING_OFF, "temperature": temperature, "seconds": seconds,
             "input_tokens": u.get("prompt_tokens"), "output_tokens": u.get("completion_tokens"),
             "reasoning_tokens": (u.get("completion_tokens_details") or {}).get("reasoning_tokens"),
             "cost_usd": u.get("cost")}
