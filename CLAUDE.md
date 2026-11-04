@@ -8,7 +8,7 @@
 - Ask me before generating more than 20 files or running anything expected to take more than 5 minutes.
 - Keep script output short: print summaries, not full data.
 - Don't install new packages without telling me why.
-- Write to me in plain words, short bullets, no jargon.
+- Write to me in plain words, short bullets, no jargon. No short catchy phrases that hide the meaning; say exactly what is meant, with an example if needed.
 - Teach before you build (agent framework, from 2026-10-26): give me a short lesson on the principle and walk me through applying it to this project, let me make the key choices, then build.
 - After every step, explain the whole pipeline: what was added, what exists vs. not yet, and one worked example with real numbers. When you say you "ran" something, name the script and say whether it is plain code or AI.
 - The learning log only records what I actually did or was walked through.
