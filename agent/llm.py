@@ -11,9 +11,8 @@ sent in a request header, never in the URL or a log.
 import json, os, time, urllib.error, urllib.request
 
 # Pinned model ids, not "latest" aliases, so runs stay comparable. Every call also logs the version
-# the provider reports back. E5 asked Google for gemini-3.5-flash and was answered by gemini-3.6-flash,
-# so the OpenRouter default is gemini-3.6-flash (D11).
-DEFAULT_MODEL = "openrouter:google/gemini-3.6-flash"
+# the provider reports back. Main model: free Nemotron 3 Ultra (D11).
+DEFAULT_MODEL = "openrouter:nvidia/nemotron-3-ultra-550b-a55b:free"
 OPENROUTER = "openrouter:"
 
 # The answer must match this shape (structured output), so code can read it without guessing.
@@ -131,10 +130,24 @@ def _json_schema(s):
     return out
 
 
+_structured_models = None
+
+
+def _supports_structured_output(model_id):
+    """Asks OpenRouter once which models can be forced to answer in a fixed JSON format."""
+    global _structured_models
+    if _structured_models is None:
+        models = json.load(urllib.request.urlopen("https://openrouter.ai/api/v1/models", timeout=60))["data"]
+        _structured_models = {m["id"] for m in models if "structured_outputs" in m.get("supported_parameters", [])}
+    return model_id in _structured_models
+
+
 def _openrouter_chat(messages, model, temperature):
-    body = {"model": model[len(OPENROUTER):],
-            "messages": [{"role": "assistant" if m["role"] == "model" else "user", "content": m["text"]} for m in messages],
-            "response_format": {"type": "json_schema", "json_schema": {"name": "fix", "strict": True, "schema": _json_schema(FIX_SCHEMA)}}}
+    model_id = model[len(OPENROUTER):]
+    body = {"model": model_id,
+            "messages": [{"role": "assistant" if m["role"] == "model" else "user", "content": m["text"]} for m in messages]}
+    if _supports_structured_output(model_id):   # otherwise rely on the prompt's "Only JSON"; parse() and the checker catch bad replies
+        body["response_format"] = {"type": "json_schema", "json_schema": {"name": "fix", "strict": True, "schema": _json_schema(FIX_SCHEMA)}}
     if temperature is not None:
         body["temperature"] = temperature
     d, seconds = _post_openrouter(body)

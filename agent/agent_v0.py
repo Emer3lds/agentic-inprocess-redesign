@@ -41,9 +41,9 @@ def slots_for(case):
 
 def parse(text):
     try:
-        d = json.loads(text)
+        d = json.loads(re.sub(r"^\s*```(?:json)?|```\s*$", "", text))   # some models wrap JSON in a code fence
         return {"wall_thickness_mm": d.get("wall_thickness_mm")}, d.get("reasoning"), None
-    except (json.JSONDecodeError, AttributeError) as e:
+    except (json.JSONDecodeError, AttributeError, TypeError) as e:
         return None, None, f"could not read the answer as JSON: {e}"
 
 

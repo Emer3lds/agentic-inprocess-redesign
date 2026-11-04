@@ -28,26 +28,26 @@
   "case": "reentrant_under_extrusion_medium_z10",
   "fixer": "search_b200",
   "budget": 200,
-  "n_tool_calls": 60,
+  "n_tool_calls": 63,
   "fallback_used": false,
   "fix": {
    "wall_thickness_mm": [
     1.36,
-    1.413,
-    1.204,
-    1.197,
-    1.198,
-    1.122,
-    1.14,
-    1.108
+    1.404,
+    1.225,
+    1.216,
+    1.166,
+    1.123,
+    1.132,
+    1.116
    ]
   },
   "violations": [],
-  "stiffness_ratio": 1.0,
-  "error": 0.0,
+  "stiffness_ratio": 0.9997,
+  "error": 0.0003,
   "peak_force_ratio": 0.9919,
   "peak_error": 0.0081,
-  "material_mm3": 6899.2
+  "material_mm3": 6899.3
  },
  {
   "case": "reentrant_under_extrusion_medium_z50",
@@ -74,28 +74,28 @@
   "case": "reentrant_under_extrusion_medium_z50",
   "fixer": "search_b200",
   "budget": 200,
-  "n_tool_calls": 42,
+  "n_tool_calls": 39,
   "fallback_used": false,
   "fix": {
    "wall_thickness_mm": [
     1.36,
-    1.401,
-    0.86,
-    1.26
+    1.399,
+    0.861,
+    1.261
    ]
   },
   "violations": [],
-  "stiffness_ratio": 1.0,
-  "error": 0.0,
-  "peak_force_ratio": 0.9875,
-  "peak_error": 0.0125,
-  "material_mm3": 3449.4
+  "stiffness_ratio": 0.9998,
+  "error": 0.0002,
+  "peak_force_ratio": 0.9874,
+  "peak_error": 0.0126,
+  "material_mm3": 3449.5
  },
  {
   "case": "reentrant_under_extrusion_medium_z80",
   "fixer": "search_b10",
   "budget": 10,
-  "n_tool_calls": 5,
+  "n_tool_calls": 4,
   "fallback_used": false,
   "fix": {
    "wall_thickness_mm": [
@@ -113,7 +113,7 @@
   "case": "reentrant_under_extrusion_medium_z80",
   "fixer": "search_b200",
   "budget": 200,
-  "n_tool_calls": 5,
+  "n_tool_calls": 4,
   "fallback_used": false,
   "fix": {
    "wall_thickness_mm": [

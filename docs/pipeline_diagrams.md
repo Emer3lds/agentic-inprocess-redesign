@@ -149,7 +149,7 @@ flowchart TD
     RA --> FILL("fill(prompts/v2_tools.md, slots_for(case))<br>v1 text + description of the two tools")
     FILL -->|"prompt + tool definitions (TOOL_DECLS)"| STEP("llm.step(contents, tools)<br>one turn: the model either calls a tool or submits")
     STEP:::ai -->|"evaluate_design([1.36, 1.36, 1.36, 1.2, ...])"| EV("tools.py → Toolbox.evaluate_design()<br>runs check(), material_used(), layer_area_ratios()<br>at most 10 calls")
-    EV:::tool -->|"material 6887.4 / 6831.2 · stiffness 99.82% · violations [] · calls left 7"| STEP
+    EV:::tool -->|"material 6887.4 / limit 6899.5 · stiffness 99.82% · violations [] · calls left 7"| STEP
     STEP -->|"submit_fix(wall_thickness_mm, reasoning)"| CHECK("evaluate.py → check(case, fix)")
     CHECK -->|"rejected: violations (at most 3 submissions)"| STEP
     CHECK -->|accepted| SCORE("evaluate.py → score(case, fix)<br>stiffness and peak force; peak force is never shown to the agent")
@@ -159,7 +159,7 @@ flowchart TD
     classDef tool fill:#E1F5EE,stroke:#0F6E56,color:#085041
 ```
 
-Example from the one-case test (`out/runs/smoke_or_v1.jsonl`): 10 tool calls, best allowed design tried was 99.8%, but it submitted an unchecked design that scored 98.8%. Known problem: the tool shows the budget without the checker's +1%, so 6887.4 mm³ looked over budget although it was allowed.
+Example from the one-case test (`out/runs/smoke_or_v1.jsonl`): 10 tool calls, best allowed design tried was 99.8%, but it submitted an unchecked design that scored 98.8%. That test showed the budget without the checker's +1%, so 6887.4 mm³ looked over budget although it was allowed. The tool now reports the real limit (6899.5 mm³).
 
 ---
 

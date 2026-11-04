@@ -45,7 +45,7 @@ def search(case, budget):
 
     cons = [{"type": "ineq", "fun": lambda x: x - T_MIN}, {"type": "ineq", "fun": lambda x: T_MAX - x},
             {"type": "ineq", "fun": overhang_margins},
-            {"type": "ineq", "fun": lambda x: ev(x).get("material_budget_mm3", 0) * (1 + BUDGET_TOL) - ev(x).get("material_used_mm3", 1e9)}]
+            {"type": "ineq", "fun": lambda x: ev(x).get("material_limit_mm3", 0) - ev(x).get("material_used_mm3", 1e9)}]
     x0 = np.array(do_nothing(case)["wall_thickness_mm"], dtype=float)
     try:
         minimize(lambda x: abs(ev(x)["stiffness_estimate_pct"] - 100), x0, method="COBYLA", constraints=cons,
