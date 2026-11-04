@@ -96,8 +96,9 @@ def main(run_fn=None, default_prompt="v1"):
                 try:
                     res = {"experiment": name, "run": r, "time": datetime.datetime.now().isoformat(timespec="seconds"),
                            **run_fn(case, a.prompt, a.model)}
-                except urllib.error.HTTPError as e:   # service down: skip; rerunning the same command fills the gap
-                    print(f"{case.s['id']:38s} run {r}  SKIPPED (model service error {e.code}); rerun to fill in")
+                except (urllib.error.URLError, TimeoutError) as e:   # service down or too slow: skip; rerunning the same command fills the gap
+                    body = e.read()[:300].decode(errors="replace") if isinstance(e, urllib.error.HTTPError) else ""
+                    print(f"{case.s['id']:38s} run {r}  SKIPPED (model service problem: {getattr(e, 'code', e)} {body}); rerun to fill in", flush=True)
                     skips_in_a_row += 1
                     if skips_in_a_row >= MAX_SKIPS_IN_A_ROW:
                         sys.exit(f"Stopping: {skips_in_a_row} runs in a row failed, the model service looks down. "

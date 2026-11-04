@@ -1,6 +1,44 @@
 # Pipeline diagrams
 
-One diagram per stage of the pipeline and per agent version, naming the real functions (file → function) and what goes in and comes out, with real example values. A new diagram is added for every new agent version or experiment setup, and old ones are kept, so each experiment's setup can always be looked up.
+## Start here: the four questions for every step
+
+For each step: what do we have before it, what does it change, what do we have after it, and is it the AI or plain code? Example case: under-extrusion starting at 10% of the height.
+
+### The building blocks
+
+| Step | Before | What it changes | After | AI or code |
+|---|---|---|---|---|
+| **Build one case** | The healthy design, plus a defect type and start height | Builds the part with the defect and removes everything above the pause height (2.0 mm) | A 3D file of the printed part, and the facts of the case (8 mm left, budget 6831 mm³) | Code |
+| **Propose a fix** | The facts of a case | Chooses a wall thickness for each remaining 1 mm band; the method varies (see below) | A list of 8 thicknesses | Depends on the method |
+| **Check the fix** | One list of thicknesses | Nothing; it tests the rules (0.8 to 2.0 mm, at most 0.4 mm thicker than the band below, plastic within budget + 1%) | Allowed, or rejected with reasons | Code |
+| **Score the fix** | The printed part plus the list of thicknesses | Nothing; it estimates the finished part with formulas | Stiffness % and peak force % of a healthy part | Code |
+| **Compare** | Results of all methods, per case | Lines the methods up | A table, and wins, ties and losses | Code |
+
+### The methods that propose a fix
+
+| Method | What it gets | How it decides | AI or code |
+|---|---|---|---|
+| **N: do nothing** | The original design | Keeps 1.2 mm in every band | Code |
+| **R: simple rule v2** | The printed part's measured stiffness gap | Follows a fixed recipe to cancel the gap | Code |
+| **A0: agent v0** | The facts of the case in a prompt | Reasons and answers; hears back only if it broke a rule (3 tries) | AI, with code checking it |
+| **A1: agent v1** | The same, plus a calculator it can use 10 times | Tries designs, reads the numbers, then submits | AI, with code checking it |
+| **B: search** | The same calculator, with the same 10 uses | An optimizer tries designs and keeps the best allowed one | Code |
+
+### The experiments
+
+| Experiment | Before | What we changed | What came out | AI or code |
+|---|---|---|---|---|
+| **E0** | Healthy designs and defect definitions | Built the first test set | 12 cases, all pass the part checks | Code |
+| **E1** | The 12 cases, with no repair | Tried "do nothing" | Under-extrusion 95.5%, over-extrusion 107.2%, warpage 99.5%; layer shift 100.0%, because the score can't see it | Code |
+| **E2** | E1's damage numbers | Tried simple rule v1 (correct every remaining band by the lost thickness) | It overcorrects; under-extrusion breaks the rules | Code |
+| **E3** | E2's failure | Rule v2 (correct the lost stiffness instead) | About 100% in most cases, except late under-extrusion. This is the bar to beat | Code |
+| **E4** | The bar from E3 | Added the AI, on one case, to test that the code runs | It runs: 98.8% | AI |
+| **E5** | E4's working loop | Ran all 12 cases, 3 times each | 0 wins, 6 ties, 6 losses against the rule; answers vary between runs | AI |
+| **E6 (not run yet)** | E5's finding that the agent can't tell how close it is | Adds the calculator, and compares with search B | Not known yet | AI, plus code for B |
+
+---
+
+One diagram per stage of the pipeline and per agent version, naming the real functions (file → function) and what goes in and comes out, with real example values. These are for reference when debugging or changing the code. A new diagram is added for every new agent version or experiment setup, and old ones are kept, so each experiment's setup can always be looked up.
 
 The diagrams are written in Mermaid. GitHub shows them as pictures. In VS Code, install the extension "Markdown Preview Mermaid Support" and open the Markdown preview (Ctrl+Shift+V).
 

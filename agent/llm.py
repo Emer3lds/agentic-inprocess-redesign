@@ -53,8 +53,12 @@ def chat(messages, model=DEFAULT_MODEL, temperature=None):
 
 # ---------- retries shared by both providers ----------
 
+TIMEOUT = int(os.environ.get("LLM_TIMEOUT_S", 180))   # seconds one call may take before giving up
+RETRY_WAITS = () if os.environ.get("LLM_NO_RETRY") else (15, 30, 60)
+
+
 def _with_retries(send):
-    for wait in (15, 30, 60, None):          # back off when rate-limited or busy (under 2 min in total)
+    for wait in (*RETRY_WAITS, None):        # back off when rate-limited or busy (under 2 min in total)
         t0 = time.time()
         try:
             return send(), round(time.time() - t0, 1)
@@ -100,7 +104,7 @@ def _post_openrouter(body):
                                           "Authorization": "Bearer " + os.environ["OPENROUTER_API_KEY"]})
 
     def send():
-        d = json.load(urllib.request.urlopen(req, timeout=180))
+        d = json.load(urllib.request.urlopen(req, timeout=TIMEOUT))
         if "error" in d:                      # OpenRouter can report a provider error inside a 200 reply
             code = d["error"].get("code")
             raise urllib.error.HTTPError(url, code if isinstance(code, int) else 502, str(d["error"].get("message")), None, None)
