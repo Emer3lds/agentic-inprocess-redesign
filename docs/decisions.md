@@ -102,6 +102,7 @@ One entry per real choice. Format: the question, the options, how we judged them
 - **Why:** Google's free tier allows 20 requests a day per model, and E6 needs a few hundred.
 - **Choice:** OpenRouter with $10 of prepaid credit (Amber), key capped at $10. Model `google/gemini-3.6-flash`: the version that actually answered in E5 (Google reported it although we asked for 3.5), and half the price of 3.5.
 - **Cost measured in one-case tests:** agent v0 about $0.02 per run, agent v1 about $0.07 per run (10 tool calls, 11 turns, 84 s).
+- **Free-model test (2026-11-04, one case, one run, not decided):** Nemotron 3 Ultra free worked with agent v1 (100.4% stiffness, 97.2% peak force, $0) but gave no agent v0 answer within 3 minutes. Gemma 4 31B free was rate-limited. Credit used so far: $0.09 of $10.
 - **Consequence:** E5 used Google's API directly. To compare v0 and v1 on exactly the same route, rerun v0 through OpenRouter as well (about $0.75).
 - **Status:** Amber.
 
