@@ -1,13 +1,20 @@
 """
-The AI model as a swappable part. The agent only calls chat(); changing provider means adding
-one function here, nothing else changes.
+The AI model as a swappable part. The agents only call chat() (v0) and step() (v1); which provider
+answers is decided by the model name, so nothing else changes when the provider changes.
 
-Uses only the Python standard library (no new packages). The API key is read from the
-GEMINI_API_KEY environment variable and sent in a request header, never in the URL or a log.
+  "openrouter:<model id>"  -> OpenRouter (key in OPENROUTER_API_KEY), e.g. openrouter:google/gemini-3.6-flash
+  any other name           -> Google's Gemini API directly (key in GEMINI_API_KEY), e.g. gemini-3.5-flash
+
+Uses only the Python standard library (no new packages). Keys are read from environment variables and
+sent in a request header, never in the URL or a log.
 """
 import json, os, time, urllib.error, urllib.request
 
-DEFAULT_MODEL = "gemini-3.5-flash"   # a pinned version, not a "latest" alias, so runs stay comparable
+# Pinned model ids, not "latest" aliases, so runs stay comparable. Every call also logs the version
+# the provider reports back. E5 asked Google for gemini-3.5-flash and was answered by gemini-3.6-flash,
+# so the OpenRouter default is gemini-3.6-flash (D11).
+DEFAULT_MODEL = "openrouter:google/gemini-3.6-flash"
+OPENROUTER = "openrouter:"
 
 # The answer must match this shape (structured output), so code can read it without guessing.
 FIX_SCHEMA = {
@@ -23,9 +30,12 @@ FIX_SCHEMA = {
 def step(contents, tools, model=DEFAULT_MODEL):
     """One turn of a tool-using conversation (agent v1). contents: the conversation so far in Gemini's
     format; tools: function declarations. Returns (the model's content, meta). The model's content must
-    be appended to contents unchanged, since Gemini expects its own parts (incl. hidden signatures) back."""
+    be appended to contents unchanged, since the provider expects its own reply (incl. hidden reasoning
+    signatures) back."""
+    if model.startswith(OPENROUTER):
+        return _openrouter_step(contents, tools, model)
     body = {"contents": contents, "tools": [{"functionDeclarations": tools}]}
-    d, seconds = _post(model, body)
+    d, seconds = _post_gemini(model, body)
     usage = d.get("usageMetadata", {})
     content = d["candidates"][0].get("content", {"role": "model", "parts": []})
     content.setdefault("role", "model"); content.setdefault("parts", [])
@@ -34,25 +44,35 @@ def step(contents, tools, model=DEFAULT_MODEL):
                      "output_tokens": usage.get("candidatesTokenCount")}
 
 
-def _post(model, body):
+def chat(messages, model=DEFAULT_MODEL, temperature=None):
+    """messages: [{"role": "user" | "model", "text": ...}, ...]. Returns (reply_text, meta)."""
+    if model.startswith(OPENROUTER):
+        return _openrouter_chat(messages, model, temperature)
+    return _gemini(messages, model, temperature)
+
+
+# ---------- retries shared by both providers ----------
+
+def _with_retries(send):
+    for wait in (15, 30, 60, None):          # back off when rate-limited or busy (under 2 min in total)
+        t0 = time.time()
+        try:
+            return send(), round(time.time() - t0, 1)
+        except urllib.error.HTTPError as e:
+            if e.code not in (429, 500, 502, 503) or wait is None:
+                raise
+            time.sleep(wait)
+
+
+# ---------- Google Gemini API ----------
+
+def _post_gemini(model, body):
     req = urllib.request.Request(
         f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent",
         data=json.dumps(body).encode(),
         headers={"Content-Type": "application/json", "x-goog-api-key": os.environ["GEMINI_API_KEY"]},
     )
-    for wait in (15, 30, 60, None):          # free tier: back off when rate-limited or busy (under 2 min in total)
-        t0 = time.time()
-        try:
-            return json.load(urllib.request.urlopen(req, timeout=120)), round(time.time() - t0, 1)
-        except urllib.error.HTTPError as e:
-            if e.code not in (429, 500, 503) or wait is None:
-                raise
-            time.sleep(wait)
-
-
-def chat(messages, model=DEFAULT_MODEL, temperature=None):
-    """messages: [{"role": "user" | "model", "text": ...}, ...]. Returns (reply_text, meta)."""
-    return _gemini(messages, model, temperature)
+    return _with_retries(lambda: json.load(urllib.request.urlopen(req, timeout=120)))
 
 
 def _gemini(messages, model, temperature):
@@ -62,10 +82,89 @@ def _gemini(messages, model, temperature):
     }
     if temperature is not None:
         body["generationConfig"]["temperature"] = temperature
-    d, seconds = _post(model, body)
+    d, seconds = _post_gemini(model, body)
     text = d["candidates"][0]["content"]["parts"][0]["text"]
     usage = d.get("usageMetadata", {})
     meta = {"provider": "gemini", "model": model, "model_version": d.get("modelVersion"),
             "temperature": temperature, "seconds": seconds,
             "input_tokens": usage.get("promptTokenCount"), "output_tokens": usage.get("candidatesTokenCount")}
     return text, meta
+
+
+# ---------- OpenRouter (OpenAI-style messages) ----------
+
+def _post_openrouter(body):
+    url = "https://openrouter.ai/api/v1/chat/completions"
+    req = urllib.request.Request(url, data=json.dumps({**body, "usage": {"include": True}}).encode(),
+                                 headers={"Content-Type": "application/json",
+                                          "Authorization": "Bearer " + os.environ["OPENROUTER_API_KEY"]})
+
+    def send():
+        d = json.load(urllib.request.urlopen(req, timeout=180))
+        if "error" in d:                      # OpenRouter can report a provider error inside a 200 reply
+            code = d["error"].get("code")
+            raise urllib.error.HTTPError(url, code if isinstance(code, int) else 502, str(d["error"].get("message")), None, None)
+        return d
+    return _with_retries(send)
+
+
+def _openrouter_meta(d, model, seconds, temperature=None):
+    u = d.get("usage", {})
+    return {"provider": "openrouter", "model": model, "model_version": d.get("model"),
+            "served_by": d.get("provider"), "temperature": temperature, "seconds": seconds,
+            "input_tokens": u.get("prompt_tokens"), "output_tokens": u.get("completion_tokens"),
+            "reasoning_tokens": (u.get("completion_tokens_details") or {}).get("reasoning_tokens"),
+            "cost_usd": u.get("cost")}
+
+
+def _json_schema(s):
+    """Gemini writes schema types in capitals (OBJECT); OpenAI-style JSON schema needs lower case."""
+    if all(isinstance(v, dict) for v in s.values()) and "type" not in s:   # a "properties" map: name -> schema
+        return {k: _json_schema(v) for k, v in s.items()}
+    out = {k: (v.lower() if k == "type" else _json_schema(v) if isinstance(v, dict) else v) for k, v in s.items()}
+    if out.get("type") == "object":
+        out["additionalProperties"] = False
+    return out
+
+
+def _openrouter_chat(messages, model, temperature):
+    body = {"model": model[len(OPENROUTER):],
+            "messages": [{"role": "assistant" if m["role"] == "model" else "user", "content": m["text"]} for m in messages],
+            "response_format": {"type": "json_schema", "json_schema": {"name": "fix", "strict": True, "schema": _json_schema(FIX_SCHEMA)}}}
+    if temperature is not None:
+        body["temperature"] = temperature
+    d, seconds = _post_openrouter(body)
+    return d["choices"][0]["message"]["content"], _openrouter_meta(d, model, seconds, temperature)
+
+
+def _to_openai_messages(contents):
+    """Translate the agent's Gemini-format conversation into OpenAI-style messages."""
+    msgs, last_calls = [], []
+    for c in contents:
+        if c["role"] == "model":
+            msgs.append(c["_openrouter_message"])          # the provider's own reply, sent back unchanged
+            last_calls = c["_openrouter_message"].get("tool_calls") or []
+            continue
+        for i, p in enumerate(x for x in c["parts"] if "functionResponse" in x):
+            msgs.append({"role": "tool", "tool_call_id": last_calls[i]["id"],
+                         "content": json.dumps(p["functionResponse"]["response"])})
+        text = " ".join(p["text"] for p in c["parts"] if "text" in p)
+        if text:
+            msgs.append({"role": "user", "content": text})
+    return msgs
+
+
+def _openrouter_step(contents, tools, model):
+    body = {"model": model[len(OPENROUTER):], "messages": _to_openai_messages(contents),
+            "tools": [{"type": "function", "function": {"name": t["name"], "description": t["description"],
+                                                        "parameters": _json_schema(t["parameters"])}} for t in tools]}
+    d, seconds = _post_openrouter(body)
+    m = d["choices"][0]["message"]
+    parts = [{"text": m["content"]}] if m.get("content") else []
+    for tc in m.get("tool_calls") or []:
+        try:
+            args = json.loads(tc["function"].get("arguments") or "{}")
+        except json.JSONDecodeError:
+            args = {"_unreadable_arguments": tc["function"].get("arguments")}
+        parts.append({"functionCall": {"name": tc["function"]["name"], "args": args, "id": tc["id"]}})
+    return {"role": "model", "parts": parts, "_openrouter_message": m}, _openrouter_meta(d, model, seconds)

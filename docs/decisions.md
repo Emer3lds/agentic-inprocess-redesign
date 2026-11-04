@@ -98,6 +98,13 @@ One entry per real choice. Format: the question, the options, how we judged them
 - **Change if:** the tool's estimate and the judge are made different (beam model or crush tests), or Ma prefers another measure.
 - **Status:** Amber.
 
+## D11. Model provider: OpenRouter, gemini-3.6-flash (2026-11-03)
+- **Why:** Google's free tier allows 20 requests a day per model, and E6 needs a few hundred.
+- **Choice:** OpenRouter with $10 of prepaid credit (Amber), key capped at $10. Model `google/gemini-3.6-flash`: the version that actually answered in E5 (Google reported it although we asked for 3.5), and half the price of 3.5.
+- **Cost measured in one-case tests:** agent v0 about $0.02 per run, agent v1 about $0.07 per run (10 tool calls, 11 turns, 84 s).
+- **Consequence:** E5 used Google's API directly. To compare v0 and v1 on exactly the same route, rerun v0 through OpenRouter as well (about $0.75).
+- **Status:** Amber.
+
 ---
 
 # Ideas for later (not decided)
