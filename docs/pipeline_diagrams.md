@@ -141,7 +141,7 @@ Example from E5: allowed on the first attempt in 35 of 36 runs. Mean result 0 wi
 ---
 
 ## 5. Agent v1, A1 (E6)
-Run: `python agent/agent_v1.py --runs 3 --experiment e6_v1_tools` (uses the AI). File: `agent/agent_v1.py`; the tool is in `agent/tools.py`.
+Run: `python agent/agent_v1.py --runs 3 --experiment e6_v1_nemotron` (uses the AI, free Nemotron with thinking off). File: `agent/agent_v1.py`; the tool is in `agent/tools.py`.
 
 ```mermaid
 flowchart TD
@@ -154,7 +154,7 @@ flowchart TD
     CHECK -->|"rejected: violations (at most 3 submissions)"| STEP
     CHECK -->|accepted| SCORE("evaluate.py → score(case, fix)<br>stiffness and peak force; peak force is never shown to the agent")
     CHECK -->|"3 rejections or 16 turns"| FB("baselines.py → do_nothing(case)<br>fallback") --> SCORE
-    SCORE --> LOG[/"out/runs/e6_v1_tools.jsonl<br>every turn, every tool call and result, submissions, score, cost"/]
+    SCORE --> LOG[/"out/runs/e6_v1_nemotron.jsonl<br>every turn, every tool call and result, submissions, score, cost"/]
     classDef ai fill:#EEEDFE,stroke:#534AB7,color:#3C3489
     classDef tool fill:#E1F5EE,stroke:#0F6E56,color:#085041
 ```

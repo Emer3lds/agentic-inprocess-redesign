@@ -116,8 +116,9 @@ Template:
 - **Expectation (Amber, written 2026-11-02 before the run):**
   1. Agent v1 beats agent v0.
   2. Unsure whether it beats the simple rule.
-  3. (Against the search at 10 calls, and how many tool calls it uses: to add once the comparison setup is clear.)
-- **Setup:** `python agent/agent_v1.py --runs 3 --experiment e6_v1_tools` (uses the AI). Only change from E5: the tool and the prompt section describing it (prompt v2_tools = v1 with OUTPUT replaced by TOOLS). Same cases, checker, attempts and fallback; both agents run on free Nemotron 3 Ultra (D11), so agent v0 is rerun on it first. Compared with `python agent/search.py` (COBYLA, same tool, same 10-call budget; also shown at 200 calls).
+  3. Agent v1 beats the search at 10 calls (written 2026-11-05 before the run, while Amber believed the agent had unlimited calculator uses; both actually get 10).
+  4. Agent v1 uses about 7 of its 10 calculator calls on average (gut guess).
+- **Setup:** `python agent/agent_v0.py --runs 3 --experiment e6_v0_nemotron` and `python agent/agent_v1.py --runs 3 --experiment e6_v1_nemotron` (use the AI, thinking off, D11). Only change from E5: the tool and the prompt section describing it (prompt v2_tools = v1 with OUTPUT replaced by TOOLS). Same cases, checker, attempts and fallback; both agents run on free Nemotron 3 Ultra (D11), so agent v0 is rerun on it first. Compared with `python agent/search.py` (COBYLA, same tool, same 10-call budget; also shown at 200 calls).
 - **Measure:** stiffness error (main), peak-force error (the tool does not report it), tool calls used, wins/ties/losses against rule v2 and search at 10 calls, spread across runs.
 - **Already known (no AI):** search at 10 calls: 95.9 to 101.1% (mean error 0.9%); at 200 calls it reaches about 100% except late under-extrusion (95.9%). Against E5's agent v0 the 10-call search has 4 wins, 8 ties.
 - **Result:** (pending)
