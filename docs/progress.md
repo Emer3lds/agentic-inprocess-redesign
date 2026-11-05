@@ -17,6 +17,7 @@ Running summary of the work, one section per week, written to send to Ma. Each w
 - **Correction to last week:** I said a beam model would let the score see layer shift. It probably wouldn't, because a shifted layer is the same lattice moved sideways.
 - **Code prompting paper:** I read the paper your labmate presented, and plan to test writing the prompt as code as a later experiment.
 - **Paper draft started:** a LaTeX draft holds the setup, formulas, methods, results and limitations, with tables generated from the run logs.
+- **Prompts:** each prompt is saved as a numbered version, and every run records which one it used. We haven't tested prompt changes yet. The two prompts so far differ only in that the calculator agent's also describes its tools. Prompt tests are planned as separate experiments, changing one thing at a time, and the paper now describes this.
 - **Proposed next steps:**
   1. Full redesign: let the agent regenerate the unprinted design as a graph of points and walls, with the non-AI search getting the same freedom.
   2. A better judge: a 3D simulation of a small squeeze, plus a check of how much each layer overlaps the one below, to see whether layer shift and warpage really matter. The agent would keep the simple formula as its calculator, so it can't aim directly at the judge. This differs from the proposal, which plans physical tests, so I would still plan a small physical batch near the end.
@@ -95,7 +96,7 @@ Running summary of the work, one section per week, written to send to Ma. Each w
 - **Full comparison on Nemotron with thinking off (E6, 2026-11-05):** average stiffness error / peak-force error: do nothing 3.05% / 2.00%; agent v0 2.76% / 1.84%; agent v1 1.17% / 0.96%; search at 10 uses 1.01% / 0.82%; simple rule 0.79% / 0.90%; search at 200 uses 0.41% / 0.60%. Agent v1 case by case: against v0 4 wins, 8 ties, 0 losses; against the search 2 wins, 8 ties, 2 losses; against the rule 0 wins, 9 ties, 3 losses. Table: `out/results/e6_table.md`. Limit: on Gemini with thinking on, v0 averaged 1.67%, so the calculator's benefit may be smaller than this run suggests.
 
 ### Paper
-- `paper/main.tex` is a living draft, updated after each experiment. Not yet compiled, because LaTeX isn't installed here.
+- The living draft is in its own repo, `agentic-redesign-paper`, synced with Overleaf, and it compiled there before the Prompts section was added. That section covers how versions are tracked, which prompt produced which results, the planned prompt experiments, and the exact prompts in an appendix.
 
 ### Next
 - Improve the agent one change at a time and compare: prompt written as code (code-prompting paper), or a calculation tool for plastic or stiffness (given to the non-AI search method too, to keep the comparison fair).

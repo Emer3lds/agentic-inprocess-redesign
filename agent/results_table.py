@@ -107,5 +107,5 @@ open(os.path.join(TEX, "prompts.tex"), "w", encoding="utf8").write("\n".join(row
 PROMPTS = os.path.join(os.path.dirname(ROOT), "paper", "prompts")
 os.makedirs(PROMPTS, exist_ok=True)
 for name in ("v1.md", "v1_retry.md", "v2_tools.md"):
-    text = open(os.path.join(HERE_PROMPTS := os.path.join(ROOT, "agent", "prompts"), name), encoding="utf8").read()
+    text = open(os.path.join(ROOT, "agent", "prompts", name), encoding="utf8").read()
     open(os.path.join(PROMPTS, name.replace(".md", ".txt")), "w", encoding="utf8").write(text)
