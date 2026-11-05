@@ -1,5 +1,20 @@
 # Pipeline diagrams
 
+## Quick reminder of terms
+
+- **Case:** one test problem, such as a part with under-extrusion that paused at 2 mm.
+- **Fix:** a list of wall thicknesses for the part left to print, one per 1 mm of height.
+- **Checker:** our code that tests whether a fix follows the rules. No AI.
+- **Score:** our formulas estimating the finished part's stiffness and peak force, as a % of a healthy part. No AI.
+- **Do nothing (N):** keep printing the original design.
+- **Simple rule (R):** a fixed recipe we wrote that cancels the stiffness the defect added or removed. No AI.
+- **A0 (agent v0):** the AI, with no calculator.
+- **A1 (agent v1):** the AI, with up to 10 calculator uses.
+- **Calculator (`evaluate_design`):** reports a design's plastic use, estimated stiffness and rule problems.
+- **10-call search (B):** our math program, with no AI, that tries designs using the same calculator, up to 10 times.
+- **E0, E1, ...:** our numbered experiments.
+- **Thinking off:** a model setting that skips the AI's long hidden reasoning.
+
 ## Start here: the four questions for every step
 
 For each step: what do we have before it, what does it change, what do we have after it, and is it the AI or plain code? Example case: under-extrusion starting at 10% of the height.
