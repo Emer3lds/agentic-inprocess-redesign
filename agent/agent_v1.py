@@ -61,7 +61,7 @@ def run_agent_v1(case, prompt_version="v2_tools", model=llm.DEFAULT_MODEL):
             break
         contents.append({"role": "user", "parts": responses or [{"text": "Please call evaluate_design or submit_fix."}]})
     final = submissions[-1]["fix"] if accepted else do_nothing(case)
-    return {"case": case.s["id"], "agent": "v1", "prompt_version": prompt_version, "model": model,
+    return {"case": case.s["id"], "agent": "v1", "prompt_version": prompt_version, "prompt_text": prompt, "tool_decls": TOOL_DECLS, "model": model,
             "accepted": accepted, "n_attempts": len(submissions), "n_tool_calls": len(tb.calls), "n_turns": len(turns),
             "fallback_used": not accepted, "final_fix": final, "final_reasoning": submissions[-1]["reasoning"] if submissions else None,
             "final_violations": check(case, final), **score(case, final),

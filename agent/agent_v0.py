@@ -10,7 +10,7 @@ Every attempt is logged: prompt version, model, full text sent, raw reply, parse
 Run: python agent/agent_v0.py --cases z10 --runs 1    (uses the AI; needs GEMINI_API_KEY)
 Writes one line per run to out/runs/<experiment>.jsonl and prints one line per run.
 """
-import argparse, datetime, json, os, re, sys, time, urllib.error
+import argparse, datetime, json, os, re, subprocess, sys, time, urllib.error
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from evaluate import *
@@ -69,6 +69,12 @@ def run_agent(case, prompt_version="v1", model=llm.DEFAULT_MODEL):
             "decision_seconds": round(time.time() - t0, 1), "attempts": attempts}
 
 
+def code_version():
+    """The git commit the run used, marked if there were uncommitted changes, so a run can be traced to its exact code."""
+    git = lambda *args: subprocess.run(["git", *args], cwd=ROOT, capture_output=True, text=True).stdout.strip()
+    return git("rev-parse", "--short", "HEAD") + ("+uncommitted" if git("status", "--porcelain", "--", "agent") else "")
+
+
 def main(run_fn=None, default_prompt="v1"):
     """Command line shared by every agent version: run_fn(case, prompt_version, model) -> result dict."""
     run_fn = run_fn or run_agent
@@ -94,7 +100,7 @@ def main(run_fn=None, default_prompt="v1"):
                 if (case.s["id"], r) in done:
                     continue
                 try:
-                    res = {"experiment": name, "run": r, "time": datetime.datetime.now().isoformat(timespec="seconds"),
+                    res = {"experiment": name, "run": r, "code_version": code_version(), "time": datetime.datetime.now().isoformat(timespec="seconds"),
                            **run_fn(case, a.prompt, a.model)}
                 except (urllib.error.URLError, TimeoutError) as e:   # service down or too slow: skip; rerunning the same command fills the gap
                     body = e.read()[:300].decode(errors="replace") if isinstance(e, urllib.error.HTTPError) else ""
