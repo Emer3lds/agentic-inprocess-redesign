@@ -93,3 +93,19 @@ for n, f in methods:
     rows.append(f"{n} & {pct(avg(f, 'error', cases), 2)} & {pct(avg(f, 'peak_error', cases), 2)} & {pct(avg(f, 'error', six), 2)} & {pct(avg(f, 'peak_error', six), 2)} \\\\")
 rows += [r"\bottomrule", r"\end{tabular}"]
 open(os.path.join(TEX, "e6_summary.tex"), "w", encoding="utf8").write("\n".join(rows) + "\n")
+
+# Which prompt produced which results, plus the exact prompts, for the paper.
+e5 = load_runs(os.path.join(ROOT, "out", "runs", "e5_v1_full.jsonl"))
+rows = [r"\begin{tabular}{llllrr}", r"\toprule",
+        r"Prompt & Agent & Model & Long reasoning & All 12 cases & 6 extrusion cases \\", r"\midrule"]
+for prompt, agent, model, reasoning, runs in (("v1", "No calculator", "Gemini 3.6 Flash", "On", e5),
+                                              ("v1", "No calculator", "Nemotron 3 Ultra", "Off", a0),
+                                              (r"v2\_tools", "Calculator", "Nemotron 3 Ultra", "Off", a1)):
+    rows.append(f"{prompt} & {agent} & {model} & {reasoning} & {pct(st.mean(mean(runs, c, 'error') for c in cases), 2)} & {pct(st.mean(mean(runs, c, 'error') for c in six), 2)} \\\\")
+rows += [r"\bottomrule", r"\end{tabular}"]
+open(os.path.join(TEX, "prompts.tex"), "w", encoding="utf8").write("\n".join(rows) + "\n")
+PROMPTS = os.path.join(os.path.dirname(ROOT), "paper", "prompts")
+os.makedirs(PROMPTS, exist_ok=True)
+for name in ("v1.md", "v1_retry.md", "v2_tools.md"):
+    text = open(os.path.join(HERE_PROMPTS := os.path.join(ROOT, "agent", "prompts"), name), encoding="utf8").read()
+    open(os.path.join(PROMPTS, name.replace(".md", ".txt")), "w", encoding="utf8").write(text)
