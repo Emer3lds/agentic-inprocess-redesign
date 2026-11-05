@@ -15,7 +15,7 @@
 - Commit often (after each finished step), one logical change per commit, clear message saying what and why. Briefly tell me what was committed. Never commit secrets (API keys stay in environment variables).
 - The proposal `../Agentic_IPQI_AM_Research_Proposal.docx` is the main reference. Cite it for decisions; when my instructions, Ma's directions or the pipeline differ from it, say so in chat (no separate differences file).
 - `docs/learning_log.md` is personal and kept off GitHub (in `.gitignore`).
-- `paper/main.tex` is the living paper draft for ICML (target deadline late January 2027; check icml.cc). Update it after each experiment. Result tables come from `agent/results_table.py`; never type result numbers into tables by hand.
+- The living paper draft is `../paper/main.tex`, in its own repo synced with Overleaf. Yichen decides where to submit it. Update it after each experiment. Result tables come from `agent/results_table.py`; never type result numbers into tables by hand.
 - `docs/pipeline_diagrams.md` has a function-level diagram for every stage, agent version and experiment setup (what goes in, which functions run, what comes out). Add one for each new version or experiment before running it, and keep the old ones.
 - `docs/progress.md` is a running summary of work per week, written so I can send it to Ma. Each week has a short version (a few lines to paste into a message) and a detailed version; update both after each finished step. Both must include the key decisions (what was chosen, why, alternatives, limits), not only what was built.
 

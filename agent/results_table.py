@@ -65,10 +65,10 @@ print("\n".join(out))
 
 # LaTeX versions for the paper, written to paper/tables/ so the paper's numbers always come from the logs.
 def pct(x, d=1):
-    return f"{100 * x:.{d}f}\%"
+    return f"{100 * x:.{d}f}" + r"\%"
 
 
-TEX = os.path.join(ROOT, "paper", "tables")
+TEX = os.path.join(os.path.dirname(ROOT), "paper", "tables")   # the paper has its own repo, next to this one
 os.makedirs(TEX, exist_ok=True)
 rows = [r"\begin{tabular}{lrrrrr}", r"\toprule", r"Case & Do nothing & Simple rule & Search (10) & Agent, no calc. & Agent, calc. \\", r"\midrule"]
 for c in cases:
