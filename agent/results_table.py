@@ -61,3 +61,35 @@ other = [r["n_tool_calls"] for c in cases if "extrusion" not in c for r in a1[c]
 out.append(f"- calculator uses per run: {st.mean(damaged + other):.1f} overall, {st.mean(damaged):.1f} on under/over-extrusion, {st.mean(other):.1f} on layer shift/warpage")
 open(sys.argv[3], "w", encoding="utf8").write("\n".join(out) + "\n")
 print("\n".join(out))
+
+
+# LaTeX versions for the paper, written to paper/tables/ so the paper's numbers always come from the logs.
+def pct(x, d=1):
+    return f"{100 * x:.{d}f}\%"
+
+
+TEX = os.path.join(ROOT, "paper", "tables")
+os.makedirs(TEX, exist_ok=True)
+rows = [r"\begin{tabular}{lrrrrr}", r"\toprule", r"Case & Do nothing & Simple rule & Search (10) & Agent, no calc. & Agent, calc. \\", r"\midrule"]
+for c in cases:
+    name = c.replace("reentrant_", "").replace("_medium_z", " ").replace("_", " ") + r"\%"
+    rows.append(f"{name} & {pct(base[(c, 'do_nothing')]['stiffness_ratio'])} & {pct(base[(c, 'simple_rule')]['stiffness_ratio'])} & "
+                f"{pct(search[(c, 10)]['stiffness_ratio'])} & {pct(mean(a0, c, 'stiffness_ratio'))} & {pct(mean(a1, c, 'stiffness_ratio'))} \\\\")
+rows += [r"\bottomrule", r"\end{tabular}"]
+open(os.path.join(TEX, "e6_per_case.tex"), "w", encoding="utf8").write("\n".join(rows) + "\n")
+
+six = [c for c in cases if "extrusion" in c]
+
+
+def avg(f, key, group):
+    return st.mean(f(c, key) for c in group)
+
+
+methods = [(n, lambda c, k, f=f: f(c)[k]) for n, f in fixed.items()] + [
+    ("Agent, no calculator", lambda c, k: mean(a0, c, k)), ("Agent, calculator", lambda c, k: mean(a1, c, k))]
+rows = [r"\begin{tabular}{lrrrr}", r"\toprule", r"& \multicolumn{2}{c}{All 12 cases} & \multicolumn{2}{c}{6 extrusion cases} \\",
+        r"Method & Stiffness & Peak force & Stiffness & Peak force \\", r"\midrule"]
+for n, f in methods:
+    rows.append(f"{n} & {pct(avg(f, 'error', cases), 2)} & {pct(avg(f, 'peak_error', cases), 2)} & {pct(avg(f, 'error', six), 2)} & {pct(avg(f, 'peak_error', six), 2)} \\\\")
+rows += [r"\bottomrule", r"\end{tabular}"]
+open(os.path.join(TEX, "e6_summary.tex"), "w", encoding="utf8").write("\n".join(rows) + "\n")

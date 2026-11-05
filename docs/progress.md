@@ -15,6 +15,8 @@ Running summary of the work, one section per week, written to send to Ma. Each w
 - **Model change.** Gemini's free limit was too low, so these runs use a free model with its long hidden reasoning turned off, because it can take 15 minutes per request otherwise. The agent scores may understate what a model can do.
 - **Next:** let the agent redesign more than wall thickness (regenerating the unprinted design as a graph, with the search getting the same freedom). This is where AI may add value over simple methods. Also: find out how much layer shift and warpage really matter, ideally with a small crush-test batch (a beam model of each layer would probably not see layer shift), more defect heights, and the other two shapes.
 
+- **Paper draft started** (`paper/main.tex`, LaTeX). It holds the problem setup, the exact scoring formulas, the methods, E6 results and limitations, with result tables generated from the logs. Target: ICML, with the deadline expected in late January 2027 (not yet official).
+
 ### Short version: sent to Ma about 2026-10-30
 - **Key decision: how we judge a fix.** Each fix is scored by how close the finished part's stiffness along Y (the loading axis) comes to a healthy part's: 100% is the target, and both weaker and stiffer count as error. Stiffness is a stand-in for the force response Ma and the proposal care about, chosen because it's the one part of it we can estimate from the geometry before any crush tests.
 - Made 12 "stopped print" parts: the print pauses 1 mm after a defect starts (defect at 10%, 50% or 80% of the height, all 4 defect types).
@@ -77,6 +79,9 @@ Running summary of the work, one section per week, written to send to Ma. Each w
   - *Feedback only checks rules:* the checker tells it when it breaks a rule, not how far it is from 100%, so retries can't help it aim. This follows from the choice not to show it the score.
 
 - **Full comparison on Nemotron with thinking off (E6, 2026-11-05):** average stiffness error / peak-force error: do nothing 3.05% / 2.00%; agent v0 2.76% / 1.84%; agent v1 1.17% / 0.96%; search at 10 uses 1.01% / 0.82%; simple rule 0.79% / 0.90%; search at 200 uses 0.41% / 0.60%. Agent v1 case by case: against v0 4 wins, 8 ties, 0 losses; against the search 2 wins, 8 ties, 2 losses; against the rule 0 wins, 9 ties, 3 losses. Table: `out/results/e6_table.md`. Limit: on Gemini with thinking on, v0 averaged 1.67%, so the calculator's benefit may be smaller than this run suggests.
+
+### Paper
+- `paper/main.tex` is a living draft, updated after each experiment. Not yet compiled, because LaTeX isn't installed here.
 
 ### Next
 - Improve the agent one change at a time and compare: prompt written as code (code-prompting paper), or a calculation tool for plastic or stiffness (given to the non-AI search method too, to keep the comparison fair).
