@@ -6,7 +6,15 @@ Running summary of the work, one section per week, written to send to Ma. Each w
 
 ## Week 3 (meeting 2026-10-22; next meeting about 2026-11-09)
 
-### Short version
+### Short version: since the last message (2026-11-05)
+- **First comparison finished.** I ran both AI agents on all 12 cases, 3 times each, on one free model (Nemotron 3 Ultra). Results are in `out/results/e6_table.md`. Average distance from a healthy part's stiffness: do nothing 3.05%, agent without a calculator 2.76%, agent with a calculator 1.17%, non-AI search with the same 10 calculator uses 1.01%, simple rule 0.79%.
+- **What it shows:** being able to check designs helped the agent a lot, and every final answer with the calculator followed the rules on the first submission. But it did not beat the simple rule and was about level with the search, so at this level (only wall thickness can change), the AI is not adding value over simple methods.
+- **Where it fell short:** on under-extrusion, it mostly tried thickening all bands, hit the plastic limit, and went back to the original design in 5 of 9 runs. It rarely found the idea of moving plastic between bands.
+- **Peak force added.** Every fix now also gets a peak-force estimate, which the agent's calculator does not show. Averages: agent with calculator 0.96%, search 0.82%, simple rule 0.90%. The simple rule's under-extrusion fix reaches 100.3% stiffness but only 98.1% peak force, so stiffness alone can flatter a fix.
+- **Model change.** Gemini's free limit was too low, so these runs use a free model with its long hidden reasoning turned off, because it can take 15 minutes per request otherwise. The agent scores may understate what a model can do.
+- **Next:** let the agent redesign more than wall thickness (regenerating the unprinted design as a graph, with the search getting the same freedom). This is where AI is most likely to add value over simple methods. Then a beam model so the score can see layer shift, more defect heights, and the other two shapes.
+
+### Short version: sent to Ma about 2026-10-30
 - **Key decision: how we judge a fix.** Each fix is scored by how close the finished part's stiffness along Y (the loading axis) comes to a healthy part's: 100% is the target, and both weaker and stiffer count as error. Stiffness is a stand-in for the force response Ma and the proposal care about, chosen because it's the one part of it we can estimate from the geometry before any crush tests.
 - Made 12 "stopped print" parts: the print pauses 1 mm after a defect starts (defect at 10%, 50% or 80% of the height, all 4 defect types).
 - Built an automatic checker for proposed fixes (wall limits, no printing over air, material budget) and the stiffness score above.
@@ -15,7 +23,7 @@ Running summary of the work, one section per week, written to send to Ma. Each w
 - **First full comparison (12 cases, 3 runs each):** the agent always followed the rules but never beat the simple rule (6 ties, 6 losses). Its main mistakes were correcting thickness instead of stiffness (over-extrusion), "fixing" layer shift and warpage that our score can't see, and giving different answers to the same case on different runs (6 of 12 cases).
 - **Built agent v1 (not yet run in full):** the agent can now check designs with a calculation tool before submitting (plastic used, a stiffness estimate, rule violations; 10 calls per case). Also built the fair comparison the proposal requires: a non-AI search with the same tool and budget. With 10 calls the search reaches 95.9 to 101.1%; with 200 calls it reaches about 100% almost everywhere. Every fix now also gets a peak-force estimate, which the tool does not report.
 - **Next steps (please flag anything that's off before I build it):**
-  1. **Run agent v1 on all 12 cases** and compare it with v0, the simple rule and the search. Google's free tier (20 requests a day) was too small, so the agents now run through OpenRouter on $10 of prepaid credit, with the same model that answered in the first comparison (gemini-3.6-flash). A full run of v1 costs about $2.50. The main model is now the free Nemotron 3 Ultra, so experiments use no credit.
+  1. **Done 2026-11-05 (see above).** Run agent v1 on all 12 cases and compare it with v0, the simple rule and the search. Google's free tier (20 requests a day) was too small, so the agents now run through OpenRouter on $10 of prepaid credit, with the same model that answered in the first comparison (gemini-3.6-flash). A full run of v1 costs about $2.50. The main model is now the free Nemotron 3 Ultra, so experiments use no credit.
   1b. **Later, one change at a time:** a prompt written as code (from the code-prompting paper).
   2. **Success measure:** keep stiffness along Y for now, or switch to peak force (or both)? Peak force is as easy to add. A beam model of the walls would also let the score see layer shift.
   3. **Full redesign as a graph (your suggestion):** move from "thickness only" to the agent regenerating the whole unprinted design as a graph (points plus walls). Constraints: outer shape and size, connectivity (nothing floating), and new walls must sit on walls already printed. The checker will need a connectivity check, and the non-AI comparison method must get the same freedom so the comparison stays fair.
@@ -67,12 +75,14 @@ Running summary of the work, one section per week, written to send to Ma. Each w
   - *Inconsistent:* 6 of 12 cases gave different answers across the 3 runs (spread up to 6.6 points).
   - *Feedback only checks rules:* the checker tells it when it breaks a rule, not how far it is from 100%, so retries can't help it aim. This follows from the choice not to show it the score.
 
+- **Full comparison on Nemotron with thinking off (E6, 2026-11-05):** average stiffness error / peak-force error: do nothing 3.05% / 2.00%; agent v0 2.76% / 1.84%; agent v1 1.17% / 0.96%; search at 10 uses 1.01% / 0.82%; simple rule 0.79% / 0.90%; search at 200 uses 0.41% / 0.60%. Agent v1 case by case: against v0 4 wins, 8 ties, 0 losses; against the search 2 wins, 8 ties, 2 losses; against the rule 0 wins, 9 ties, 3 losses. Table: `out/results/e6_table.md`. Limit: on Gemini with thinking on, v0 averaged 1.67%, so the calculator's benefit may be smaller than this run suggests.
+
 ### Next
-- Run agent v1 in full (blocked by the free tier's 20 requests a day), then improve the agent one change at a time and compare: prompt written as code (code-prompting paper), or a calculation tool for plastic or stiffness (given to the non-AI search method too, to keep the comparison fair).
+- Improve the agent one change at a time and compare: prompt written as code (code-prompting paper), or a calculation tool for plastic or stiffness (given to the non-AI search method too, to keep the comparison fair).
 - Better stiffness estimate (beam model of the walls), so layer shift and changes to individual walls can be scored.
 - Move toward letting the agent regenerate the whole remaining design as a graph (Ma's suggestion).
 
 ### Questions for Ma
 1. For full regeneration: new walls must still sit on walls already printed (the printer cannot print on air). Is it OK to regenerate the design as a graph with that support rule, plus shape, size and connectivity, as constraints?
 2. Is stiffness along Y a reasonable first measure of success, or would you rather we target peak force (or both) from the start?
-3. Is "Code Prompting Elicits Conditional Reasoning Abilities in Text+Code LLMs" (Puerto et al., 2024) the paper your labmate presented? Could you also send the documents on prompts you mentioned?
+3. Could you send the documents on prompts you mentioned?
