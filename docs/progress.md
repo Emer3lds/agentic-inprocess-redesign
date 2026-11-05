@@ -7,15 +7,29 @@ Running summary of the work, one section per week, written to send to Ma. Each w
 ## Week 3 (meeting 2026-10-22; next meeting about 2026-11-09)
 
 ### Short version: since the last message (2026-11-05)
-- **First comparison finished.** I ran both AI agents on all 12 cases, 3 times each, on one free model (Nemotron 3 Ultra). Results are in `out/results/e6_table.md`. Average distance from a healthy part's stiffness: do nothing 3.05%, agent without a calculator 2.76%, agent with a calculator 1.17%, non-AI search with the same 10 calculator uses 1.01%, simple rule 0.79%.
-- **What it shows:** being able to check designs helped the agent a lot, and every final answer with the calculator followed the rules on the first submission. But it did not beat the simple rule and was about level with the search, so at this level (only wall thickness can change), the AI is not adding value over simple methods.
-- **Only 6 of the 12 cases separate the methods.** The score barely registers layer shift and warpage, so those 6 cases tie almost by default. On the 6 under- and over-extrusion cases, average stiffness error: do nothing 5.86%, agent without calculator 5.27%, agent with calculator 2.15%, search 1.91%, simple rule 1.34%. Agent with calculator: against the rule 0 wins, 3 ties, 3 losses; against the search 2 wins, 2 ties, 2 losses.
-- **Where it fell short:** on under-extrusion, it mostly tried thickening all bands, hit the plastic limit, and went back to the original design in 5 of 9 runs. It rarely found the idea of moving plastic between bands.
-- **Peak force added.** Every fix now also gets a peak-force estimate, which the agent's calculator does not show. Averages: agent with calculator 0.96%, search 0.82%, simple rule 0.90%. The simple rule's under-extrusion fix reaches 100.3% stiffness but only 98.1% peak force, so stiffness alone can flatter a fix.
-- **Model change.** Gemini's free limit was too low, so these runs use a free model with its long hidden reasoning turned off, because it can take 15 minutes per request otherwise. The agent scores may understate what a model can do.
-- **Next:** let the agent redesign more than wall thickness (regenerating the unprinted design as a graph, with the search getting the same freedom). This is where AI may add value over simple methods. Also: find out how much layer shift and warpage really matter, ideally with a small crush-test batch (a beam model of each layer would probably not see layer shift), more defect heights, and the other two shapes.
-
-- **Paper draft started** (`paper/main.tex`, LaTeX). It holds the problem setup, the exact scoring formulas, the methods, E6 results and limitations, with result tables generated from the logs. Target: ICML, with the deadline expected in late January 2027 (not yet official).
+- **First comparison finished:** I ran two AI agents on all 12 cases, 3 times each, on one free model (Nemotron 3 Ultra). One agent has no calculator. The other can check up to 10 designs before submitting, seeing plastic used against the limit, any broken rules, and estimated stiffness. That estimate uses the same formula as the final stiffness score, so for now the agent can aim directly at it. Only peak force is hidden.
+- **Only 6 of the 12 cases separate the methods:** the stiffness formula can't see layer shift and barely registers warpage, so those 6 cases tie almost by default. Results below are for the 6 under- and over-extrusion cases.
+- **Average distance from a healthy part's stiffness (lower is better):** keep original design 5.86%; agent, no calculator 5.27%; agent, calculator 2.15%; non-AI search, same 10 calculator uses 1.91%; simple rule 1.34%.
+- **What this shows:** checking designs helped the agent a lot, and its answers with the calculator all followed the rules on the first submission. But against the simple rule it had 0 wins, 3 ties and 3 losses, and against the search 2 wins, 2 ties and 2 losses. So with only wall thickness changeable, the AI isn't adding value over simple methods. The proposal expected this could happen (section 4.3).
+- **Where it fell short:** on under-extrusion, it mostly tried thickening all the bands, hit the plastic limit, and went back to the original design in 5 of 9 runs. It rarely found the idea of moving plastic between bands.
+- **Peak force added:** every fix now also gets a peak-force estimate. The simple rule's under-extrusion fix at 10% reaches 100.3% stiffness but only 98.1% peak force, so stiffness alone can make a fix look better than it is.
+- **Limits of these results:** the scores are formula estimates, not simulations or crush tests. The runs used a free model with its long hidden reasoning turned off, because otherwise it can take 15 minutes per request, so the agent scores may understate what a model can do. An earlier run of the no-calculator agent on Gemini, with reasoning on, averaged 3.0% on these 6 cases. Three runs per case is a small sample.
+- **Correction to last week:** I said a beam model would let the score see layer shift. It probably wouldn't, because a shifted layer is the same lattice moved sideways.
+- **Code prompting paper:** I read the paper your labmate presented, and plan to test writing the prompt as code as a later experiment.
+- **Paper draft started:** a LaTeX draft holds the setup, formulas, methods, results and limitations, with tables generated from the run logs.
+- **Proposed next steps:**
+  1. Full redesign: let the agent regenerate the unprinted design as a graph of points and walls, with the non-AI search getting the same freedom.
+  2. A better judge: a 3D simulation of a small squeeze, plus a check of how much each layer overlaps the one below, to see whether layer shift and warpage really matter. The agent would keep the simple formula as its calculator, so it can't aim directly at the judge. This differs from the proposal, which plans physical tests, so I would still plan a small physical batch near the end.
+  3. More defect heights (10% to 90%) and the other two lattice shapes.
+  4. Prompt and input-format tests, and more agent roles.
+- **Questions:**
+  1. Which should come first, the full redesign or the 3D simulation?
+  2. Is simulation acceptable for now, with a small physical batch near the end? What would you expect from that batch, and how much of your group's time would it take?
+  3. Is it OK to regenerate the design as a graph, with the support rule (new walls must sit on printed walls) plus shape, size and connectivity as constraints?
+  4. Is ICML the right target? I'm not sure what the machine-learning contribution would be, or whether a workshop, a manufacturing conference or a journal would fit better. What do you recommend?
+  5. If the simulation needs more memory than my laptop has, could you or your advisor sponsor my access to Georgia Tech's PACE computing cluster?
+  6. Could you send the documents on prompts you mentioned?
+- **Files:** full table at `out/results/e6_table.md`. All changes are on GitHub.
 
 ### Short version: sent to Ma about 2026-10-30
 - **Key decision: how we judge a fix.** Each fix is scored by how close the finished part's stiffness along Y (the loading axis) comes to a healthy part's: 100% is the target, and both weaker and stiffer count as error. Stiffness is a stand-in for the force response Ma and the proposal care about, chosen because it's the one part of it we can estimate from the geometry before any crush tests.
