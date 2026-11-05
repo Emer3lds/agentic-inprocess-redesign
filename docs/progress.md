@@ -9,10 +9,11 @@ Running summary of the work, one section per week, written to send to Ma. Each w
 ### Short version: since the last message (2026-11-05)
 - **First comparison finished.** I ran both AI agents on all 12 cases, 3 times each, on one free model (Nemotron 3 Ultra). Results are in `out/results/e6_table.md`. Average distance from a healthy part's stiffness: do nothing 3.05%, agent without a calculator 2.76%, agent with a calculator 1.17%, non-AI search with the same 10 calculator uses 1.01%, simple rule 0.79%.
 - **What it shows:** being able to check designs helped the agent a lot, and every final answer with the calculator followed the rules on the first submission. But it did not beat the simple rule and was about level with the search, so at this level (only wall thickness can change), the AI is not adding value over simple methods.
+- **Only 6 of the 12 cases separate the methods.** The score barely registers layer shift and warpage, so those 6 cases tie almost by default. On the 6 under- and over-extrusion cases, average stiffness error: do nothing 5.86%, agent without calculator 5.27%, agent with calculator 2.15%, search 1.91%, simple rule 1.34%. Agent with calculator: against the rule 0 wins, 3 ties, 3 losses; against the search 2 wins, 2 ties, 2 losses.
 - **Where it fell short:** on under-extrusion, it mostly tried thickening all bands, hit the plastic limit, and went back to the original design in 5 of 9 runs. It rarely found the idea of moving plastic between bands.
 - **Peak force added.** Every fix now also gets a peak-force estimate, which the agent's calculator does not show. Averages: agent with calculator 0.96%, search 0.82%, simple rule 0.90%. The simple rule's under-extrusion fix reaches 100.3% stiffness but only 98.1% peak force, so stiffness alone can flatter a fix.
 - **Model change.** Gemini's free limit was too low, so these runs use a free model with its long hidden reasoning turned off, because it can take 15 minutes per request otherwise. The agent scores may understate what a model can do.
-- **Next:** let the agent redesign more than wall thickness (regenerating the unprinted design as a graph, with the search getting the same freedom). This is where AI is most likely to add value over simple methods. Then a beam model so the score can see layer shift, more defect heights, and the other two shapes.
+- **Next:** let the agent redesign more than wall thickness (regenerating the unprinted design as a graph, with the search getting the same freedom). This is where AI may add value over simple methods. Also: find out how much layer shift and warpage really matter, ideally with a small crush-test batch (a beam model of each layer would probably not see layer shift), more defect heights, and the other two shapes.
 
 ### Short version: sent to Ma about 2026-10-30
 - **Key decision: how we judge a fix.** Each fix is scored by how close the finished part's stiffness along Y (the loading axis) comes to a healthy part's: 100% is the target, and both weaker and stiffer count as error. Stiffness is a stand-in for the force response Ma and the proposal care about, chosen because it's the one part of it we can estimate from the geometry before any crush tests.
@@ -37,7 +38,7 @@ Running summary of the work, one section per week, written to send to Ma. Each w
 - **How we judge a fix (the most important choice this week).**
   - *What:* every method's fix gets the same two checks. First a pass/fail checker (the rules), then a score: the finished part's stiffness along Y as a percentage of a healthy part. The target is 100%. Over 100% also counts as error, because the goal is to recover the original response, not to make the part as strong as possible (proposal, page 1).
   - *Why stiffness:* the proposal's real target is the force–displacement curve (sections 5.2 and 5.3), and your goal was the force along one axis. Without crush tests or a simulation, stiffness (the start of that curve) is the piece we can estimate from the geometry with a standard formula (Gibson & Ashby: stiffness goes with wall thickness cubed). It lets us compare all methods fairly now, before printing anything.
-  - *Alternatives considered:* peak force (thickness squared, equally easy to add), a beam model of the walls (can see layer shift), full simulation (FEA, days of setup), and crush tests on your machine (the real judge, later).
+  - *Alternatives considered:* peak force (thickness squared, equally easy to add), a beam model of the walls (sees which walls changed; probably not layer shift unless it links the layers), full simulation (FEA, days of setup), and crush tests on your machine (the real judge, later).
   - *Limits:* it can't see layer shift; it scores stiffness only, not peak force or energy absorbed; and it rewards alternating thick/thin bands more than a real crush test might.
   - *The agent:* the prompt states the goal (match a healthy part's stiffness along Y), but the agent never sees its score, because the true result is unknown mid-print.
 - **What the agent can change:** wall thickness only, per 1 mm band above the stop (proposal section 7.1), as a first step toward full regeneration.
@@ -79,7 +80,7 @@ Running summary of the work, one section per week, written to send to Ma. Each w
 
 ### Next
 - Improve the agent one change at a time and compare: prompt written as code (code-prompting paper), or a calculation tool for plastic or stiffness (given to the non-AI search method too, to keep the comparison fair).
-- Better stiffness estimate (beam model of the walls), so layer shift and changes to individual walls can be scored.
+- Better stiffness estimate (beam model of the walls), so changes to individual walls can be scored. It would probably not see layer shift unless it links the layers. A small crush-test batch would show how much layer shift and warpage really matter.
 - Move toward letting the agent regenerate the whole remaining design as a graph (Ma's suggestion).
 
 ### Questions for Ma
