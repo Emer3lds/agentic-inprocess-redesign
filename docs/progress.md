@@ -4,6 +4,22 @@ Running summary of the work, one section per week, written to send to Ma. Each w
 
 ---
 
+## Next two weeks (meeting 2026-11-05; next full meeting in about 2 weeks)
+
+### Short version
+- **Goal from the meeting:** build a proper evaluator with FEA (finite element analysis), and check it against physical tests before testing prompts.
+- **FEA:** find a mature Python package and try a simple design on the laptop first.
+- **Physical tests:** Yichen sends the PLA material details. Amber sends STL files and design parameters by next week. Yichen prints and tests them, and Amber compares FEA with the results and calibrates it.
+- **After FEA:** look into RSI (recursive self-improvement) over the agents, using the FEA evaluator to judge them. Yichen isn't sure of the exact definition yet, so part of the job is finding it. Prompt testing comes right after the evaluator is solid.
+- **Full redesign:** letting the agent change more than wall thickness is still planned, to be thought through by the next meeting.
+- **Where to publish:** Yichen said ICML probably isn't mechanical enough, so we may look at other journals. No venue is chosen.
+
+### Done
+- Nothing yet.
+
+### Results so far
+- None yet.
+
 ## Week 3 (meeting 2026-10-22; next meeting about 2026-11-09)
 
 ### Short version: since the last message (2026-11-05)
