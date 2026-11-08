@@ -1,93 +1,117 @@
-# Week 2: Lattice design → graph → STL → defects
+# Agentic In-Process Redesign
 
-## Files
-- `lattice.py`: builds a lattice graph, turns it into a 2D cross-section, and extrudes it into an STL.
-- `build_base.py`: builds the three defect-free lattices.
-- `out/base/<shape>_graph.json`: the graph (nodes, edges, wall thickness, plates, defect list).
-- `out/base/<shape>.stl`: the printable part.
-- `out/base/<shape>.png`: top view.
-- `out/base/summary.json`: checks and measurements.
-- `defects.py`: adds one printing defect to a lattice and checks the result.
-- `build_defects.py`: builds the full defect set (63 parts, about 25 seconds).
-- `out/defects/<shape>/<name>.stl`: part with one defect. Name = shape, defect type, level, and height (for example `hexagon_layer_shift_medium_z20` = medium layer shift starting at 20% of the height).
-- `out/defects/<shape>/<name>_graph.json`: the graph plus the answer key (`defects` list: type, level, height range, size) and the check results.
-- `out/defects/<shape>_side_views.png`: side cuts of one severe example per defect type.
-- `out/defects/summary.json`: check results for all 63 parts.
+Can an AI agent rescue a 3D print after a defect appears, by changing the part of the design that hasn't been printed yet?
 
-## Fixed setup (all shapes)
-| Item | Value | Why |
+This research project tests that idea on lattices (open, repeating cell structures used to absorb crushing forces). The goal is for the finished part to respond to compression like a healthy part, even though a defect is already built into it.
+
+**Status:** work in progress. All results so far are estimates from a formula. No repaired part has been simulated in detail or crush-tested yet.
+
+<p align="center">
+  <img src="out/base/hexagon.png" width="32%" alt="Top view of the hexagonal honeycomb lattice">
+  <img src="out/base/triangle.png" width="32%" alt="Top view of the triangular grid lattice">
+  <img src="out/base/reentrant.png" width="32%" alt="Top view of the re-entrant honeycomb lattice">
+</p>
+<p align="center"><em>The three lattice designs, seen from above: 50 × 50 mm, 10 mm tall, with walls 1.2 mm thick.</em></p>
+
+## The problem
+
+A 3D printer builds a part one layer at a time. If a defect appears partway through, the usual choices are to scrap the print or to finish it and accept a weaker part.
+
+The lower layers can't be changed, but the upper layers haven't been printed yet. This project asks whether changing those upper layers can make up for the defect, using no more plastic than the original design would have used.
+
+## How it works
+
+1. **Design the lattices.** Each design is stored as a graph (points joined by walls), then converted to an STL file, the 3D model format printers use.
+2. **Add printing defects.** There are four types:
+   - under-extrusion (too little plastic, so walls come out thin)
+   - over-extrusion (too much plastic, so walls come out thick)
+   - layer shift (the upper layers are printed off to one side)
+   - warpage (the bottom corners lift off the print bed)
+3. **Stop the print.** Each test case cuts the part off 1 mm above where the defect starts, as if a camera had just noticed it.
+4. **Propose a fix.** A method chooses a wall thickness for each remaining 1 mm of height.
+5. **Check the fix against the rules.** Walls must be 0.8 to 2.0 mm thick, a wall can't grow more than 0.4 mm over the one below it, and the fix can't use more plastic than the original design would have used for that height. A rejected AI answer goes back to the agent with the reasons, up to 3 attempts in total.
+6. **Score the finished part.** A formula estimates stiffness (resistance to being squeezed) along the loading direction, as a percentage of a healthy part. The target is 100%, and being too stiff counts as error too. Peak force (the most load the part can take) is estimated as well, and the agent can't see it.
+
+## Results so far
+
+This comparison covers the re-entrant lattice with 3 repeated runs for each AI agent. The agents used one free model, Nemotron 3 Ultra.
+
+The table shows the 6 under- and over-extrusion cases, because the score can't see layer shift and barely registers warpage. Lower is better.
+
+| Method | Uses AI? | Average distance from a healthy part's stiffness |
 |---|---|---|
-| Size | 50 × 50 mm (XY), 10 mm (Z) | Set by Ma |
-| Wall thickness | 1.2 mm | 3 lines of a 0.4 mm nozzle; matches Ma's re-entrant STL (measured 1.2 mm) |
-| Top and bottom plates | 1.8 mm solid | Matches Ma's STL; gives a flat surface for the crush machine |
-| Loading direction | Y (between the plates) | In-plane compression |
-| Edges of the specimen | Cut cells at the sides are trimmed; any wall left hanging with a free end is removed | Avoids loose stubs |
-| Vertical shift | Chosen so no hole near the plates is tiny | Avoids holes too small to print |
+| Keep the original design | No | 5.86% |
+| Agent without a calculator | Yes | 5.27% |
+| Agent with a calculator (10 uses) | Yes | 2.15% |
+| Search with the same calculator (10 uses) | No | 1.91% |
+| Simple correction rule | No | 1.34% |
+| Search with 200 calculator uses | No | 0.79% |
 
-## Per-shape setup
-| Shape | Cell size | Cells across 50 mm | Relative density (lattice region, measured) | Ideal relative density, infinite lattice (Gibson–Ashby formula) |
-|---|---|---|---|---|
-| Hexagonal honeycomb | edge l = 4.1 mm | 7.0 | 0.30 | 0.34 |
-| Triangular grid | edge l = 12 mm | 4.2 | 0.29 | 0.35 |
-| Re-entrant honeycomb | inclined l = 5.7 mm, vertical h = 11.4 mm, angle 30° | 5.1 | 0.29 | 0.32 |
+**What this shows:**
+- Letting the agent check its designs with a calculator cut its error by more than half.
+- The agent still did not beat the non-AI methods. Against the simple rule it had 0 wins, 3 ties and 3 losses. Against the 10-use search it had 2 wins, 2 ties and 2 losses.
+- So when only wall thickness can change, AI adds no clear value over simple methods. The harder test, still to come, is letting the agent change more of the design.
 
-Relative density means the fraction of the volume that is solid. The measured value is lower than the ideal one because cells at the sides are cut off.
+**Limits of these results:**
+- The scores come from a formula, not from a detailed simulation or physical tests.
+- The calculator's stiffness estimate uses the same formula as the score, so the agent can aim directly at it.
+- Three runs per case is a small sample.
+- The model ran with its long hidden reasoning turned off, which may understate what it can do.
 
-## Literature behind the choices
-- **Cell size.** Iyibilgin et al. 2013 printed FDM honeycombs with edge lengths of 3.1 to 7.6 mm. At equal porosity, 7.6 mm gave the highest yield strength and the shortest build time. Our hexagon edge of 4.1 mm is inside that range.
-- **How many cells.** Results from small specimens depend on specimen size.
-  - Tekoglu, Gibson, Pardoen & Onck 2011 (*Progress in Materials Science* 56:109–138) found that 2D simulations need about 16 to 32 cells before compression results stop depending on size. In experiments on real foams, the effect faded at about 6 cells.
-  - Wang & McDowell 2003 used 32 × 32 cells or more in their simulations.
-  - In a 50 mm printed part, about 4 to 6 cells across is a compromise between enough repetition and walls thick enough to print. Ma's sample uses 4 cells across 60 mm.
-- **Wall thickness.** Walls of 2 to 3 nozzle widths print reliably on FDM printers. This is common practice rather than a published standard.
+The full table for all 12 cases, including peak force, is in [`out/results/e6_table.md`](out/results/e6_table.md).
 
-## Decisions (week 2)
-- Walls stay 1.2 mm thick.
-- Top and bottom plates stay.
-- Option D for density:
-  - The triangle stays as it is (edge 12 mm, density 0.29).
-  - The hexagon and re-entrant cells were made smaller so their density matches the triangle.
-  - Hexagon edge: 5 → 4.1 mm. Re-entrant: 6 / 12 mm → 5.7 / 11.4 mm (same shape, same 30° angle).
-  - Result: densities are 0.29 to 0.30 for all three shapes.
-  - The hexagon cannot hit 0.29 exactly. Between edge 4.12 and 4.14 mm, one column of cells at the sides is trimmed, and the density jumps from 0.30 to 0.27. We chose 0.30 as the closer value.
-  - Trade-off: the hexagon now has more cells across (7.0) than the triangle (4.2).
+## What's next
 
-## Defects (week 2, step 4)
+- Build a better evaluator using finite element analysis (FEA, a detailed physics simulation), and check it against physical crush tests of printed parts.
+- Use that evaluator to explore recursive self-improvement, where the agents improve their own setup.
+- Test prompt changes one at a time.
+- Let the agent redesign more than wall thickness.
 
-### How a defect is added
-- The printer builds the part from the bed upward, one 0.2 mm layer at a time (about 50 layers for 10 mm). Z is the print direction.
-- Printing defects happen during certain layers, so each defect covers a height range.
-- The part is built as stacked slices: normal slices outside the defect range, changed slices inside it. The slices are then joined into one solid (manifold3d).
-- Each defect covers the whole layer (lattice walls and end plates). Defects in only part of a layer can come later.
+## Repository guide
 
-### Defect types and sizes
-| Defect | What changes | Small | Medium | Severe | Basis |
-|---|---|---|---|---|---|
-| Under-extrusion (too little plastic) | Walls and plates thinner in a 1 mm band | walls 1.08 mm (90% flow) | 0.96 mm (80%) | 0.84 mm (70%) | Printer flow range in [the 2025 flow study](https://reference-global.com/article/10.2478/bipcm-2025-0023) (85–102%); flow scales line width ([CNC Kitchen](https://cnckitchen.com/blog/the-effect-of-extrusion-width-on-strength-and-quality-of-3d-prints?format=amp)) |
-| Over-extrusion (too much plastic) | Walls and plates thicker in a 1 mm band | 1.32 mm (110%) | 1.44 mm (120%) | 1.56 mm (130%) | Same, mirrored upward |
-| Layer shift | Everything above the shift height moved along X | 0.4 mm (one nozzle line) | 0.8 mm | 1.0 mm | Estimate; no published sizes found |
-| Warpage | Bottom corners lifted off the bed, fading to 0 at 15 mm from each corner | 0.3 mm | 0.6 mm | 1.0 mm | [Ramian et al. 2021](https://www.mdpi.com/1996-1944/14/22/7070/htm) |
+| Path | What it holds |
+|---|---|
+| `lattice.py`, `build_base.py` | Build the three defect-free lattices |
+| `defects.py`, `build_defects.py` | Add defects and build the full set of 63 defect parts |
+| `view_graph.py` | Draw a design's graph |
+| `agent/scenarios.py` | Builds the 12 stopped-print test cases |
+| `agent/evaluate.py` | Checks a fix against the rules and scores it |
+| `agent/baselines.py`, `agent/search.py` | The non-AI methods |
+| `agent/agent_v0.py`, `agent/agent_v1.py` | The AI agents, without and with the calculator |
+| `agent/prompts/` | Every prompt version |
+| `out/` | Generated parts, run logs and results |
+| [`docs/progress.md`](docs/progress.md) | Progress summary by week |
+| [`docs/experiments.md`](docs/experiments.md) | Each experiment: question, prediction, result |
+| [`docs/decisions.md`](docs/decisions.md) | Design decisions and the reasons for them |
+| [`docs/pipeline_diagrams.md`](docs/pipeline_diagrams.md) | Diagrams of each stage and agent version |
+| [`docs/week2_defects.md`](docs/week2_defects.md) | Lattice and defect choices, with sources |
 
-- Plates change by the same ratio as the walls. At severe over-extrusion the plates stick out 0.27 mm past each end in Y.
-- Severe layer shift is 1.0 mm, not 1.2 mm. At 1.2 mm (the wall thickness) the upright walls would touch the walls below only edge to edge.
-- Under-extrusion, over-extrusion and layer shift start at 10% and 20% of the height (1 mm and 2 mm), as suggested in the meeting.
-- Warpage is always at the bottom, where it happens in real prints.
+## Running it
 
-### Why these sizes
-- **No standard levels exist.** Defect datasets label the type only, not the size: [Kaggle FDM defects](https://www.kaggle.com/datasets/wengmhu/fdm-3d-printing-defect-dataset), [Roboflow defect classes](https://universe.roboflow.com/project-jkfnh/defects-classification-in-3d-printing-fwsu3). A [review of printing defects](https://www.researchgate.net/publication/374427434_Defects_in_3D_Printing_and_Strategies_to_Enhance_Quality_of_FFF_Additive_Manufacturing_A_Review) groups them by size but gives no levels.
-- **Small thickness changes matter.** A [2026 lattice study](https://link.springer.com/article/10.1007/s00170-026-19103-4) found walls 12% thinner cut stiffness and strength by about 40% (from the abstract). So even the small level should change how the part behaves.
-- **Same kinds of changes used by others.** A [lattice study](https://www.sciencedirect.com/science/article/pii/S0263822323008474) thinned walls and shifted joints sideways on purpose.
-- **Warpage.** [Ramian et al. 2021](https://www.mdpi.com/1996-1944/14/22/7070/htm) printed ABS blocks on an open printer: corners lifted 0.86 mm (30 mm long) and 1.57 mm (60 mm long). Block height did not matter, which supports keeping warpage at the bottom. We print PLA (maybe TPU), which warps less than ABS, so 0.3–1.0 mm for a 50 mm part is reasonable.
-- **Layer shift.** No published sizes found. Values are estimates: one nozzle line up to just under one wall thickness.
+Generated parts and results are already in `out/`, so you can read them without running anything.
 
-### Checks (all 63 parts pass)
-- One piece (nothing floating).
-- Watertight (closed surface, no holes).
-- The defect region overlaps the solid (the defect sits on the structure).
-- Inside the 50 × 50 × 10 mm box, except intended overhangs: layer shift in X, grown plates in Y.
-- Volume change from the defect-free part: −2.8% to +2.7%.
+Install the packages:
 
-### To confirm with Ma
-- Are these sizes realistic on the Bambu printer with PLA?
-- Is a layer shift along X fine?
-- Is 63 parts the right number?
+```bash
+pip install -r requirements.txt
+```
+
+Rebuild the parts and rerun the non-AI methods (plain Python, no AI):
+
+```bash
+python build_base.py
+python build_defects.py
+python agent/scenarios.py
+python agent/baselines.py
+python agent/search.py
+```
+
+Run an AI agent on the cases whose defect starts at 10% of the height. This needs an [OpenRouter](https://openrouter.ai) key in the environment variable `OPENROUTER_API_KEY`:
+
+```bash
+python agent/agent_v1.py --cases z10 --runs 1
+```
+
+## About
+
+Research by Amber Li, an undergraduate in industrial engineering at Georgia Tech. I work on lattice design, defect modeling and agent design. My mentor's research group handles printing and data collection.

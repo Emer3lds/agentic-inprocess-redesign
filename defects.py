@@ -5,7 +5,7 @@ The part is built as stacked Z bands (Z = print direction, 0 = print bed):
   normal walls outside the defect band, changed geometry inside it.
 Bands are merged with manifold3d.
 
-Defect types (see README for where the numbers come from):
+Defect types (see docs/week2_defects.md for where the numbers come from):
   under_extrusion : walls and end plates thinner inside the band
   over_extrusion  : walls and end plates thicker inside the band
   layer_shift     : everything above the shift height moved along X
