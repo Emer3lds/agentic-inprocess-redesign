@@ -1,7 +1,6 @@
 {
   "permissions": {
     "deny": [
-      "Agent",
       "PowerShell(Remove-Item *)",
       "Bash(rm *)",
       "PowerShell(git push --force*)",
