@@ -49,7 +49,8 @@ For each step: what do we have before it, what does it change, what do we have a
 | **E3** | E2's failure | Rule v2 (correct the lost stiffness instead) | About 100% in most cases, except late under-extrusion. This is the bar to beat | Code |
 | **E4** | The bar from E3 | Added the AI, on one case, to test that the code runs | It runs: 98.8% | AI |
 | **E5** | E4's working loop | Ran all 12 cases, 3 times each | 0 wins, 6 ties, 6 losses against the rule; answers vary between runs | AI |
-| **E6 (not run yet)** | E5's finding that the agent can't tell how close it is | Adds the calculator, and compares with search B | Not known yet | AI, plus code for B |
+| **E6** | E5's finding that the agent can't tell how close it is | Adds the calculator, and compares with search B | See `docs/progress.md` (agent v1 beat v0, did not beat the rule) | AI, plus code for B |
+| **E7 (trust checks for the beam model)** | The 12 cases and the formula score | Scores the same fixes with the new beam model (diagram 8) and compares it with the textbook formula on healthy parts | Not known yet | Code |
 
 ---
 
@@ -74,6 +75,7 @@ Example case used throughout: `reentrant_under_extrusion_medium_z10` (under-extr
 | 5 | Agent v1 (A1) | E6 |
 | 6 | Non-AI search (B) | E6 |
 | 7 | Comparing results | E5, E6 |
+| 8 | Beam model of the walls (fast FEA calculator) | E7 |
 
 ---
 
@@ -210,3 +212,33 @@ flowchart LR
 ```
 
 A tie means the agent's mean error is within 0.5 percentage points of the other method's. It refuses to report if runs are missing, unless `--partial` is given.
+
+---
+
+## 8. Beam model of the walls: the fast FEA calculator (E7)
+File: `fea/beam.py`. Plain code, no AI. FEA here means a computer simulation of how the part deforms under load (decision D12).
+
+**The four questions:**
+
+| | Plain answer | Example (healthy re-entrant part) |
+|---|---|---|
+| What do we have before it? | The design graph (points joined by walls), the case's defect record, and a fix (one wall thickness per remaining 1 mm band) | `out/base/reentrant_graph.json`, 114 walls |
+| What does it change? | Nothing in the design. It turns every wall into a beam that can stretch and bend, holds the bottom plate still, pushes the top plate down along Y, and solves for the force | Push of 0.01 mm |
+| What do we have after it? | Stiffness and a peak-force estimate (force when the most-stressed wall first reaches the plastic's yield stress), each as a % of a healthy part | Whole healthy part: 656 N/mm, first yield at 405 N (placeholder PLA values; only the % are meaningful) |
+| AI or code? | Code | About 0.01 s per layer |
+
+```mermaid
+flowchart TD
+    G[/"design graph<br>out/base/&lt;shape&gt;_graph.json"/] --> SEG("_wall_segments()<br>cuts walls at the plates,<br>removes missing corner regions (warpage)")
+    SEG -->|"walls: start point, end point, thickness"| LR("layer_response()<br>one 0.2 mm layer as beams:<br>builds and solves the stiffness equations")
+    LR -->|"stiffness N/mm, first-yield force N"| BC
+    S[/"one case from scenarios.json"/] --> BC("BeamCase(case)<br>printed layers: healthy, thin/thick band,<br>or warped corners, from the defect record")
+    FIX[/"a fix, e.g. 8 thicknesses"/] --> SC
+    BC --> SC("BeamCase.score(fix)<br>adds up all 50 layers side by side,<br>divides by a healthy part")
+    SC --> OUT[/"stiffness_ratio · peak_force_ratio · errors<br>(same keys as evaluate.py score)"/]
+```
+
+- **Sees, unlike the formula:** where each wall is (corner walls vs middle walls), and warpage as missing walls near the corners of the lowest layers.
+- **Still blind to:** layer shift (each layer alone looks healthy), layer bonding, wall-to-wall contact and large crushing. The 3D CalculiX judge is planned for those.
+- **Plates:** the walls are held where they meet the solid end plates (no sliding, no turning), because the plates are stiff printed bars.
+- **E7 checks:** (1) solver against exact answers for single beams; (2) healthy parts against the Gibson & Ashby formula, target within 10%; (3) for each defect type, does the score tell a fix apart from doing nothing.

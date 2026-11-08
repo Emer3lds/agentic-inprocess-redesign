@@ -1,0 +1,395 @@
+{
+ "check1_single_walls": [
+  {
+   "wall": "vertical wall",
+   "model_N_per_mm": 905.172,
+   "exact_N_per_mm": 905.172,
+   "diff_pct": 0.0
+  },
+  {
+   "wall": "wall at 60 degrees",
+   "model_N_per_mm": 588.025,
+   "exact_N_per_mm": 588.025,
+   "diff_pct": 0.0
+  }
+ ],
+ "check2_healthy_vs_formula": [
+  {
+   "shape": "hexagon",
+   "beam_N_per_mm": 2046,
+   "formula_N_per_mm": 2184,
+   "diff_pct": -6.3,
+   "within_10pct": true,
+   "diff_if_walls_cannot_stretch_pct": 37.1,
+   "first_yield_N": 668
+  },
+  {
+   "shape": "reentrant",
+   "beam_N_per_mm": 656,
+   "formula_N_per_mm": 813,
+   "diff_pct": -19.3,
+   "within_10pct": false,
+   "diff_if_walls_cannot_stretch_pct": 3.2,
+   "first_yield_N": 405
+  },
+  {
+   "shape": "triangle",
+   "beam_N_per_mm": 4194,
+   "formula_N_per_mm": 4355,
+   "diff_pct": -3.7,
+   "within_10pct": true,
+   "diff_if_walls_cannot_stretch_pct": null,
+   "first_yield_N": 2777
+  }
+ ],
+ "check3_separation": [
+  {
+   "id": "reentrant_under_extrusion_medium_z10",
+   "type": "under_extrusion",
+   "start_pct": 10,
+   "do_nothing": {
+    "formula_stiffness": 0.9548,
+    "beam_stiffness": 0.9555,
+    "formula_peak": 0.967,
+    "beam_peak": 0.9643,
+    "beam_first_yield": 0.9555
+   },
+   "simple_rule": {
+    "formula_stiffness": 1.0026,
+    "beam_stiffness": 0.9928,
+    "formula_peak": 0.9812,
+    "beam_peak": 0.9818,
+    "beam_first_yield": 0.907
+   },
+   "beam_tuned": {
+    "formula_stiffness": 0.9728,
+    "beam_stiffness": 0.9727,
+    "formula_peak": 0.9789,
+    "beam_peak": 0.9772,
+    "beam_first_yield": 0.9676
+   },
+   "beam_tuned_thickness_mm": 1.21,
+   "beam_sees_damage": true,
+   "beam_separates_fix_from_nothing": true
+  },
+  {
+   "id": "reentrant_under_extrusion_medium_z50",
+   "type": "under_extrusion",
+   "start_pct": 50,
+   "do_nothing": {
+    "formula_stiffness": 0.9548,
+    "beam_stiffness": 0.9555,
+    "formula_peak": 0.967,
+    "beam_peak": 0.9643,
+    "beam_first_yield": 0.9555
+   },
+   "simple_rule": {
+    "formula_stiffness": 0.9787,
+    "beam_stiffness": 0.9742,
+    "formula_peak": 0.9741,
+    "beam_peak": 0.973,
+    "beam_first_yield": 0.89
+   },
+   "beam_tuned": {
+    "formula_stiffness": 0.9638,
+    "beam_stiffness": 0.9641,
+    "formula_peak": 0.9729,
+    "beam_peak": 0.9707,
+    "beam_first_yield": 0.9591
+   },
+   "beam_tuned_thickness_mm": 1.21,
+   "beam_sees_damage": true,
+   "beam_separates_fix_from_nothing": true
+  },
+  {
+   "id": "reentrant_under_extrusion_medium_z80",
+   "type": "under_extrusion",
+   "start_pct": 80,
+   "do_nothing": {
+    "formula_stiffness": 0.9548,
+    "beam_stiffness": 0.9555,
+    "formula_peak": 0.967,
+    "beam_peak": 0.9643,
+    "beam_first_yield": 0.9555
+   },
+   "simple_rule": {
+    "formula_stiffness": 0.9548,
+    "beam_stiffness": 0.9555,
+    "formula_peak": 0.967,
+    "beam_peak": 0.9643,
+    "beam_first_yield": 0.9555
+   },
+   "beam_tuned": {
+    "formula_stiffness": 0.957,
+    "beam_stiffness": 0.9577,
+    "formula_peak": 0.9684,
+    "beam_peak": 0.9659,
+    "beam_first_yield": 0.9527
+   },
+   "beam_tuned_thickness_mm": 1.21,
+   "beam_sees_damage": true,
+   "beam_separates_fix_from_nothing": false
+  },
+  {
+   "id": "reentrant_over_extrusion_medium_z10",
+   "type": "over_extrusion",
+   "start_pct": 10,
+   "do_nothing": {
+    "formula_stiffness": 1.072,
+    "beam_stiffness": 1.0578,
+    "formula_peak": 1.0436,
+    "beam_peak": 1.0421,
+    "beam_first_yield": 0.9523
+   },
+   "simple_rule": {
+    "formula_stiffness": 1.0025,
+    "beam_stiffness": 0.9909,
+    "formula_peak": 0.9965,
+    "beam_peak": 0.9914,
+    "beam_first_yield": 0.892
+   },
+   "beam_tuned": {
+    "formula_stiffness": 1.0127,
+    "beam_stiffness": 1.0007,
+    "formula_peak": 1.0035,
+    "beam_peak": 0.9989,
+    "beam_first_yield": 0.9009
+   },
+   "beam_tuned_thickness_mm": 1.166,
+   "beam_sees_damage": true,
+   "beam_separates_fix_from_nothing": true
+  },
+  {
+   "id": "reentrant_over_extrusion_medium_z50",
+   "type": "over_extrusion",
+   "start_pct": 50,
+   "do_nothing": {
+    "formula_stiffness": 1.072,
+    "beam_stiffness": 1.0578,
+    "formula_peak": 1.0436,
+    "beam_peak": 1.0421,
+    "beam_first_yield": 0.9523
+   },
+   "simple_rule": {
+    "formula_stiffness": 0.9964,
+    "beam_stiffness": 0.9846,
+    "formula_peak": 0.9914,
+    "beam_peak": 0.9861,
+    "beam_first_yield": 0.8864
+   },
+   "beam_tuned": {
+    "formula_stiffness": 1.0124,
+    "beam_stiffness": 1.0002,
+    "formula_peak": 1.0028,
+    "beam_peak": 0.9982,
+    "beam_first_yield": 0.9004
+   },
+   "beam_tuned_thickness_mm": 1.13,
+   "beam_sees_damage": true,
+   "beam_separates_fix_from_nothing": true
+  },
+  {
+   "id": "reentrant_over_extrusion_medium_z80",
+   "type": "over_extrusion",
+   "start_pct": 80,
+   "do_nothing": {
+    "formula_stiffness": 1.072,
+    "beam_stiffness": 1.0578,
+    "formula_peak": 1.0436,
+    "beam_peak": 1.0421,
+    "beam_first_yield": 0.9523
+   },
+   "simple_rule": {
+    "formula_stiffness": 1.0054,
+    "beam_stiffness": 0.9915,
+    "formula_peak": 0.9917,
+    "beam_peak": 0.9867,
+    "beam_first_yield": 0.8926
+   },
+   "beam_tuned": {
+    "formula_stiffness": 1.0135,
+    "beam_stiffness": 0.9999,
+    "formula_peak": 0.9992,
+    "beam_peak": 0.9945,
+    "beam_first_yield": 0.9001
+   },
+   "beam_tuned_thickness_mm": 0.867,
+   "beam_sees_damage": true,
+   "beam_separates_fix_from_nothing": true
+  },
+  {
+   "id": "reentrant_layer_shift_medium_z10",
+   "type": "layer_shift",
+   "start_pct": 10,
+   "do_nothing": {
+    "formula_stiffness": 1.0,
+    "beam_stiffness": 1.0,
+    "formula_peak": 1.0,
+    "beam_peak": 1.0,
+    "beam_first_yield": 1.0
+   },
+   "simple_rule": {
+    "formula_stiffness": 1.0,
+    "beam_stiffness": 1.0,
+    "formula_peak": 1.0,
+    "beam_peak": 1.0,
+    "beam_first_yield": 1.0
+   },
+   "beam_tuned": {
+    "formula_stiffness": 1.0,
+    "beam_stiffness": 1.0,
+    "formula_peak": 1.0,
+    "beam_peak": 1.0,
+    "beam_first_yield": 1.0
+   },
+   "beam_tuned_thickness_mm": 1.2,
+   "beam_sees_damage": false,
+   "beam_separates_fix_from_nothing": false
+  },
+  {
+   "id": "reentrant_layer_shift_medium_z50",
+   "type": "layer_shift",
+   "start_pct": 50,
+   "do_nothing": {
+    "formula_stiffness": 1.0,
+    "beam_stiffness": 1.0,
+    "formula_peak": 1.0,
+    "beam_peak": 1.0,
+    "beam_first_yield": 1.0
+   },
+   "simple_rule": {
+    "formula_stiffness": 1.0,
+    "beam_stiffness": 1.0,
+    "formula_peak": 1.0,
+    "beam_peak": 1.0,
+    "beam_first_yield": 1.0
+   },
+   "beam_tuned": {
+    "formula_stiffness": 1.0,
+    "beam_stiffness": 1.0,
+    "formula_peak": 1.0,
+    "beam_peak": 1.0,
+    "beam_first_yield": 1.0
+   },
+   "beam_tuned_thickness_mm": 1.2,
+   "beam_sees_damage": false,
+   "beam_separates_fix_from_nothing": false
+  },
+  {
+   "id": "reentrant_layer_shift_medium_z80",
+   "type": "layer_shift",
+   "start_pct": 80,
+   "do_nothing": {
+    "formula_stiffness": 1.0,
+    "beam_stiffness": 1.0,
+    "formula_peak": 1.0,
+    "beam_peak": 1.0,
+    "beam_first_yield": 1.0
+   },
+   "simple_rule": {
+    "formula_stiffness": 1.0,
+    "beam_stiffness": 1.0,
+    "formula_peak": 1.0,
+    "beam_peak": 1.0,
+    "beam_first_yield": 1.0
+   },
+   "beam_tuned": {
+    "formula_stiffness": 1.0,
+    "beam_stiffness": 1.0,
+    "formula_peak": 1.0,
+    "beam_peak": 1.0,
+    "beam_first_yield": 1.0
+   },
+   "beam_tuned_thickness_mm": 1.2,
+   "beam_sees_damage": false,
+   "beam_separates_fix_from_nothing": false
+  },
+  {
+   "id": "reentrant_warpage_medium_z10",
+   "type": "warpage",
+   "start_pct": 10,
+   "do_nothing": {
+    "formula_stiffness": 0.9954,
+    "beam_stiffness": 0.9895,
+    "formula_peak": 0.9968,
+    "beam_peak": 0.9832,
+    "beam_first_yield": 0.6834
+   },
+   "simple_rule": {
+    "formula_stiffness": 0.9954,
+    "beam_stiffness": 0.9895,
+    "formula_peak": 0.9968,
+    "beam_peak": 0.9832,
+    "beam_first_yield": 0.6834
+   },
+   "beam_tuned": {
+    "formula_stiffness": 1.0062,
+    "beam_stiffness": 0.9998,
+    "formula_peak": 1.004,
+    "beam_peak": 0.9909,
+    "beam_first_yield": 0.6905
+   },
+   "beam_tuned_thickness_mm": 1.206,
+   "beam_sees_damage": true,
+   "beam_separates_fix_from_nothing": true
+  },
+  {
+   "id": "reentrant_warpage_medium_z50",
+   "type": "warpage",
+   "start_pct": 50,
+   "do_nothing": {
+    "formula_stiffness": 0.9951,
+    "beam_stiffness": 0.9895,
+    "formula_peak": 0.9966,
+    "beam_peak": 0.9832,
+    "beam_first_yield": 0.6834
+   },
+   "simple_rule": {
+    "formula_stiffness": 0.9951,
+    "beam_stiffness": 0.9895,
+    "formula_peak": 0.9966,
+    "beam_peak": 0.9832,
+    "beam_first_yield": 0.6834
+   },
+   "beam_tuned": {
+    "formula_stiffness": 1.0041,
+    "beam_stiffness": 0.9981,
+    "formula_peak": 1.0026,
+    "beam_peak": 0.9896,
+    "beam_first_yield": 0.6893
+   },
+   "beam_tuned_thickness_mm": 1.21,
+   "beam_sees_damage": true,
+   "beam_separates_fix_from_nothing": true
+  },
+  {
+   "id": "reentrant_warpage_medium_z80",
+   "type": "warpage",
+   "start_pct": 80,
+   "do_nothing": {
+    "formula_stiffness": 0.9949,
+    "beam_stiffness": 0.9895,
+    "formula_peak": 0.9965,
+    "beam_peak": 0.9832,
+    "beam_first_yield": 0.6834
+   },
+   "simple_rule": {
+    "formula_stiffness": 0.9949,
+    "beam_stiffness": 0.9895,
+    "formula_peak": 0.9965,
+    "beam_peak": 0.9832,
+    "beam_first_yield": 0.6834
+   },
+   "beam_tuned": {
+    "formula_stiffness": 0.9971,
+    "beam_stiffness": 0.9916,
+    "formula_peak": 0.998,
+    "beam_peak": 0.9848,
+    "beam_first_yield": 0.6849
+   },
+   "beam_tuned_thickness_mm": 1.21,
+   "beam_sees_damage": true,
+   "beam_separates_fix_from_nothing": false
+  }
+ ]
+}

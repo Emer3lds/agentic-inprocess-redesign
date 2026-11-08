@@ -14,11 +14,42 @@ Running summary of the work, one section per week, written to send to Ma. Each w
 - **Full redesign:** letting the agent change more than wall thickness is still planned, to be thought through by the next meeting.
 - **Where to publish:** Yichen said ICML probably isn't mechanical enough, so we may look at other journals. No venue is chosen.
 
+### Short version: since the last message (2026-11-07)
+- **FEA calculator built:** a beam model (each wall is a beam; fast, about 0.01 to 0.08 seconds per layer). I wrote it with numpy because OpenSeesPy's Windows version needs Python 3.12 and my laptop has 3.13. CalculiX (3D) is still planned as the locked judge.
+- **Trust checks (E7):** the solver matches exact single-wall answers. Against the Gibson & Ashby formula on healthy parts (target within 10%): hexagon -6.3% and triangle -3.7% pass; re-entrant -19.3% fails, mostly because the formula leaves out wall stretching. The hexagon match is partly two effects cancelling, so only ratios to a healthy part are trusted, not absolute stiffness.
+- **Does it tell a fix from doing nothing?** Yes for under-extrusion at 10% and 50%, all over-extrusion cases, and warpage at 10% and 50% (by about 1 point). No for layer shift (the model is blind to it) and no for under-extrusion at 80% (the case rules cause this).
+- **Peak force:** a cautious "whole part first yields" number disagrees a lot with the added-up number (warpage 68.3% vs 98.3%). No peak-force claim until CalculiX or crush tests.
+- **Print package for Yichen:** STL files, design parameters and a Teams message are drafted in `docs/for_yichen_print_package.md`. Due about 2026-11-12. One question for Yichen's first batch: which defect parts to add (brief O1 in `docs/open_decisions.md`).
+
 ### Done
-- Nothing yet.
+- **Research team set up (phase 0 of the plan "multi-agent research team"):**
+  - `CLAUDE.md` shortened from 101 to 48 lines. The moved text is word for word in `docs/reference/` (`project_facts.md`, `code_notes.md`, `open_questions.md`). Why: long instruction files get followed less closely.
+  - Three agents in `.claude/agents/`: `builder` (writes and tests code), `skeptic` (reviews, read only), `writer` (records). Amber chose 3, not 7, to save usage on her Pro plan; others are added when a task needs them.
+  - Three hooks drafted in `.claude/hooks/`: block deleting or emptying files; lock the FEA judge files (`fea/judge/`) and held-back cases (`out/scenarios/heldout/`); run `agent/quick_check.py` after any .py edit. All 13 test inputs behave as intended. Not switched on yet: Amber reviews them first.
+  - New `docs/open_decisions.md`: decision briefs waiting for Amber. First one, O1: which defect parts to add to Yichen's first print batch.
+  - New `docs/for_yichen_print_package.md`: STL files and design parameters for the calibration prints, with a paste-ready Teams message. Due about 2026-11-12.
+- **Beam model (`fea/beam.py`, decision D12):** OpenSeesPy was the plan but only works on Python 3.12 on Windows, and this laptop has 3.13. Written directly with numpy: a standard 2D frame model (each wall is a beam that stretches and bends; walls held where they meet the end plates; top plate pushed down along Y).
+- **Experiment E7, trust checks** (`python fea/trust_checks.py`, plain code, no AI, about 1 minute; results in `out/results/e7_beam_checks.json`).
 
 ### Results so far
-- None yet.
+- **Check 1:** solver matches exact single-wall answers (0.0000% difference).
+- **Check 2, healthy parts vs the Gibson & Ashby formula (target within 10%):** hexagon -6.3% (pass), triangle -3.7% (pass), re-entrant -19.3% (fails). With walls that cannot stretch, re-entrant is +3.2%, so most of the gap is wall stretching, which the formula leaves out and which matters because these walls are thick for their length.
+- **Skeptic review:** the hexagon's close match is partly two effects cancelling (holding the walls at the plates adds about 40%, wall stretching removes about 20 to 30%). So the check does not validate absolute stiffness; only ratios to a healthy part are trusted.
+- **Check 3, the 12 re-entrant cases, "do nothing"** (stiffness % of healthy, formula -> beam model): under-extrusion 95.5 -> 95.5; over-extrusion 107.2 -> 105.8; layer shift 100.0 -> 100.0 (beam model blind to it, like the formula); warpage 99.5 -> 99.0 (beam model sees twice the damage, still small).
+- **Simple rule's fixes** score about 1 point lower under the beam model (for example over-extrusion at 50%: 99.6 formula, 98.5 beam), because the rule was designed with the formula.
+- **Beam score vs doing nothing** (tie margin 0.5 points): separates them for under-extrusion at 10% and 50%, all over-extrusion cases, and warpage at 10% and 50% (by about 1 point, just over the margin). Not for layer shift (blind). Not for under-extrusion at 80%: the case rules cause this, not the model. The only allowed fix (1.21 mm walls) reaches 95.8%; 1.36 mm would reach 99.3% but breaks the plastic budget.
+- **Peak force:** the Skeptic found that adding up each layer's own yield force assumes a layer keeps carrying load after it yields. A second, cautious number was added: the whole part's first yield. For "do nothing" at 10%, added up vs first yield: under-extrusion 96.4% vs 95.5%; over-extrusion 104.2% vs 95.2%; warpage 98.3% vs 68.3% (one cut wall near a corner yields first).
+- **Limits:** only re-entrant cases were tested (hexagon and triangle cases do not exist yet); blind to layer shift; absolute stiffness not validated; peak force not trustworthy yet.
+
+### Key decisions
+- **Beam model with numpy (D12 update):** chosen because it sees each wall, is fast enough to call many times, and gives a force estimate. Alternatives: OpenSeesPy (blocked by Python version), scikit-fem 2D continuum, CalculiX 3D (still planned as the locked judge). Limits as above.
+- **First-yield peak force added after Skeptic review (D12 update):** no peak-force claim until CalculiX or crush tests.
+- **Research team, phase 0 (D13):** 3 agents (Amber, to save usage); CLAUDE.md split (Amber); hooks reviewed before switching on (Amber); decision briefs in `docs/open_decisions.md`.
+
+### Next
+- Send the print package to Yichen (due about 2026-11-12) and answer brief O1.
+- Review the hooks, then switch them on.
+- CalculiX judge; hexagon and triangle cases.
 
 ## Week 3 (meeting 2026-10-22; next meeting about 2026-11-09)
 

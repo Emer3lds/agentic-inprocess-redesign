@@ -14,6 +14,7 @@ One entry per experiment. Write the first four lines **before** running.
 | E4 | Does agent v0 run end to end? | agent v0, prompt v1 | Yes (plumbing test) |
 | E5 | How does agent v0 compare with the baselines? | agent v0, prompt v1, gemini-3.6-flash | 0 wins, 6 ties, 6 losses vs rule; answers vary between runs |
 | E6 | Does a calculation tool help the agent? | agents v0 and v1, Nemotron with thinking off, search (method B) | Calculator cuts average error from 2.76% to 1.17%. About level with the 10-use search; no wins against the simple rule |
+| E7 | Can we trust the beam model (fast FEA calculator)? | fea/beam.py, fea/trust_checks.py | Ratios to a healthy part yes; absolute stiffness not validated; peak force not trustworthy yet |
 
 Template:
 - **Question:** what we want to learn.
@@ -137,3 +138,31 @@ Template:
 - **Only the 6 under- and over-extrusion cases separate the methods.** The score barely registers layer shift and warpage (known since E1), so those 6 cases tie almost by default and dilute the averages. On the 6 cases, average stiffness error: do nothing 5.86%, v0 5.27%, v1 2.15%, search at 10 uses 1.91%, simple rule 1.34%, search at 200 uses 0.79%. v1 against the rule: 0 wins, 3 ties, 3 losses; against the search: 2 wins, 2 ties, 2 losses.
 - **Limits:** thinking was off for both agents, so scores may understate the model. On Gemini with thinking on, the calculator-free agent averaged 1.67% (E5), much better than the 2.76% here, so the size of the calculator's benefit may be smaller with thinking on. The calculator's stiffness estimate is the same formula as the score, so only peak force is a measure the agent could not aim at.
 - **Next:** teach or tool the agent to redistribute plastic only if a test calls for it; the larger step is the full redesign Ma asked for, where a simple rule and a small search have a harder job.
+
+## E7. Can we trust the beam model? (2026-11-07)
+- **Question:** does the new beam model (fast FEA calculator, decision D12) give answers we can believe? Three checks: exact single-wall answers, healthy parts against the Gibson & Ashby textbook formula (target within 10%), and the 12 re-entrant cases against the formula score.
+- **Expectation:** no prediction was recorded.
+- **Setup:** `python fea/trust_checks.py` (plain code, no AI, about 1 minute). The beam model is `fea/beam.py`: a 2D frame model written with numpy (OpenSeesPy does not run on this laptop's Python 3.13). Each wall is a beam that stretches and bends. Walls are held where they meet the end plates. The top plate is pushed down along Y. Run time about 0.01 to 0.08 seconds per layer.
+- **Measure:** difference from exact answers; difference from the formula on healthy parts; stiffness as % of a healthy part for each of the 12 cases; peak force. Results: `out/results/e7_beam_checks.json`.
+- **Result:**
+  - **Check 1, single wall:** the solver matches the exact answers (0.0000% difference).
+  - **Check 2, healthy parts vs the formula (target within 10%):** hexagon -6.3% (pass), triangle -3.7% (pass), re-entrant -19.3% (fails). With walls that cannot stretch, re-entrant is +3.2%. So most of the gap comes from wall stretching, which the formula leaves out and which matters because these walls are thick for their length.
+  - **Check 3, the 12 re-entrant cases, "do nothing"** (stiffness % of healthy, formula -> beam model):
+    | Defect | Formula | Beam model |
+    |---|---|---|
+    | Under-extrusion | 95.5 | 95.5 |
+    | Over-extrusion | 107.2 | 105.8 |
+    | Layer shift | 100.0 | 100.0 |
+    | Warpage | 99.5 | 99.0 |
+    The beam model is blind to layer shift, like the formula. For warpage it sees twice the damage, still small.
+  - **Simple rule's fixes:** about 1 point lower under the beam model (for example over-extrusion at 50%: 99.6 formula, 98.5 beam), because the rule was designed with the formula.
+  - **Does the beam score tell a fix from doing nothing?** (tie margin 0.5 points) Yes for under-extrusion at 10% and 50%, all over-extrusion cases, and warpage at 10% and 50% (by about 1 point, just over the margin). No for layer shift (blind). No for under-extrusion at 80%: the case rules cause this, not the model. The only allowed fix (1.21 mm walls) reaches 95.8%; 1.36 mm would reach 99.3% but breaks the plastic budget.
+  - **Peak force:** the Skeptic found that adding up each layer's own yield force assumes a layer keeps carrying load after it yields. A second, cautious number was added: the whole part's first yield (all layers squeezed by the same amount). For "do nothing" at 10%, added up vs first yield: under-extrusion 96.4% vs 95.5%; over-extrusion 104.2% vs 95.2%; warpage 98.3% vs 68.3% (one cut wall near a corner yields first).
+- **Failure groups:** healthy part outside the 10% target: 1 of 3 shapes (re-entrant).
+- **What it means:**
+  - The solver is correct on exact cases.
+  - Trust only ratios to a healthy part. The Skeptic noted the hexagon's close match is partly two effects cancelling (holding the walls at the plates adds about 40%, wall stretching removes about 20 to 30%), so absolute stiffness is not validated.
+  - The beam score separates fixes from doing nothing in most under-extrusion, over-extrusion and warpage cases.
+  - No peak-force claim until CalculiX (3D judge) or crush tests.
+- **Limits:** only re-entrant cases were tested; hexagon and triangle cases do not exist yet. Blind to layer shift. Absolute stiffness not validated. Peak force not trustworthy yet.
+- **Next:** CalculiX judge; compare with Yichen's physical prints once they arrive.
