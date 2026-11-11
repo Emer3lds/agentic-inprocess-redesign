@@ -27,6 +27,5 @@ Moved word for word from `CLAUDE.md` on 2026-11-07. Open this before changing or
   - Material values are placeholders (E 3500 MPa, yield 50 MPa); only ratios to a healthy part are meaningful.
   - Blind to layer shift. About 0.01 to 0.08 s per layer.
 - `fea/trust_checks.py`: experiment E7. `python fea/trust_checks.py`, about 1 minute; writes `out/results/e7_beam_checks.json`.
-- `agent/quick_check.py`: loads the 12 cases and scores "do nothing" (about 6 s). Used by the quick-check hook.
-- `.claude/hooks/`: three hook scripts (guard_delete, guard_locked, quick_check). Drafted, not switched on until Amber approves.
+- `agent/quick_check.py`: loads the 12 cases and scores "do nothing" (about 6 s). A quick test that the pipeline still runs after code changes.
 - OpenSeesPy was tried and removed: its Windows build needs Python 3.12 (this laptop has 3.13).

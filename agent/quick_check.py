@@ -1,5 +1,5 @@
 """Quick check that the pipeline still works (plain code, no AI, a few seconds).
-Loads every repair case and scores 'do nothing' on each. Used by the quick-check hook after code edits.
+Loads every repair case and scores 'do nothing' on each. Run it after code changes to confirm nothing broke.
 Run: python agent/quick_check.py"""
 import os, sys
 HERE = os.path.dirname(os.path.abspath(__file__))

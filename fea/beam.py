@@ -161,7 +161,7 @@ class BeamCase:
         n_total = round(self.s["specimen_mm"][2] / self.h)
         assert len(layers) == n_total, (len(layers), n_total)
         k = sum(x[0] for x in layers) / (self.healthy[0] * n_total)
-        # Two force estimates, neither checked against a crush test yet (Skeptic review, 2026-11-07):
+        # Two force estimates, neither checked against a crush test yet (review, 2026-11-07):
         #  - first_yield_ratio: all layers are squeezed by the same amount, so the part first yields
         #    when its weakest layer does. Cautious.
         #  - peak_force_ratio: each layer's own yield force added up, which assumes a layer keeps carrying

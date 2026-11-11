@@ -157,11 +157,11 @@ Template:
     The beam model is blind to layer shift, like the formula. For warpage it sees twice the damage, still small.
   - **Simple rule's fixes:** about 1 point lower under the beam model (for example over-extrusion at 50%: 99.6 formula, 98.5 beam), because the rule was designed with the formula.
   - **Does the beam score tell a fix from doing nothing?** (tie margin 0.5 points) Yes for under-extrusion at 10% and 50%, all over-extrusion cases, and warpage at 10% and 50% (by about 1 point, just over the margin). No for layer shift (blind). No for under-extrusion at 80%: the case rules cause this, not the model. The only allowed fix (1.21 mm walls) reaches 95.8%; 1.36 mm would reach 99.3% but breaks the plastic budget.
-  - **Peak force:** the Skeptic found that adding up each layer's own yield force assumes a layer keeps carrying load after it yields. A second, cautious number was added: the whole part's first yield (all layers squeezed by the same amount). For "do nothing" at 10%, added up vs first yield: under-extrusion 96.4% vs 95.5%; over-extrusion 104.2% vs 95.2%; warpage 98.3% vs 68.3% (one cut wall near a corner yields first).
+  - **Peak force:** a review found that adding up each layer's own yield force assumes a layer keeps carrying load after it yields. A second, cautious number was added: the whole part's first yield (all layers squeezed by the same amount). For "do nothing" at 10%, added up vs first yield: under-extrusion 96.4% vs 95.5%; over-extrusion 104.2% vs 95.2%; warpage 98.3% vs 68.3% (one cut wall near a corner yields first).
 - **Failure groups:** healthy part outside the 10% target: 1 of 3 shapes (re-entrant).
 - **What it means:**
   - The solver is correct on exact cases.
-  - Trust only ratios to a healthy part. The Skeptic noted the hexagon's close match is partly two effects cancelling (holding the walls at the plates adds about 40%, wall stretching removes about 20 to 30%), so absolute stiffness is not validated.
+  - Trust only ratios to a healthy part. A review noted the hexagon's close match is partly two effects cancelling (holding the walls at the plates adds about 40%, wall stretching removes about 20 to 30%), so absolute stiffness is not validated.
   - The beam score separates fixes from doing nothing in most under-extrusion, over-extrusion and warpage cases.
   - No peak-force claim until CalculiX (3D judge) or crush tests.
 - **Limits:** only re-entrant cases were tested; hexagon and triangle cases do not exist yet. Blind to layer shift. Absolute stiffness not validated. Peak force not trustworthy yet.

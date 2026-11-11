@@ -123,19 +123,20 @@ One entry per real choice. Format: the question, the options, how we judged them
   - Why a beam model: it sees each wall, it is fast enough to call many times (about 0.01 to 0.08 seconds per layer), and it gives a force estimate.
   - Alternatives: OpenSeesPy (blocked by the Python version); scikit-fem 2D continuum; CalculiX 3D for the judge (still planned).
   - E7 trust checks: the solver matches exact single-wall answers (0.0000% difference). Against the Gibson & Ashby formula on healthy parts: hexagon -6.3% and triangle -3.7% pass the 10% target; re-entrant -19.3% fails it. With walls that cannot stretch, re-entrant is +3.2%, so most of the gap is wall stretching, which the formula leaves out.
-  - Skeptic review: the hexagon's close match is partly two effects cancelling (holding the walls at the plates adds about 40%, wall stretching removes about 20 to 30%). So the check does not validate absolute stiffness. Only ratios to a healthy part are trusted.
-  - First yield added after Skeptic review: adding up each layer's own yield force assumes a layer keeps carrying load after it yields. A second, cautious number was added: the whole part's first yield. For "do nothing" at 10%: over-extrusion 104.2% (added up) vs 95.2% (first yield); warpage 98.3% vs 68.3%. Decision: no peak-force claim until CalculiX or crush tests.
+  - Review: the hexagon's close match is partly two effects cancelling (holding the walls at the plates adds about 40%, wall stretching removes about 20 to 30%). So the check does not validate absolute stiffness. Only ratios to a healthy part are trusted.
+  - First yield added after Review: adding up each layer's own yield force assumes a layer keeps carrying load after it yields. A second, cautious number was added: the whole part's first yield. For "do nothing" at 10%: over-extrusion 104.2% (added up) vs 95.2% (first yield); warpage 98.3% vs 68.3%. Decision: no peak-force claim until CalculiX or crush tests.
   - Limits: blind to layer shift; absolute stiffness not validated; peak force not trustworthy yet; only re-entrant cases tested.
 
-## D13. Research team, phase 0 (2026-11-07)
-- **Why:** plan "multi-agent research team" (phase 0). Long instruction files get followed less closely, and usage on Amber's Pro plan is limited.
-- **Choices:**
-  - **3 agents, not 7 (Amber):** `builder` (writes and tests code), `skeptic` (reviews, read only), `writer` (records). Others get added when a task needs them. Reason: save usage.
-  - **CLAUDE.md split (Amber):** shortened from 101 to 48 lines. The moved text is word for word in `docs/reference/` (`project_facts.md`, `code_notes.md`, `open_questions.md`).
-  - **Hooks reviewed before switching on (Amber):** three hooks are drafted in `.claude/hooks/` (block deleting or emptying files; lock the FEA judge files `fea/judge/` and held-back cases `out/scenarios/heldout/`; run `agent/quick_check.py` after any .py edit). All 13 test inputs behave as intended. They are not switched on yet.
-  - **Decision briefs:** research-shaping choices go to Amber in `docs/open_decisions.md`. First one, O1: which defect parts to add to Yichen's first print batch.
-- **Alternatives:** 7 agents (more usage); keeping the long CLAUDE.md.
-- **Change if:** a task needs an agent that does not exist yet, or a hook blocks normal work.
+## D14. First print batch for Yichen (O1, answered 2026-11-11)
+- **Goal:** (1) calibrate the FEA models against real crush tests, using healthy parts; (2) find out whether each defect type weakens a real part, using defect parts.
+- **Choice (Amber): option (b), 21 parts.** 3 copies each of healthy hexagon, triangle and re-entrant (9 parts), plus 3 copies each of 4 re-entrant defect parts, medium severity, starting at 10% height (12 parts). The 3 copies per part show print-to-print scatter, so it can be told apart from simulation error.
+- **How the defect parts are made (Amber):** print our defect STL files as they are. Amber asks Yichen whether he can instead make real defects by changing printer settings during the print (for example 80% flow for 1 mm, or a sideways offset), and how he wants to handle warpage.
+- **Alternatives:** (a) healthy parts only (9 parts; says nothing about defects); (c) only under-extrusion and layer shift (less printing).
+- **Limits:**
+  - Printed STL defects reproduce the defect's shape only. A thinner wall printed at normal flow bonds normally, unlike real under-extrusion, and a warped STL has no built-in stress from cooling.
+  - The warpage STL has lifted corners, so it cannot be printed flat without support material underneath.
+  - Defect parts are re-entrant only, so no claim about defects in other shapes.
+  - These are full defect parts, not paused-and-repaired parts (proposal section 10.3), so they show damage, not repair. About 1% damage may be smaller than the scatter between copies.
 - **Status:** Amber.
 
 ---

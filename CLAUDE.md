@@ -25,11 +25,6 @@
 - Amber's parts: lattice design, defect definition and injection, and agent design. Ma's group does printing and data collection.
 - Writing style for Amber: plain words, short bullets, no jargon or shorthand. Ask before guessing.
 
-## Agent team (phase 0, from 2026-11-07)
-- The main session is the coordinator. Specialist agents live in `.claude/agents/`: `builder` (writes and tests code), `skeptic` (reviews plans and results, read only), `writer` (updates progress, decisions and paste-ready text for Teams).
-- Research-shaping choices (how we score, which cases, what the agent may change, what counts as success, what goes in the paper) go to Amber as a short decision brief in `docs/open_decisions.md`. Routine fixes do not.
-- The FEA judge and the held-back test cases are locked: agents must not edit them.
-- Plan for the whole system: `C:/Users/amber/.claude/plans/ok-i-am-leaving-squishy-giraffe.md`.
 
 ## Where to find more (open only when the task needs it)
 - `docs/reference/project_facts.md`: setup (GitHub, Bambu Studio), fixed design decisions (specimen size, shapes, wall thickness, defect settings), past status.

@@ -3,7 +3,7 @@ E7: can we trust the beam model (fea/beam.py) before any prints arrive? Plain co
 
 Check 1. Solver: single walls against the exact textbook answer (must match to 0.01%).
 Check 2. Healthy parts against the Gibson & Ashby formula (target: within 10%), with the walls held
-         where they meet the end plates. Also runs the model with walls that cannot stretch. Skeptic review
+         where they meet the end plates. Also runs the model with walls that cannot stretch. Review
          (2026-11-07): the hexagon's close match is partly two effects cancelling (held plates add about
          40%, wall stretching removes about 20 to 30%), so this check does not validate absolute stiffness.
 Check 3. For each of the 12 cases: does the score tell a fix apart from doing nothing?
