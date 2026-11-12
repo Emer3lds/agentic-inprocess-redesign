@@ -242,3 +242,32 @@ flowchart TD
 - **Still blind to:** layer shift (each layer alone looks healthy), layer bonding, wall-to-wall contact and large crushing. The 3D CalculiX judge is planned for those.
 - **Plates:** the walls are held where they meet the solid end plates (no sliding, no turning), because the plates are stiff printed bars.
 - **E7 checks:** (1) solver against exact answers for single beams; (2) healthy parts against the Gibson & Ashby formula, target within 10%; (3) for each defect type, does the score tell a fix apart from doing nothing.
+
+## 9. 3D solid model: the planned judge (E8, healthy parts only)
+File: `fea/solid3d.py` (written during development; it moves to the locked `fea/judge/` folder only after Amber approves it). Plain code, no AI. Tools: gmsh splits the part into small 4-cornered pieces (tetrahedra), and CalculiX solves how every piece moves.
+
+**The four questions:**
+
+| | Plain answer | Example (healthy re-entrant part) |
+|---|---|---|
+| What do we have before it? | The part's 3D file (STL) and the plastic's stiffness (placeholder PLA: 3,500 MPa, Poisson's ratio 0.35) | `out/base/reentrant.stl` |
+| What does it change? | Nothing in the design. It fills the part with small pieces, holds the bottom face (Y = 0) still, pushes the top face (Y = 50 mm) down along Y by 0.01 mm, and solves for the force | Piece size about 0.6 mm, so about 2 pieces across a 1.2 mm wall |
+| What do we have after it? | Stiffness = force / push, in N/mm; later, as a % of a healthy part | Beam model gave 656 N/mm; the 3D number is what E8 measures |
+| AI or code? | Code | Probably seconds to a few minutes per part; E8 measures it |
+
+```mermaid
+flowchart TD
+    STL[/"part file<br>out/base/&lt;shape&gt;.stl"/] --> M("mesh_part(stl, size)<br>gmsh: turns the surface into a solid<br>and fills it with 10-node tetrahedra")
+    M -->|"corner points, pieces"| W("write_inp(mesh, material, push)<br>CalculiX input: bottom face held,<br>top face pushed 0.01 mm along Y")
+    W -->|"&lt;name&gt;.inp"| R("run_ccx(inp)<br>runs CalculiX from the 'fea' environment")
+    R -->|"&lt;name&gt;.dat: total force on the top face"| F("read_force(dat)")
+    F --> OUT[/"stiffness N/mm, number of pieces, run time"/]
+```
+
+**E8 checks (healthy parts only):**
+1. **Tool check:** a solid 10 mm block, where the exact answer is known (stiffness × area ÷ length = 35,000 N/mm).
+2. **Piece-size check:** healthy re-entrant at 3 piece sizes. Purpose: smaller pieces are more accurate but slower, so we use the largest size whose answer is within 2% of the next smaller size.
+3. **Healthy parts against the beam model and the formula:** hexagon, re-entrant, triangle at the chosen size. Purpose: see whether the fast calculator (beam model) and the judge roughly agree. If they disagree a lot, the agent's calculator points it at the wrong target. No pass mark: the 3D model holds the plates differently and includes the 10 mm depth, so some gap is expected, and the result is reported as it is.
+
+- **Sees, unlike the beam model:** the full 3D solid, including how each layer sits on the one below. That is what should let a later version see layer shift (E9, after Amber reviews E8).
+- **Still blind to:** weak bonding between layers (layers are treated as one solid), permanent bending and crushing (stiffness only), and the real PLA values until Yichen's data arrives.

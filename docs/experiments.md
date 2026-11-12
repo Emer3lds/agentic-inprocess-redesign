@@ -166,3 +166,16 @@ Template:
   - No peak-force claim until CalculiX (3D judge) or crush tests.
 - **Limits:** only re-entrant cases were tested; hexagon and triangle cases do not exist yet. Blind to layer shift. Absolute stiffness not validated. Peak force not trustworthy yet.
 - **Next:** CalculiX judge; compare with Yichen's physical prints once they arrive.
+
+## E8. First 3D solid model, healthy parts (2026-11-12)
+- **Question:** does the 3D model (gmsh + CalculiX, the planned judge) give the textbook answer on a simple block, how small must its pieces be, and how far is it from the beam model on healthy parts?
+- **Expectation:** the 3D model is stiffer than the beam model, most for bending shapes (re-entrant), least for the triangle.
+- **Setup:** `python fea/e8_solid_checks.py --sizes 1.2 0.8 0.6 --size 1.2` (plain code, no AI). Placeholder PLA: 3,500 MPa, Poisson's ratio 0.35. Bottom face held, top face pushed 0.01 mm along Y, both faces glued (no sideways sliding).
+  - **Built from the design graph, not the STL:** the triangle and re-entrant STLs contain zero-thickness faces inside the part where walls cross, and gmsh will not fill them. The hexagon STL does mesh, and both routes agree within 0.1% (2441.6 vs 2439.6 N/mm).
+  - **Half model:** the laptop has 5.86 GB of memory (about 1.5 GB free). Checks 2 and 3 model only the lower 5 mm and double the force. This is exact for healthy parts (same cross-section all the way up), not for defect parts. Half vs full: re-entrant 986.5 vs 1004.7 N/mm at 1.2 mm, 968.3 vs 972.2 at 0.8 mm.
+- **Result:**
+  - **Check 1, block:** free-sliding faces 35,000 N/mm (exact, 0.0%); glued faces 38,334 N/mm (+9.5%, expected, because gluing stops the block bulging sideways).
+  - **Check 2, piece size (re-entrant, half model):** 1.2 mm: 986.5 N/mm (43,810 pieces, 15 s); 0.8 mm: 968.3 (84,189, 30 s); 0.6 mm: 942.4 (162,640, 108 s). Changes: 1.9%, then 2.7%. **Not settled:** the answer is still falling. 0.45 mm would need about 9 minutes and more memory than is free.
+  - **Check 3, healthy parts at 1.2 mm (provisional):** hexagon 2418 N/mm (beam model -15.4%, formula -9.7%); re-entrant 986 (beam -33.5%, formula -17.6%); triangle 4422 (beam -5.2%, formula -1.5%).
+- **What it means:** the tools work. The 3D model is stiffer than the beam model in the expected order: re-entrant most, triangle least. Likely reasons: real wall joints have size, which shortens the bending part of each wall; 10 mm deep walls bend like plates (about 14% stiffer than a 2D beam); and coarse pieces are too stiff. Only ratios to a healthy part are used for scoring, so what matters next is whether the 3D model and the beam model agree on ratios for defect parts.
+- **Limits:** piece size not settled; only healthy parts; defect and repaired parts can't be meshed from STL yet for two shapes; placeholder PLA values.

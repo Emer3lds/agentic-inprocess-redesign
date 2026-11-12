@@ -29,3 +29,5 @@ Moved word for word from `CLAUDE.md` on 2026-11-07. Open this before changing or
 - `fea/trust_checks.py`: experiment E7. `python fea/trust_checks.py`, about 1 minute; writes `out/results/e7_beam_checks.json`.
 - `agent/quick_check.py`: loads the 12 cases and scores "do nothing" (about 6 s). A quick test that the pipeline still runs after code changes.
 - OpenSeesPy was tried and removed: its Windows build needs Python 3.12 (this laptop has 3.13).
+- `fea/solid3d.py`: 3D solid model (gmsh 10-node tetrahedra + CalculiX from the `fea` conda environment); `stiffness(path, size)` returns N/mm. Builds the solid from the design graph (healthy parts) because the triangle and re-entrant STLs have zero-thickness internal faces the mesher rejects; the STL route works for the hexagon. Run files go to `out/fea3d/<run>/`.
+- `fea/e8_solid_checks.py`: experiment E8 (block check, piece-size check, healthy parts vs beam model). `python fea/e8_solid_checks.py --sizes 1.2 0.8 0.6 --size 1.2`; reuses finished runs; writes `out/results/e8_solid_checks.json`.

@@ -16,3 +16,6 @@ CLAUDE.local.md
 
 # Claude instruction file with Amber's personal working rules
 CLAUDE.md
+
+# 3D simulation working files (large; rebuilt by fea/e8_solid_checks.py)
+out/fea3d/

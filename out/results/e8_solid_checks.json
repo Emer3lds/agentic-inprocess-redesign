@@ -1,0 +1,126 @@
+{
+ "material": {
+  "E_MPa": 3500.0,
+  "poisson": 0.35
+ },
+ "push_mm": 0.01,
+ "route": "graph (lattice.graph_to_polygon extruded in Z); see fea/solid3d.py mesh_part",
+ "check1_block": {
+  "exact_free_N_per_mm": 35000.0,
+  "free": {
+   "stiffness_N_per_mm": 35000.0,
+   "n_elements": 4910,
+   "n_nodes": 8045,
+   "seconds": 1.8,
+   "diff_pct": 0.0
+  },
+  "glued": {
+   "stiffness_N_per_mm": 38333.7,
+   "n_elements": 4910,
+   "n_nodes": 8045,
+   "seconds": 1.3,
+   "diff_pct": 9.5
+  }
+ },
+ "check2_piece_size": {
+  "model": "half (z 0..5, mirror plane held in Z, force doubled)",
+  "rows": [
+   {
+    "size_mm": 1.2,
+    "stiffness_N_per_mm": 986.5,
+    "n_elements": 43810,
+    "n_nodes": 88416,
+    "seconds": 15.4,
+    "change_to_next_smaller_pct": 1.9
+   },
+   {
+    "size_mm": 0.8,
+    "stiffness_N_per_mm": 968.3,
+    "n_elements": 84189,
+    "n_nodes": 165248,
+    "seconds": 30.3,
+    "change_to_next_smaller_pct": 2.7
+   },
+   {
+    "size_mm": 0.6,
+    "stiffness_N_per_mm": 942.4,
+    "n_elements": 162640,
+    "n_nodes": 297587,
+    "seconds": 107.7
+   }
+  ],
+  "full_model_rows": [
+   {
+    "size_mm": 1.2,
+    "stiffness_N_per_mm": 1004.7,
+    "n_elements": 71025,
+    "n_nodes": 141514,
+    "seconds": 22.8
+   },
+   {
+    "size_mm": 0.8,
+    "stiffness_N_per_mm": 972.2,
+    "n_elements": 144657,
+    "n_nodes": 277992,
+    "seconds": 76.8
+   }
+  ],
+  "settled_within_pct": 2.0,
+  "chosen_size_mm": null
+ },
+ "check3_healthy": {
+  "size_mm": 1.2,
+  "provisional": true,
+  "rows": [
+   {
+    "shape": "hexagon",
+    "stiffness_N_per_mm": 2418.5,
+    "n_elements": 31431,
+    "n_nodes": 63557,
+    "seconds": 9.3,
+    "beam_N_per_mm": 2046,
+    "formula_N_per_mm": 2184,
+    "beam_vs_3d_pct": -15.4,
+    "formula_vs_3d_pct": -9.7
+   },
+   {
+    "shape": "reentrant",
+    "stiffness_N_per_mm": 986.5,
+    "n_elements": 43810,
+    "n_nodes": 88416,
+    "seconds": 15.4,
+    "beam_N_per_mm": 656,
+    "formula_N_per_mm": 813,
+    "beam_vs_3d_pct": -33.5,
+    "formula_vs_3d_pct": -17.6
+   },
+   {
+    "shape": "triangle",
+    "stiffness_N_per_mm": 4422.1,
+    "n_elements": 27267,
+    "n_nodes": 55711,
+    "seconds": 7.6,
+    "beam_N_per_mm": 4194,
+    "formula_N_per_mm": 4355,
+    "beam_vs_3d_pct": -5.2,
+    "formula_vs_3d_pct": -1.5
+   }
+  ]
+ },
+ "extra_hexagon_routes": {
+  "size_mm": 1.2,
+  "stl": {
+   "stiffness_N_per_mm": 2441.6,
+   "n_elements": 48072,
+   "n_nodes": 95754,
+   "seconds": 17.5
+  },
+  "graph": {
+   "stiffness_N_per_mm": 2439.6,
+   "n_elements": 50464,
+   "n_nodes": 100394,
+   "seconds": 22.2
+  },
+  "diff_pct": 0.1
+ }
+}
