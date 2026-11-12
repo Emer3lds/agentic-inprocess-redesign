@@ -32,6 +32,5 @@ Moved word for word from `CLAUDE.md` on 2026-11-07 so the always-read file stays
   4. Inject defects, convert to STL, check they sit on the structure and are not floating: `out/defects/`, 63 parts, all pass. Write-up with sources in `docs/week2_defects.md`.
 - Week 3 (next meeting with Ma ~2026-11-09; interim update due Thu 2026-10-29):
   - Ma's asks: parts cut right after the defect; a first single-agent framework that redesigns the unprinted part; keep the loading axis fixed (Y); sweep defect height 10% to 90% over several designs; track prompts; try different input formats (Ma's labmate mentioned "design as code" papers, name unknown); add more agent roles later.
-  - Amber's goal: learn nameable agent-engineering principles (decision making, experimenting, problem solving). Log every decision in `docs/decisions.md`, every experiment in `docs/experiments.md`, and an interview summary per session in `docs/learning_log.md`. Lay out options plus a recommendation; Amber makes the call.
   - Plan: session 1 cut parts + scenario file (done), session 2 checker + simple methods (no AI), session 3 single agent v0 on Gemini free tier, session 4 results + update for Ma.
 
