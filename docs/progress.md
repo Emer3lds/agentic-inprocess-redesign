@@ -26,6 +26,7 @@ Running summary of the work, one section per week, written to send to Ma. Each w
 - **Limit:** the defect files have the defect drawn into the shape. Printed normally, they copy the defect's shape but not how it forms. For example, a thinner wall printed at normal flow still bonds normally. Amber is asking Yichen whether he can make real defects by changing printer settings, and how to handle warpage, whose lifted corners would need supports.
 
 ### Done
+- **3D FEA tools installed and tested (2026-11-12):** CalculiX 2.23 (the 3D solver) in its own conda environment `fea`, and gmsh 4.15 (splits a part into small pieces for the solver). Test: a 10 mm PLA cube pushed 0.01 mm gives 350 N, so 35,000 N/mm, exactly the textbook answer (stiffness × area ÷ length = 3500 × 100 ÷ 10). Took about 1.5 seconds.
 - **First print batch package (2026-11-07, updated 2026-11-11):** `docs/for_yichen_print_package.md` lists all 21 parts with file paths and why each is there, describes each defect file, and has questions for Yichen plus a paste-ready Teams message. Due about 2026-11-12.
 - **Beam model (`fea/beam.py`, decision D12):** OpenSeesPy was the plan but only works on Python 3.12 on Windows, and this laptop has 3.13. Written directly with numpy: a standard 2D frame model (each wall is a beam that stretches and bends; walls held where they meet the end plates; top plate pushed down along Y).
 - **Experiment E7, trust checks** (`python fea/trust_checks.py`, plain code, no AI, about 1 minute; results in `out/results/e7_beam_checks.json`).
