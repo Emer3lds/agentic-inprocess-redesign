@@ -49,6 +49,7 @@ These files have the defect drawn into the shape. Printed normally, they reprodu
 ## Questions for Yichen
 1. Could the defect parts be made on the printer instead, by changing settings during the print? For example, 80% flow for 1 mm for under-extrusion, 120% for over-extrusion, or a 0.8 mm sideways offset for layer shift. That would be more realistic (real under-extrusion also bonds layers more weakly), but it takes more of your time.
 2. For warpage: print the file with supports under the lifted corners, try to cause real warping, or leave it out of this batch?
+3. Loading direction: we plan to compress along Y only (between the end plates), as Ma asked for one fixed axis (decision D6). Should some parts also be tested along Z, the print direction? Z loads the bonds between layers, which is where layer shift and real under-extrusion would matter most.
 
 ## What we need back
 1. Force–displacement curve for each part (raw data file), plus test speed and machine.
@@ -67,8 +68,9 @@ Hi Yichen, here are the files and design parameters for the first calibration ba
 
 Repo: https://github.com/Emer3lds/agentic-inprocess-redesign. All parts are 50 × 50 × 10 mm with 1.2 mm walls and 1.8 mm end plates. Print with Z up, 0.2 mm layers, PLA, and compress along Y between the end plates.
 
-Two questions:
+Three questions:
 1. The defect files have the defect drawn into the shape. Could you instead make the defects on the printer, for example 80% flow for 1 mm or a 0.8 mm sideways shift? That would be more realistic.
 2. The warpage file has its bottom corners lifted 0.6 mm, so it would need supports. Would you rather print it with supports, try to cause real warping, or skip it for now?
+3. We plan to compress along Y only. Is that right, or would you also like some parts tested along Z (the print direction)? Z would load the bonds between layers, where layer shift and real under-extrusion probably matter most.
 
 Could you send back the force–displacement data, a few measured wall thicknesses per part, and the PLA stiffness and yield values (or the filament details)? Thanks!

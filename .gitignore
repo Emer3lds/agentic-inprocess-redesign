@@ -5,9 +5,14 @@ out/defects_test/
 # personal notes, kept on Amber's computer only
 docs/learning_log.md
 docs/tutor_brief.md
+docs/review_reading_log.md
+docs/review_lessons_for_direction.md
 
 # Amber's personal research-team test (agents, hooks, workflows, overnight runs), kept off GitHub
 .claude/
 system/
 docs/open_decisions.md
 CLAUDE.local.md
+
+# Claude instruction file with Amber's personal working rules
+CLAUDE.md
