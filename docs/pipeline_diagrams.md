@@ -271,3 +271,51 @@ flowchart TD
 
 - **Sees, unlike the beam model:** the full 3D solid, including how each layer sits on the one below. That is what should let a later version see layer shift (E9, after Amber reviews E8).
 - **Still blind to:** weak bonding between layers (layers are treated as one solid), permanent bending and crushing (stiffness only), and the real PLA values until Yichen's data arrives.
+
+## 10. Beam model cross-check against OpenSeesPy (E10)
+File: `fea/opensees_check.py`, run with the separate Python 3.12 environment `opensees` (OpenSeesPy only works with Python 3.12 on Windows). Plain code, no AI.
+
+**Purpose:** our beam model (`fea/beam.py`) is our own code. OpenSeesPy is a widely used structural-engineering package. If both give the same answer on exactly the same beams, our code has no solver or assembly bugs.
+
+| | Plain answer | Example |
+|---|---|---|
+| What do we have before it? | The same beams our model builds: points, walls, thicknesses, held points | Healthy re-entrant: the beam model's own list of walls |
+| What does it change? | Nothing. It solves the same beams with OpenSeesPy instead of our numpy code | Push of 0.01 mm along Y |
+| What do we have after it? | Stiffness from each, and the % difference | Beam model 656 N/mm; OpenSeesPy should match within 0.1% |
+| AI or code? | Code | Seconds |
+
+```mermaid
+flowchart TD
+    G[/"design graph<br>out/base/&lt;shape&gt;_graph.json"/] --> SEG("beam._wall_segments()<br>same walls as the beam model")
+    SEG --> NP("beam.layer_response()<br>our numpy solver")
+    SEG --> OS("opensees_layer()<br>same points, walls and held points<br>in OpenSeesPy (elastic beam elements)")
+    NP --> CMP("compare")
+    OS --> CMP
+    CMP --> OUT[/"stiffness from each, % difference<br>out/results/e10_opensees_check.json"/]
+```
+
+- **Checks:** 3 healthy shapes, plus one case with uneven wall thickness (an under-extrusion band), so a bug that only appears with mixed thicknesses would also show.
+- **What it can't show:** whether beams are the right way to model the part. That is what E8 and E9 compare against the 3D model.
+
+## 11. 3D model on defect parts: piece size and layer shift (E9)
+Files: `fea/solid3d.py` (fix for badly shaped pieces) and `fea/e9_defect_checks.py`. Plain code, no AI.
+
+**Purpose:** we score fixes as a % of a healthy part. Coarse pieces make every part a few % too stiff, but if that error is the same for healthy and defect parts, it cancels in the %. E9 tests whether it cancels, using sizes that fit on the laptop, and makes the layer-shift part solvable.
+
+| | Plain answer | Example |
+|---|---|---|
+| What do we have before it? | The rebuilt STLs of the healthy re-entrant and its 4 defect parts (medium, 10% height), whole parts (no half-model trick) | `out/defects/reentrant/reentrant_layer_shift_medium_z10.stl` |
+| What does it change? | Nothing in the parts. It solves each one at 1.2 mm and 0.8 mm pieces | 10 runs, about 25 to 80 s each |
+| What do we have after it? | Stiffness of each, and each defect part as a % of healthy, at both sizes | E.g. under-extrusion 95.x% at 1.2 mm vs 95.y% at 0.8 mm |
+| AI or code? | Code | |
+
+```mermaid
+flowchart TD
+    STL[/"healthy + 4 defect STLs<br>(rebuilt, no hidden faces)"/] --> M("mesh_part(stl, size)<br>with a check for badly shaped pieces;<br>gmsh's optimizer fixes them")
+    M --> S("write_inp → run_ccx → read_force")
+    S --> P("percent of healthy<br>at 1.2 mm and at 0.8 mm")
+    P --> OUT[/"stiffness, % of healthy, change between sizes<br>out/results/e9_defect_checks.json"/]
+```
+
+- **Rule for "settled":** the % of healthy changes by less than 0.5 points between 1.2 mm and 0.8 mm pieces. Why 0.5: that is the tie margin used to compare methods (E7), so a smaller change cannot flip a win into a loss.
+- **Also reported:** the 3D % next to the beam model's and the formula's % for the same parts. This is the first look at whether the agent's possible calculator agrees with the judge on the numbers that matter.

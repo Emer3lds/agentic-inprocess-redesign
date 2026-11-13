@@ -1,0 +1,53 @@
+{
+ "rows": [
+  {
+   "shape": "hexagon",
+   "walls": "healthy, 1.2 mm walls",
+   "beam_py_N_per_mm": 2045.888,
+   "opensees_N_per_mm": 2045.888,
+   "elements": 158,
+   "diff_pct": 0.0
+  },
+  {
+   "shape": "hexagon",
+   "walls": "mixed walls, 0.96 / 1.44 mm",
+   "beam_py_N_per_mm": 1912.939,
+   "opensees_N_per_mm": 1912.939,
+   "elements": 158,
+   "diff_pct": 0.0
+  },
+  {
+   "shape": "reentrant",
+   "walls": "healthy, 1.2 mm walls",
+   "beam_py_N_per_mm": 655.582,
+   "opensees_N_per_mm": 655.582,
+   "elements": 83,
+   "diff_pct": 0.0
+  },
+  {
+   "shape": "reentrant",
+   "walls": "mixed walls, 0.96 / 1.44 mm",
+   "beam_py_N_per_mm": 577.255,
+   "opensees_N_per_mm": 577.255,
+   "elements": 83,
+   "diff_pct": 0.0
+  },
+  {
+   "shape": "triangle",
+   "walls": "healthy, 1.2 mm walls",
+   "beam_py_N_per_mm": 4194.332,
+   "opensees_N_per_mm": 4194.332,
+   "elements": 54,
+   "diff_pct": 0.0
+  },
+  {
+   "shape": "triangle",
+   "walls": "mixed walls, 0.96 / 1.44 mm",
+   "beam_py_N_per_mm": 4082.943,
+   "opensees_N_per_mm": 4082.943,
+   "elements": 54,
+   "diff_pct": 0.0
+  }
+ ],
+ "max_abs_diff_pct": 0.0
+}

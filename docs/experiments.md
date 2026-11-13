@@ -16,6 +16,7 @@ One entry per experiment. Write the first four lines **before** running.
 | E6 | Does a calculation tool help the agent? | agents v0 and v1, Nemotron with thinking off, search (method B) | Calculator cuts average error from 2.76% to 1.17%. About level with the 10-use search; no wins against the simple rule |
 | E7 | Can we trust the beam model (fast FEA calculator)? | fea/beam.py, fea/trust_checks.py | Ratios to a healthy part yes; absolute stiffness not validated; peak force not trustworthy yet |
 | E8 | Does the 3D solid model (planned judge) work, and how small must its pieces be? | fea/solid3d.py, fea/e8_solid_checks.py | Exact on a block. Piece size not settled (re-entrant still changing 2.7% at 0.6 mm). Stiffer than the beam model: hexagon 15%, re-entrant 33%, triangle 5% |
+| E10 | Does our beam model's code match OpenSeesPy on the same beams? | fea/beam.py, fea/opensees_check.py, OpenSeesPy 3.8.0 | Yes: identical to 0.0000% on 3 shapes, healthy and mixed walls. No solver bugs |
 
 Template:
 - **Question:** what we want to learn.
@@ -182,3 +183,13 @@ Template:
 - **Limits:** piece size not settled; only healthy parts; defect and repaired parts can't be meshed from STL yet for two shapes; placeholder PLA values.
 - **Follow-up (2026-11-12): STL problem fixed.** Cause: the step that turns each flat cross-section into a solid (`polygon_to_mesh` in `lattice.py`, using trimesh's default "earcut" method) split some faces with holes badly. Switched to its "manifold" method. The 7 files in Yichen's batch were rebuilt: volumes identical to 0.01 mm³, and the side faces now add up exactly to the outline length × 10 mm (triangle before: 13,060 mm², after: 12,035 mm², true: 12,035 mm²). The 3D model now reads the STLs directly: triangle 4431 N/mm, re-entrant 990.8 N/mm at 1.2 mm (graph route, full model: 1004.7). The other 59 defect files and 12 repair-case files are not rebuilt yet.
 - **New problem:** the layer-shift part meshes, but CalculiX rejects one badly shaped piece ("nonpositive jacobian": a piece turned inside out). To fix in E9.
+
+## E10. Does our beam model's code match OpenSeesPy? (2026-11-12)
+- **Question:** our beam model (`fea/beam.py`) is our own numpy code. Does it give the same answer as OpenSeesPy, a widely used structural-engineering package, on exactly the same beams?
+- **Expectation:** identical to rounding, because both solve the same textbook beam equations.
+- **Setup:** `C:/Users/amber/anaconda3/envs/opensees/python.exe fea/opensees_check.py` (plain code, no AI, seconds). Separate Python 3.12 environment `opensees`, because OpenSeesPy's Windows build needs Python 3.12. Same points, walls, thicknesses and held points (walls clamped at both plates, top pushed 0.01 mm along Y), 10 mm deep. Wall pieces not connected to a plate are left out of the OpenSees model (they carry no load).
+- **Measure:** stiffness from each, % difference. Healthy walls (1.2 mm) and mixed walls (alternating 0.96 / 1.44 mm), so a bug that only shows with uneven walls would also appear.
+- **Result:** hexagon 2045.89 vs 2045.89 (healthy), 1912.94 vs 1912.94 (mixed); re-entrant 655.58 vs 655.58, 577.26 vs 577.26; triangle 4194.33 vs 4194.33, 4082.94 vs 4082.94. Largest difference 0.0000%.
+- **What it means:** our beam code has no solver or assembly bugs. Its gap to the 3D model (E8) comes from modelling walls as lines, not from the code.
+- **Next:** keep the numpy version as the working calculator (already wired in and fast). Results in `out/results/e10_opensees_check.json`.
+
