@@ -1,0 +1,124 @@
+{
+ "reentrant_under_extrusion_3mm_70pct": {
+  "defect": {
+   "type": "under_extrusion",
+   "severity": "severe",
+   "xy_region": "whole layer",
+   "z_range_mm": [
+    1.0,
+    4.0
+   ],
+   "wall_thickness_mm": 0.84,
+   "normal_wall_thickness_mm": 1.2,
+   "plate_thickness_mm": 1.26,
+   "normal_plate_thickness_mm": 1.8,
+   "id": 0,
+   "height_pct": 10
+  },
+  "checks": {
+   "one_piece": true,
+   "watertight": true,
+   "defect_on_structure": true,
+   "inside_box": true,
+   "volume_change_pct": -8.32,
+   "bounds_mm": [
+    [
+     0.0,
+     0.0,
+     0.0
+    ],
+    [
+     50.0,
+     50.0,
+     10.0
+    ]
+   ]
+  },
+  "predicted": {
+   "formula_pct": 80.3,
+   "beam_pct": 81.6
+  }
+ },
+ "reentrant_over_extrusion_3mm_120pct": {
+  "defect": {
+   "type": "over_extrusion",
+   "severity": "medium",
+   "xy_region": "whole layer",
+   "z_range_mm": [
+    1.0,
+    4.0
+   ],
+   "wall_thickness_mm": 1.44,
+   "normal_wall_thickness_mm": 1.2,
+   "plate_thickness_mm": 2.16,
+   "normal_plate_thickness_mm": 1.8,
+   "id": 0,
+   "height_pct": 10
+  },
+  "checks": {
+   "one_piece": true,
+   "watertight": true,
+   "defect_on_structure": true,
+   "inside_box": true,
+   "volume_change_pct": 5.32,
+   "bounds_mm": [
+    [
+     0.0,
+     -0.18,
+     0.0
+    ],
+    [
+     50.0,
+     50.18,
+     10.0
+    ]
+   ]
+  },
+  "predicted": {
+   "formula_pct": 121.8,
+   "beam_pct": 117.4
+  }
+ },
+ "reentrant_layer_shift_1p0mm": {
+  "defect": {
+   "type": "layer_shift",
+   "severity": "severe",
+   "xy_region": "whole layer",
+   "z_range_mm": [
+    1.0,
+    10.0
+   ],
+   "shift_mm": [
+    1.0,
+    0.0
+   ],
+   "shift_height_mm": 1.0,
+   "id": 0,
+   "height_pct": 10
+  },
+  "checks": {
+   "one_piece": true,
+   "watertight": true,
+   "defect_on_structure": true,
+   "inside_box": true,
+   "volume_change_pct": -0.0,
+   "bounds_mm": [
+    [
+     0.0,
+     0.0,
+     0.0
+    ],
+    [
+     51.0,
+     50.0,
+     10.0
+    ]
+   ]
+  },
+  "predicted": {
+   "formula_pct": 100.0,
+   "beam_pct": 100.0,
+   "note": "both models are blind to layer shift"
+  }
+ }
+}

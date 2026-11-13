@@ -139,6 +139,18 @@ One entry per real choice. Format: the question, the options, how we judged them
   - These are full defect parts, not paused-and-repaired parts (proposal section 10.3), so they show damage, not repair. About 1% damage may be smaller than the scatter between copies.
 - **Status:** Amber.
 
+## D15. Stronger defects in the first print batch (2026-11-12)
+- **Why:** a project review found that the D14 defect parts (a 1 mm band) change stiffness by only about 3.5 to 4.5% in every model, and warpage by about 1% or less. Printed copies of the same part are estimated to differ by about 3 to 10%, so 3 copies could not show damage that small. The proposal (sections 10.1 and 10.2) says to start with defects strong enough for a clear contrast.
+- **Choice (Amber, on Claude's recommendation):** 18 parts. The 9 healthy parts as before, plus 3 copies each of:
+  - under-extrusion, 3 mm band at 70% walls (0.84 mm), predicted 80.3% (formula) / 81.6% (beam model);
+  - over-extrusion, 3 mm band at 120% walls (1.44 mm), predicted 121.8% / 117.4%;
+  - layer shift, 1.0 mm from 1 mm height (models blind to it).
+  - Warpage dropped (about 1% predicted, and it needs supports).
+- **Alternatives:** 60% walls (0.72 mm, thinner than two nozzle lines, may not print cleanly); 4 mm bands (about 25% damage); keeping warpage.
+- **Limits:** the repair cases still use the 1 mm band defects. If the strong defects matter in crush tests, the repair cases should be rebuilt to match. Defects are still drawn into the shape, not made by the printer.
+- **Files:** `build_print_batch.py`, `out/print_batch/`. `defects.inject` has a new optional `band_h` setting; everything else is unchanged.
+- **Status:** Amber.
+
 ---
 
 # Ideas for later (not decided)

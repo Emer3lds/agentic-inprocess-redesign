@@ -60,14 +60,14 @@ def union(meshes):
 
 
 # ---------------------------------------------------------------- defects
-def inject(g, dtype, severity, z0=None):
+def inject(g, dtype, severity, z0=None, band_h=None):
     """Return (mesh, defect_record). z0 = bottom of the defect band in mm (not used for warpage)."""
     value = SEVERITY[dtype][severity]
     normal = graph_to_polygon(g)
     rec = {"type": dtype, "severity": severity, "xy_region": "whole layer"}
 
     if dtype in ("under_extrusion", "over_extrusion"):
-        z1 = z0 + BAND_H
+        z1 = z0 + (BAND_H if band_h is None else band_h)   # band_h: taller bands for the print batch (D15)
         # walls and end plates both change by the same flow ratio; grown plates stick out past y = 0 and 50
         ratio = value / g["wall_thickness_mm"]
         changed = graph_to_polygon(g, thickness_override=lambda e: value, plate_scale=ratio)

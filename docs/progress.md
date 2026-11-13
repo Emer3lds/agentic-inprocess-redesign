@@ -19,31 +19,35 @@ Covers everything since the 2026-11-05 meeting, including the two short versions
 
 Hi Yichen, here's my update and the files for the first print batch.
 
-**Print batch: 21 parts**
+**Print batch: 18 parts**
 - 3 copies each of the healthy hexagon, triangle and re-entrant, to calibrate the FEA model.
-- 3 copies each of 4 re-entrant defect parts (under-extrusion, over-extrusion, layer shift, warpage), to see whether each defect really weakens a part.
+- 3 copies each of 3 re-entrant defect parts, to see whether each defect really weakens a printed part. I made the defects strong enough to stand out from normal print-to-print scatter:
+  - Under-extrusion: walls 70% as thick (0.84 mm) in a 3 mm band from 1 to 4 mm height. Predicted stiffness about 80% of healthy.
+  - Over-extrusion: walls 120% as thick (1.44 mm) in the same band. Predicted about 117 to 122%.
+  - Layer shift: everything above 1 mm moved 1.0 mm sideways. Our models can't see layer shift, so this tests whether it matters in a real part.
+- I left warpage out: every model predicts about 1% or less, which 3 copies can't show.
 - Files: https://github.com/Emer3lds/agentic-inprocess-redesign
   - out/base/: hexagon.stl, triangle.stl, reentrant.stl
-  - out/defects/reentrant/: reentrant_under_extrusion_medium_z10.stl, reentrant_over_extrusion_medium_z10.stl, reentrant_layer_shift_medium_z10.stl, reentrant_warpage_medium.stl
+  - out/print_batch/: reentrant_under_extrusion_3mm_70pct.stl, reentrant_over_extrusion_3mm_120pct.stl, reentrant_layer_shift_1p0mm.stl
   - Design parameters: docs/for_yichen_print_package.md
 - All parts are 50 × 50 × 10 mm with 1.2 mm walls and 1.8 mm end plates. Print with Z up, 0.2 mm layers, PLA, and compress along Y between the end plates.
 - Could you send back the force–displacement data, a few measured wall thicknesses per part, the PLA stiffness and yield values (or the filament details), and photos of how each part failed?
 
 **Questions**
-1. The defect files have the defect drawn into the shape. Could you instead make the defects on the printer, for example 80% flow for 1 mm or a 0.8 mm sideways shift? That would be more realistic.
-2. The warpage file has its bottom corners lifted 0.6 mm, so it would need supports. Would you rather print it with supports, try to cause real warping, or skip it for now?
+1. The defect files have the defect drawn into the shape. Could you instead make the defects on the printer, for example 70% flow for 3 mm or a 1 mm sideways shift? That would be more realistic.
+2. How big are real layer shifts on your printers? I used 1.0 mm, and I couldn't find a published value.
 3. We plan to compress along Y only. Is that right, or would you also like some parts tested along Z (the print direction)? Z would load the bonds between layers, where layer shift and real under-extrusion probably matter most.
-4. How do you measure stiffness from the curve: right at first contact, or after the part has settled against the plates? The over-extruded part's end plates stick out 0.18 mm in a 1 mm strip, so this changes its result.
+4. How do you read stiffness from the curve: right at first contact, or after the part has settled against the plates? The over-extruded part's end plates stick out 0.18 mm, so this changes its result.
 
 **FEA progress**
 - **Fast calculator (2D beam model, each wall is a beam):** matches exact single-wall answers, and matches OpenSeesPy to 0.0000% on all three shapes. It runs in well under a second, so the agent can use it to check designs.
 - **Judge (3D model, gmsh + CalculiX):** gives the exact answer on a test block. Healthy parts (placeholder PLA values): hexagon 2418, re-entrant 986, triangle 4422 N/mm.
-- **Fast calculator vs judge:** the beam model is lower by 15%, 33% and 5%, because it treats walls as lines and misses the solid joints. But as a % of a healthy part they agree within about 1 point for under- and over-extrusion, which is what we score.
+- **Fast calculator vs judge:** the beam model is lower by 15%, 33% and 5%, because it treats walls as lines and misses the solid joints. But as a % of a healthy part, which is what we score, they are within 1 to 1.3 points for under- and over-extrusion.
 - **Layer shift:** the 3D model sees it, but as 4.7% stiffer, because it treats the layers as perfectly bonded. Your crush tests on the layer-shift parts will show what really happens.
 - **STL fix:** I found and fixed a problem in my STL export (hidden faces inside the part where walls cross). Shapes and volumes are unchanged, and the files on GitHub are the fixed ones.
 - **Limits:** the 3D mesh size isn't fully settled yet; my laptop's memory (6 GB) limits finer meshes, so I may need PACE later; material values are placeholders until your data arrives.
 
-**Next:** finish the mesh check, then calibrate the 3D model against your crush tests, then look into RSI using the 3D model as the judge.
+**Next:** finish the mesh check and score real fixes with the 3D model, then limit wall widths to sizes the printer can make, and test whether telling the agent about the defect helps (the proposal's second claim). I'll calibrate the 3D model once your crush data arrives.
 
 ### Short version: since the last message (2026-11-07)
 - **FEA calculator built:** a beam model (each wall is a beam; fast, about 0.01 to 0.08 seconds per layer). I wrote it with numpy because OpenSeesPy's Windows version needs Python 3.12 and my laptop has 3.13. CalculiX (3D) is still planned as the locked judge.
@@ -57,6 +61,7 @@ Hi Yichen, here's my update and the files for the first print batch.
 - **Limit:** the defect files have the defect drawn into the shape. Printed normally, they copy the defect's shape but not how it forms. For example, a thinner wall printed at normal flow still bonds normally. Amber is asking Yichen whether he can make real defects by changing printer settings, and how to handle warpage, whose lifted corners would need supports.
 
 ### Done
+- **Stronger defect parts for the print batch, D15 (2026-11-12):** `build_print_batch.py` makes 3 re-entrant parts in `out/print_batch/`: under-extrusion (3 mm band at 70% walls, predicted 80 to 82% of healthy), over-extrusion (3 mm band at 120%, predicted 117 to 122%), layer shift (1.0 mm). Warpage dropped (predicted about 1% or less). Batch is now 18 parts. Reason: the 1 mm band defects change stiffness by only 3 to 5%, within the usual scatter between printed copies.
 - **All 71 other part files rebuilt (2026-11-12)** with the fixed STL method. Case records identical; scores unchanged except the 3 warpage cases (at most 0.06 points). A new check flags hidden inside faces automatically.
 - **Beam model cross-checked against OpenSeesPy, E10 (2026-11-12):** identical (0.0000%) on all 3 shapes, with normal and with mixed wall thicknesses. So our beam code has no bugs; its gap to the 3D model comes from treating walls as lines.
 - **3D model on defect parts, E9 first half (2026-11-12, 1.2 mm pieces):** % of healthy, 3D vs beam model: under-extrusion 96.5 vs 95.6; over-extrusion 107.1 vs 105.8 (whole end faces held); warpage 100.3 vs 99.0; layer shift 104.7 vs 100.0. The 3D model sees layer shift, but as stiffer, not weaker, because it treats layers as perfectly bonded. The 0.8 mm half needs more free memory. Open choice: how to hold over-extruded parts, whose end plates stick out 0.18 mm in a 1 mm strip.
