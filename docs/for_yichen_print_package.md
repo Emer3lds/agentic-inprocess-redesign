@@ -48,13 +48,7 @@ These files have the defect drawn into the shape. Printed normally, they reprodu
 - **Walls:** 1.2 mm = 3 lines of a 0.4 mm nozzle. Please note the slicer's line width and flow if they differ.
 - **Material:** PLA. Please send the filament brand and any datasheet values.
 - **Loading:** compress along Y, between the two end plates.
-
-## Questions for Yichen
-1. Could the defect parts be made on the printer instead, by changing settings during the print? For example, 70% flow for 3 mm for under-extrusion, 120% for over-extrusion, or a 1 mm sideways offset for layer shift. That would be more realistic (real under-extrusion also bonds layers more weakly), but it takes more of your time.
-2. How big are real layer shifts on your printers? Ours is 1.0 mm, and we don't have a published value.
-3. Loading direction: we plan to compress along Y only (between the end plates), as Ma asked for one fixed axis (decision D6). Should some parts also be tested along Z, the print direction? Z loads the bonds between layers, which is where layer shift and real under-extrusion would matter most.
-4. Printed copies of the same part can differ by several percent. Do you know roughly how much for your printer? The 3 healthy copies per shape will measure it for ours.
-5. Please check in the slicer preview that the defect-band walls come out at 0.84 and 1.6 mm, and measure them after printing.
+- **Defect walls:** please check in the slicer preview that the walls in the 1 to 4 mm band come out at 0.84 mm (2 lines) and 1.6 mm (4 lines), and measure them after printing.
 
 ## What we need back
 1. Force–displacement curve for each part (raw data file), plus test speed and machine.
@@ -62,4 +56,4 @@ These files have the defect drawn into the shape. Printed normally, they reprodu
 3. Material values for the PLA: stiffness (Young's modulus) and yield stress, ideally from small test bars printed with the same settings and direction.
 4. Photos of how each part failed.
 
-The full paste-ready message, with the progress update, is at the top of `docs/progress.md`.
+The message sent with these files is at the top of `docs/progress.md`.

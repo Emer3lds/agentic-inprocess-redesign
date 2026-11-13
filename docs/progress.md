@@ -14,31 +14,31 @@ Running summary of the work, one section per week, written to send to Ma. Each w
 - **Full redesign:** letting the agent change more than wall thickness is still planned, to be thought through by the next meeting.
 - **Where to publish:** Yichen said ICML probably isn't mechanical enough, so we may look at other journals. No venue is chosen.
 
-### Message to send Yichen (2026-11-13, short version)
+### Message sent to Yichen (2026-11-13)
+Amber's edited version, which shows the preferred style: main point first, then a "Details:" paragraph; ask for his view; few questions. Her side questions at the end are left out here.
 
 Hi Yichen, here's a quick update on the FEA evaluator, and the files for the first print batch.
 
 **FEA evaluator**
-I now have two levels of simulation. The first is a fast 2D model that treats each wall as a beam. It runs in under a second, so the agent can use it to check its designs, and it gives exactly the same answers as OpenSeesPy on the same beams. The second is a 3D model in CalculiX that fills the whole part with small elements. It takes from about 30 seconds to a few minutes per part, so it will be the judge that scores the agent's final designs, and the agent won't see it. On a solid test block it gives the exact textbook answer.
+I now have two levels of simulation. The first is a fast 2D model that treats each wall as a beam. It runs in under a second, so the agent can use it to check its designs, and it gives exactly the same answers as OpenSeesPy on the same beams. The second is a 3D model in CalculiX that fills the whole part with small elements. It takes from about 30 seconds to a few minutes per part, so it will be the judge that scores the agent's final designs, and the agent won't see it.
 
-On the lattices, the 2D model comes out 5 to 33% less stiff than the 3D model, because it treats walls as lines and misses the solid joints. But we score each fix as a percentage of a healthy part, and on that measure the two models agreed within about 1 point on the defects I tested. The 3D model can also see layer shift, which the simpler models can't. It shows it as slightly stiffer, though, because it assumes the layers are perfectly bonded, so your crush tests will tell us what really happens. Next, I'll check that the 3D model can tell a good fix apart from doing nothing, and then calibrate it against your results.
+Details: On the lattices, the 2D model comes out 5 to 33% less stiff than the 3D model, because it treats walls as lines and misses the solid joints. But we score each fix as a percentage of a healthy part, and on that measure the two models agreed within about 1 point on the defects I tested. The 3D model can also see layer shift, which the simpler models can't. It shows it as slightly stiffer, though, because it assumes the layers are perfectly bonded, so your crush tests will tell us what really happens. Next, I'll check that the 3D model can tell a good fix apart from doing nothing, and then calibrate it against your results.
 
 **Files to print**
-All files are in https://github.com/Emer3lds/agentic-inprocess-redesign. I'd like 3 copies of each, 18 parts in total, so we can tell normal print-to-print variation apart from real differences.
+All files are in GitHub - Emer3lds/agentic-inprocess-redesign. Can we do 3 copies of each, 18 parts in total, so we can tell normal print-to-print variation apart from real differences? What do you think?
 - Healthy parts, in out/base/: hexagon.stl, triangle.stl, reentrant.stl. These are for calibrating the simulation against your machine.
 - Defect parts, in out/print_batch/: reentrant_under_extrusion_3mm_0p84.stl, reentrant_over_extrusion_3mm_1p6.stl, reentrant_layer_shift_1p0mm.stl. These show whether each defect really changes a printed part.
 
-I made these defects much stronger than the ones in the repair study. Those are a 1 mm band, which the models predict changes stiffness by only about 4%, probably too little to see across 3 copies. These have a 3 mm band where the walls are 2 nozzle lines (0.84 mm) or 4 lines (1.6 mm) instead of 3. The models predict about 20% softer and 30 to 40% stiffer. I used whole nozzle lines so the walls print as drawn, and kept the end plates normal so only the lattice changes. The layer-shift part has everything above 1 mm moved 1 mm sideways. I left out warpage, because every model predicts less than 1% effect and the file can't be printed flat without supports.
+Please print them with Z up, 0.2 mm layers, in PLA, and compress them along Y between the end plates. Could you send back the force–displacement data, a few measured wall thicknesses per part, the PLA stiffness and yield values (or the filament details), and photos of how each part failed?
 
-All parts are 50 × 50 × 10 mm with 1.2 mm walls and 1.8 mm end plates. Please print them with Z up, 0.2 mm layers, in PLA, and compress them along Y between the end plates. Could you send back the force–displacement data, a few measured wall thicknesses per part, the PLA stiffness and yield values (or the filament details), and photos of how each part failed?
+Details: I made these defects much stronger than the ones in the repair study. Those are a 1 mm band, which the models predict changes stiffness by only about 4%, probably too little to see across 3 copies. These have a 3 mm band where the walls are 2 nozzle lines (0.84 mm) or 4 lines (1.6 mm) instead of 3. The models predict about 20% softer and 30 to 40% stiffer. I used whole nozzle lines so the walls print as drawn, and kept the end plates normal so only the lattice changes. The layer-shift part has everything above 1 mm moved 1 mm sideways. I left out warpage, because every model predicts less than 1% effect and the file can't be printed flat without supports. All parts are 50 × 50 × 10 mm with 1.2 mm walls and 1.8 mm end plates.
 
 **Questions**
 1. Is 18 parts reasonable for your time? If not, I could cut it to 12 by printing one copy each of the healthy hexagon and triangle. If you have more time, more copies would make the comparison more reliable.
-2. Could the defects be made on the printer instead, by changing settings partway through the print (for example 70% flow for 3 mm)? That would be more realistic than drawing them into the file.
-3. Should some parts also be tested along Z, the print direction? That loads the bonds between layers, which is probably where layer shift matters most.
-4. How big are real layer shifts on your printers? I used 1 mm.
+2. Could the defects be made on the printer instead, by changing settings partway through the print (for example 70% flow for 3 mm)? That would be more realistic than drawing them into the file. What do you think?
+3. How big are real layer shifts on your printers? I used 1 mm.
 
-If you'd like more detail: design parameters and printing notes are in docs/for_yichen_print_package.md. The reasoning and the other options for each choice are in docs/decisions.md (the FEA approach is D12, the print batch is D14 and D15), and the test results are in docs/experiments.md (E7 to E10).
+If you'd like more detail: design parameters and printing notes are in docs/for_yichen_print_package.md. The reasoning and the other options for each choice are in docs/decisions.md.
 
 ### Detailed version of the message (for reference, not for sending)
 Covers everything since the 2026-11-05 meeting, including the two short versions below, plus the print request from `docs/for_yichen_print_package.md`.
