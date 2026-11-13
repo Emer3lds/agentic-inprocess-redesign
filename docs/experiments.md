@@ -16,6 +16,7 @@ One entry per experiment. Write the first four lines **before** running.
 | E6 | Does a calculation tool help the agent? | agents v0 and v1, Nemotron with thinking off, search (method B) | Calculator cuts average error from 2.76% to 1.17%. About level with the 10-use search; no wins against the simple rule |
 | E7 | Can we trust the beam model (fast FEA calculator)? | fea/beam.py, fea/trust_checks.py | Ratios to a healthy part yes; absolute stiffness not validated; peak force not trustworthy yet |
 | E8 | Does the 3D solid model (planned judge) work, and how small must its pieces be? | fea/solid3d.py, fea/e8_solid_checks.py | Exact on a block. Piece size not settled (re-entrant still changing 2.7% at 0.6 mm). Stiffer than the beam model: hexagon 15%, re-entrant 33%, triangle 5% |
+| E9 | 3D model on defect parts: is the % of healthy settled, and does it see layer shift? | fea/solid3d.py (HXT mesher), fea/e9_defect_checks.py | Half done (1.2 mm only; 0.8 mm needs more free memory). Under-extrusion 96.5% (beam 95.6%). Layer shift 104.7%: seen, but stiffer, not weaker |
 | E10 | Does our beam model's code match OpenSeesPy on the same beams? | fea/beam.py, fea/opensees_check.py, OpenSeesPy 3.8.0 | Yes: identical to 0.0000% on 3 shapes, healthy and mixed walls. No solver bugs |
 
 Template:
@@ -192,4 +193,21 @@ Template:
 - **Result:** hexagon 2045.89 vs 2045.89 (healthy), 1912.94 vs 1912.94 (mixed); re-entrant 655.58 vs 655.58, 577.26 vs 577.26; triangle 4194.33 vs 4194.33, 4082.94 vs 4082.94. Largest difference 0.0000%.
 - **What it means:** our beam code has no solver or assembly bugs. Its gap to the 3D model (E8) comes from modelling walls as lines, not from the code.
 - **Next:** keep the numpy version as the working calculator (already wired in and fast). Results in `out/results/e10_opensees_check.json`.
+
+## E9. 3D model on defect parts (2026-11-12, first half)
+- **Question:** when we score a defect part as a % of a healthy part, does the answer stay the same with smaller pieces (1.2 vs 0.8 mm)? And does the 3D model see layer shift?
+- **Expectation:** the % changes by less than 0.5 points between sizes, because coarse pieces make healthy and defect parts too stiff by about the same amount. Layer shift: some loss of stiffness, because shifted walls overlap only partly.
+- **Setup:** `python fea/e9_defect_checks.py --sizes 1.2` (plain code, no AI). Whole parts (no half-model trick): healthy re-entrant plus 4 defect parts (medium, defect at 10% height). Same placeholder PLA and supports as E8.
+  - **Fix for badly shaped pieces:** gmsh's default 3D method made 24 flat pieces (zero volume) in the layer-shift part, which CalculiX rejects. Switched to gmsh's HXT method, which makes none, and added a check that stops a run with a clear message if any piece is flat or inside out. Healthy re-entrant moved from 990.8 to 989.8 N/mm (0.1%).
+- **Result at 1.2 mm pieces** (% of healthy; beam model and formula are their "do nothing" scores for the same part, from E7):
+  | Part | 3D | Beam model | Formula |
+  |---|---|---|---|
+  | Under-extrusion | 96.52 | 95.55 | 95.48 |
+  | Over-extrusion, whole end faces held | 107.07 | 105.78 | 107.2 |
+  | Over-extrusion, only the highest points held | 73.38 | 105.78 | 107.2 |
+  | Layer shift | 104.66 | 100.0 | 100.0 |
+  | Warpage | 100.31 | 98.95 | 99.55 |
+- **Open choice (over-extrusion):** the over-extruded band makes the end plates 0.18 mm thicker in a 1 mm strip, so that strip sticks out. Holding only the points that stick out (the strip) gives 73%. That is mostly an effect of how the part is held, not of the part. Holding the whole end face gives 107%.
+- **Surprise (layer shift):** the 3D model sees layer shift, but as 4.7% *stiffer*, not weaker. Volume is unchanged. The model treats layers as perfectly bonded, so the partial overlap at the shift acts like a wider joint. Real layer shift probably weakens bonding there, which this model can't show. Not yet trusted as a damage measure.
+- **Not done:** the 0.8 mm runs (6 runs, about 80 s each with enough free memory). During this run only about 0.6 to 1.2 GB was free, and each 0.8 mm run needs about 1.8 to 2.4 GB. Until then, differences under about 1 point (warpage 100.3%) may just come from the piece size.
 

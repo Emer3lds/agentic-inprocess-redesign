@@ -6,7 +6,7 @@ What it does, in plain words:
     (4-cornered pieces with a middle point on each edge). The solid comes from the STL (a closed
     triangle surface) or, for healthy parts, from the design graph (see mesh_part).
   - CalculiX solves how every piece moves when the bottom face (y = 0) is held still and the top
-    face (y = 50) is pushed 0.01 mm toward y = 0. Both faces are also held in X and Z, as if glued
+    face (y = 50) is pushed 0.01 mm toward y = 0 (defect parts: the part's lowest and highest y). Both faces are also held in X and Z, as if glued
     to the test machine's plates.
   - Stiffness = total Y force on the top face / push, in N/mm.
 
@@ -26,6 +26,10 @@ PUSH = 0.01            # mm, push of the top face along -Y
 Y_TOP = 50.0           # mm, top face; bottom face is y = 0
 Z_TOP = 10.0           # mm, part depth in Z
 FACE_TOL = 1e-3        # mm, tolerance for picking nodes on the y = 0 and y = 50 faces
+END_TOL = 0.5          # mm, how far the part's lowest / highest y may be from 0 / 50 (defect parts)
+ALGO_3D = 10           # gmsh 3D meshing method: 10 = HXT (see mesh_part)
+MIN_QUALITY = 1e-3     # smallest allowed piece shape quality (gmsh gamma, 1 = perfect, 0 = flat)
+POOR_QUALITY = 0.01    # pieces below this are counted and reported (still solvable if volume > 0)
 CCX = "C:/Users/amber/anaconda3/envs/fea/Library/bin/ccx.exe"
 CCX_PATHS = ["C:/Users/amber/anaconda3/envs/fea/Library/bin",
              "C:/Users/amber/anaconda3/envs/fea/Library/mingw-w64/bin",
@@ -76,7 +80,15 @@ def mesh_part(path, size, half_z=False):
     Note: STLs made before 2026-11-12 had zero-thickness internal faces for the triangle and
     re-entrant, which the mesher rejects; fixed in lattice.polygon_to_mesh (E8 follow-up). The graph
     route builds the same solid from the design graph, for healthy parts only.
-    Returns dict: tags (node ids), xyz (n x 3), conn (elements x 10, gmsh order), bounds, volume."""
+    Piece shapes (E9): gmsh's default 3D method (Delaunay) left 24 flat, zero-volume pieces in the
+    layer-shift part (all four corners on the z = 1 step), which CalculiX rejects ("nonpositive
+    jacobian"). The HXT method (Mesh.Algorithm3D = 10) does not make them. After meshing, every
+    piece's shape quality (gmsh "gamma": 1 = perfect, 0 = flat) and volume sign are checked; a part
+    with any piece below MIN_QUALITY or with zero/negative volume stops here with a clear error.
+    (CalculiX itself only rejects zero/negative volume; the warpage part has 2 thin but valid
+    pieces with quality 0.003 at 1.2 mm, which gmsh's optimizers did not improve.)
+    Returns dict: tags (node ids), xyz (n x 3), conn (elements x 10, gmsh order), bounds, volume,
+    min_quality."""
     import gmsh
     gmsh.initialize()
     try:
@@ -89,34 +101,58 @@ def mesh_part(path, size, half_z=False):
         gmsh.option.setNumber("Mesh.MeshSizeMin", 0.0)
         gmsh.option.setNumber("Mesh.ElementOrder", 2)
         gmsh.option.setNumber("Mesh.SecondOrderLinear", 1)  # middle points stay on straight edges
+        gmsh.option.setNumber("Mesh.Algorithm3D", ALGO_3D)
         gmsh.model.mesh.generate(3)
         tags, xyz, _ = gmsh.model.mesh.getNodes()
-        et, _, enodes = gmsh.model.mesh.getElements(3)
+        et, etags, enodes = gmsh.model.mesh.getElements(3)
         if 11 not in list(et):
             raise RuntimeError("gmsh made no 10-node tetrahedra")
-        conn = enodes[list(et).index(11)].reshape(-1, 10).astype(np.int64)
+        k = list(et).index(11)
+        conn = enodes[k].reshape(-1, 10).astype(np.int64)
+        quality = np.array(gmsh.model.mesh.getElementQualities(etags[k], "gamma"))
     finally:
         gmsh.finalize()
     xyz = xyz.reshape(-1, 3)
-    return {"tags": tags.astype(np.int64), "xyz": xyz, "conn": conn, "volume_mm3": vol,
-            "bounds": [xyz.min(0).tolist(), xyz.max(0).tolist()]}
+    tags = tags.astype(np.int64)
+    # signed volume of each piece from its 4 corners (middle points lie on straight edges)
+    order = np.argsort(tags)
+    P = xyz[order[np.searchsorted(tags[order], conn[:, :4])]]
+    vols = np.einsum("ij,ij->i", P[:, 1] - P[:, 0], np.cross(P[:, 2] - P[:, 0], P[:, 3] - P[:, 0])) / 6
+    n_bad = int(np.sum(~(quality >= MIN_QUALITY)) + np.sum(vols <= 0))
+    if n_bad:
+        i = int(np.nanargmin(quality))
+        raise RuntimeError(f"{n_bad} badly shaped pieces (worst quality {quality[i]:.3g} in piece {i + 1}, "
+                           f"smallest volume {vols.min():.3g} mm3); CalculiX would reject them")
+    return {"tags": tags, "xyz": xyz, "conn": conn, "volume_mm3": vol,
+            "bounds": [xyz.min(0).tolist(), xyz.max(0).tolist()], "min_quality": float(quality.min()),
+            "n_poor_pieces": int(np.sum(quality < POOR_QUALITY))}
 
 
-def write_inp(mesh, E, nu, push, path, y_top=Y_TOP, z_top=Z_TOP, hold_sides=True, sym_z=None):
-    """CalculiX input: bottom face (y = 0) held in X, Y, Z; top face (y = y_top) moved -push in Y
-    and held in X, Z (both faces glued to the machine's plates). hold_sides=False holds the faces
-    only in Y (free to slide sideways; used for the tool check, where the exact answer is E*A/L).
+def write_inp(mesh, E, nu, push, path, y_top=Y_TOP, z_top=Z_TOP, hold_sides=True, sym_z=None,
+              faces="minmax"):
+    """CalculiX input: bottom face held in X, Y, Z; top face moved -push in Y and held in X, Z (both
+    faces glued to the machine's plates). hold_sides=False holds the faces only in Y (free to slide
+    sideways; used for the tool check, where the exact answer is E*A/L).
+    faces: which nodes make up the bottom and top faces.
+      "minmax": nodes at the part's lowest y and highest y (healthy parts: y = 0 and y = y_top).
+      "planes": every node at y <= 0 and every node at y >= y_top. Differs from "minmax" only when
+                part of a plate sticks out past y = 0 or y = y_top, as for over-extrusion.
     Asks only for the total reaction force on the top face."""
     tags, xyz, conn = mesh["tags"], mesh["xyz"], mesh["conn"]
     lo, hi = mesh["bounds"]
-    if abs(lo[1]) > FACE_TOL or abs(hi[1] - y_top) > FACE_TOL or abs(lo[2]) > FACE_TOL \
+    if abs(lo[1]) > END_TOL or abs(hi[1] - y_top) > END_TOL or abs(lo[2]) > FACE_TOL \
             or abs(hi[2] - z_top) > FACE_TOL:
         raise ValueError(f"part does not span y 0..{y_top} and z 0..{z_top}: {lo} {hi}")
     used = np.unique(conn)
     keep = np.isin(tags, used)  # write only nodes that belong to a tetrahedron
     tags, xyz = tags[keep], xyz[keep]
-    bot = tags[np.abs(xyz[:, 1]) < FACE_TOL]
-    top = tags[np.abs(xyz[:, 1] - y_top) < FACE_TOL]
+    if faces == "minmax":
+        on_bot, on_top = np.abs(xyz[:, 1] - lo[1]) < FACE_TOL, np.abs(xyz[:, 1] - hi[1]) < FACE_TOL
+    elif faces == "planes":
+        on_bot, on_top = xyz[:, 1] < FACE_TOL, xyz[:, 1] > y_top - FACE_TOL
+    else:
+        raise ValueError(f"unknown faces option {faces}")
+    bot, top = tags[on_bot], tags[on_top]
     ccx_conn = np.hstack([conn[:, :8], conn[:, 9:10], conn[:, 8:9]])  # gmsh -> CalculiX order
     with open(path, "w") as f:
         f.write("*NODE\n")
@@ -133,7 +169,6 @@ def write_inp(mesh, E, nu, push, path, y_top=Y_TOP, z_top=Z_TOP, hold_sides=True
         if hold_sides:
             f.write("*BOUNDARY\nBOT,1,3,0\nTOP,1,1,0\nTOP,3,3,0\n")
         else:  # Y only, plus two bottom corner nodes to stop the part sliding or spinning
-            on_bot = np.abs(xyz[:, 1]) < FACE_TOL
             c0 = tags[on_bot][np.argmin(np.linalg.norm(xyz[on_bot] - [lo[0], 0, lo[2]], axis=1))]
             c1 = tags[on_bot][np.argmin(np.linalg.norm(xyz[on_bot] - [hi[0], 0, lo[2]], axis=1))]
             f.write(f"*BOUNDARY\nBOT,2,2,0\n{c0},1,3,0\n{c1},3,3,0\n")
@@ -141,7 +176,9 @@ def write_inp(mesh, E, nu, push, path, y_top=Y_TOP, z_top=Z_TOP, hold_sides=True
             f.write("*BOUNDARY\nSYM,3,3,0\n")
         f.write(f"*STEP\n*STATIC\n*BOUNDARY\nTOP,2,2,{-push}\n"
                 "*NODE PRINT,NSET=TOP,TOTALS=ONLY\nRF\n*END STEP\n")
-    return {"n_bottom_nodes": int(len(bot)), "n_top_nodes": int(len(top))}
+    return {"n_bottom_nodes": int(len(bot)), "n_top_nodes": int(len(top)), "faces": faces,
+            "bottom_y": [float(xyz[on_bot, 1].min()), float(xyz[on_bot, 1].max())],
+            "top_y": [float(xyz[on_top, 1].min()), float(xyz[on_top, 1].max())]}
 
 
 def run_ccx(job_dir, name):
@@ -168,7 +205,7 @@ def read_force(dat_path):
 
 
 def stiffness(path, size, name=None, E=E_PLA, nu=NU_PLA, y_top=Y_TOP, z_top=Z_TOP, hold_sides=True,
-              reuse=False, half_z=False):
+              reuse=False, half_z=False, faces="minmax"):
     """Whole chain: mesh, write input, run CalculiX, read force. Stiffness in N/mm.
     Files go to out/fea3d/<name>/. A short result.json is saved there; reuse=True returns it
     instead of running again.
@@ -186,7 +223,7 @@ def stiffness(path, size, name=None, E=E_PLA, nu=NU_PLA, y_top=Y_TOP, z_top=Z_TO
     mesh = mesh_part(path, size, half_z)
     t_mesh = time.time() - t0
     faces = write_inp(mesh, E, nu, PUSH, os.path.join(job_dir, name + ".inp"), y_top,
-                      z_top / 2 if half_z else z_top, hold_sides, z_top / 2 if half_z else None)
+                      z_top / 2 if half_z else z_top, hold_sides, z_top / 2 if half_z else None, faces)
     mult = 2 if half_z else 1
     t1 = time.time()
     fx, fy, fz = read_force(run_ccx(job_dir, name))
@@ -196,6 +233,8 @@ def stiffness(path, size, name=None, E=E_PLA, nu=NU_PLA, y_top=Y_TOP, z_top=Z_TO
          "n_elements": int(len(mesh["conn"])), "seconds": round(time.time() - t0, 1),
          "mesh_seconds": round(t_mesh, 1), "solve_seconds": round(t_solve, 1),
          "force_N": [fx, fy, fz], "volume_mm3": mesh["volume_mm3"], "hold_sides": hold_sides,
+         "algorithm_3d": ALGO_3D, "min_quality": round(mesh["min_quality"], 5),
+         "n_poor_pieces": mesh["n_poor_pieces"],
          "job_dir": os.path.relpath(job_dir, ROOT).replace(os.sep, "/"), **faces}
     json.dump(r, open(res_path, "w"), indent=1)
     return r

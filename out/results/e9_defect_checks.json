@@ -1,0 +1,248 @@
+{
+ "design": "docs/pipeline_diagrams.md section 11",
+ "settled_rule_points": 0.5,
+ "faces": "minmax = nodes at the part's lowest and highest y; planes = all nodes at y <= 0 and y >= 50",
+ "runs": {
+  "healthy": {
+   "1.2": {
+    "source": "out/base/reentrant.stl",
+    "size_mm": 1.2,
+    "stiffness_N_per_mm": 989.8,
+    "half_z": false,
+    "n_nodes": 86075,
+    "n_elements": 42370,
+    "seconds": 32.0,
+    "mesh_seconds": 4.4,
+    "solve_seconds": 25.8,
+    "force_N": [
+     -0.001061124,
+     -9.89807,
+     0.0002890458
+    ],
+    "volume_mm3": null,
+    "hold_sides": true,
+    "algorithm_3d": 10,
+    "min_quality": 0.3066,
+    "job_dir": "out/fea3d/e9_healthy_h1p2",
+    "n_bottom_nodes": 1823,
+    "n_top_nodes": 1827,
+    "faces": "minmax",
+    "bottom_y": [
+     0.0,
+     0.0
+    ],
+    "top_y": [
+     49.99999999999999,
+     50.000000000000014
+    ]
+   }
+  },
+  "under_extrusion": {
+   "1.2": {
+    "source": "out/defects/reentrant/reentrant_under_extrusion_medium_z10.stl",
+    "size_mm": 1.2,
+    "stiffness_N_per_mm": 955.4,
+    "half_z": false,
+    "n_nodes": 114377,
+    "n_elements": 57420,
+    "seconds": 78.5,
+    "mesh_seconds": 40.8,
+    "solve_seconds": 35.7,
+    "force_N": [
+     -0.001168601,
+     -9.553719,
+     -0.002082197
+    ],
+    "volume_mm3": null,
+    "hold_sides": true,
+    "algorithm_3d": 10,
+    "min_quality": 0.0414,
+    "job_dir": "out/fea3d/e9_under_extrusion_h1p2",
+    "n_bottom_nodes": 1906,
+    "n_top_nodes": 1906,
+    "faces": "minmax",
+    "bottom_y": [
+     0.0,
+     0.0
+    ],
+    "top_y": [
+     49.99999999999999,
+     50.00000000000001
+    ]
+   }
+  },
+  "over_extrusion": {
+   "1.2": {
+    "source": "out/defects/reentrant/reentrant_over_extrusion_medium_z10.stl",
+    "size_mm": 1.2,
+    "stiffness_N_per_mm": 726.3,
+    "half_z": false,
+    "n_nodes": 114668,
+    "n_elements": 58187,
+    "seconds": 97.1,
+    "mesh_seconds": 53.6,
+    "solve_seconds": 41.1,
+    "force_N": [
+     0.002439636,
+     -7.263146,
+     -0.00418746
+    ],
+    "volume_mm3": null,
+    "hold_sides": true,
+    "algorithm_3d": 10,
+    "min_quality": 0.0536,
+    "job_dir": "out/fea3d/e9_over_extrusion_h1p2",
+    "n_bottom_nodes": 443,
+    "n_top_nodes": 443,
+    "faces": "minmax",
+    "bottom_y": [
+     -0.1800000071525574,
+     -0.18000000715255737
+    ],
+    "top_y": [
+     50.180000305175774,
+     50.18000030517579
+    ]
+   }
+  },
+  "layer_shift": {
+   "1.2": {
+    "source": "out/defects/reentrant/reentrant_layer_shift_medium_z10.stl",
+    "size_mm": 1.2,
+    "stiffness_N_per_mm": 1035.9,
+    "half_z": false,
+    "n_nodes": 102875,
+    "n_elements": 51454,
+    "seconds": 44.6,
+    "mesh_seconds": 13.0,
+    "solve_seconds": 29.5,
+    "force_N": [
+     -0.001573215,
+     -10.35882,
+     0.005419977
+    ],
+    "volume_mm3": null,
+    "hold_sides": true,
+    "algorithm_3d": 10,
+    "min_quality": 0.0403,
+    "job_dir": "out/fea3d/e9_layer_shift_h1p2",
+    "n_bottom_nodes": 1897,
+    "n_top_nodes": 1897,
+    "faces": "minmax",
+    "bottom_y": [
+     0.0,
+     0.0
+    ],
+    "top_y": [
+     49.99999999999999,
+     50.00000000000001
+    ]
+   }
+  },
+  "warpage": {
+   "1.2": {
+    "source": "out/defects/reentrant/reentrant_warpage_medium.stl",
+    "size_mm": 1.2,
+    "stiffness_N_per_mm": 992.9,
+    "half_z": false,
+    "n_nodes": 85400,
+    "n_elements": 42017,
+    "seconds": 26.1,
+    "mesh_seconds": 4.2,
+    "solve_seconds": 20.3,
+    "force_N": [
+     -0.001596149,
+     -9.929079,
+     -0.0004216137
+    ],
+    "volume_mm3": null,
+    "hold_sides": true,
+    "algorithm_3d": 10,
+    "min_quality": 0.00314,
+    "n_poor_pieces": 2,
+    "job_dir": "out/fea3d/e9_warpage_h1p2",
+    "n_bottom_nodes": 1789,
+    "n_top_nodes": 1789,
+    "faces": "minmax",
+    "bottom_y": [
+     0.0,
+     0.0
+    ],
+    "top_y": [
+     49.99999999999999,
+     50.00000000000001
+    ]
+   }
+  },
+  "over_extrusion_planes": {
+   "1.2": {
+    "source": "out/defects/reentrant/reentrant_over_extrusion_medium_z10.stl",
+    "size_mm": 1.2,
+    "stiffness_N_per_mm": 1059.8,
+    "half_z": false,
+    "n_nodes": 114668,
+    "n_elements": 58187,
+    "seconds": 87.1,
+    "mesh_seconds": 51.1,
+    "solve_seconds": 33.9,
+    "force_N": [
+     0.003293147,
+     -10.59758,
+     0.003769479
+    ],
+    "volume_mm3": null,
+    "hold_sides": true,
+    "algorithm_3d": 10,
+    "min_quality": 0.0536,
+    "job_dir": "out/fea3d/e9_over_extrusion_planes_h1p2",
+    "n_bottom_nodes": 2831,
+    "n_top_nodes": 2840,
+    "faces": "planes",
+    "bottom_y": [
+     -0.1800000071525574,
+     0.0
+    ],
+    "top_y": [
+     49.99999999999999,
+     50.18000030517579
+    ]
+   }
+  }
+ },
+ "table": {
+  "healthy": {
+   "pct_healthy_1.2": 100.0,
+   "e7_case": null
+  },
+  "under_extrusion": {
+   "pct_healthy_1.2": 96.52,
+   "e7_case": "reentrant_under_extrusion_medium_z10",
+   "beam_pct_healthy": 95.55,
+   "formula_pct_healthy": 95.48
+  },
+  "over_extrusion": {
+   "pct_healthy_1.2": 73.38,
+   "e7_case": "reentrant_over_extrusion_medium_z10",
+   "beam_pct_healthy": 105.78,
+   "formula_pct_healthy": 107.2
+  },
+  "layer_shift": {
+   "pct_healthy_1.2": 104.66,
+   "e7_case": "reentrant_layer_shift_medium_z10",
+   "beam_pct_healthy": 100.0,
+   "formula_pct_healthy": 100.0
+  },
+  "warpage": {
+   "pct_healthy_1.2": 100.31,
+   "e7_case": "reentrant_warpage_medium_z10",
+   "beam_pct_healthy": 98.95,
+   "formula_pct_healthy": 99.55
+  },
+  "over_extrusion_planes": {
+   "pct_healthy_1.2": 107.07,
+   "e7_case": "reentrant_over_extrusion_medium_z10",
+   "beam_pct_healthy": 105.78,
+   "formula_pct_healthy": 107.2
+  }
+ }
+}
