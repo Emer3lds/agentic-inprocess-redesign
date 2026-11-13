@@ -16,10 +16,11 @@ import beam
 
 OUT = os.path.join(HERE, "out", "print_batch")
 START = 1.0   # mm: the defect starts at 10% of the 10 mm height, as in the repair cases
-PARTS = [  # name, defect type, severity level (sets the wall thickness or shift), band height in mm
-    ("reentrant_under_extrusion_3mm_70pct", "under_extrusion", "severe", 3.0),   # 0.84 mm walls
-    ("reentrant_over_extrusion_3mm_120pct", "over_extrusion", "medium", 3.0),    # 1.44 mm walls
-    ("reentrant_layer_shift_1p0mm", "layer_shift", "severe", None),             # 1.0 mm shift from 1 mm up
+PARTS = [  # name, defect type, severity level, wall thickness or shift (None = table value), band height mm
+    # walls are whole nozzle lines (0.4 mm nozzle) so they print as drawn; end plates stay 1.8 mm
+    ("reentrant_under_extrusion_3mm_0p84", "under_extrusion", "severe", 0.84, 3.0),   # 2 lines (70%)
+    ("reentrant_over_extrusion_3mm_1p6", "over_extrusion", "severe", 1.6, 3.0),       # 4 lines (133%)
+    ("reentrant_layer_shift_1p0mm", "layer_shift", "severe", None, None),            # 1.0 mm shift from 1 mm up
 ]
 
 if __name__ == "__main__":
@@ -28,8 +29,8 @@ if __name__ == "__main__":
     base_volume = graph_to_mesh(g).volume
     k0, _ = beam.layer_response(g, g["wall_thickness_mm"], 0.2)
     summary = {}
-    for name, dtype, sev, band_h in PARTS:
-        mesh, rec = inject(g, dtype, sev, z0=START, band_h=band_h)
+    for name, dtype, sev, value, band_h in PARTS:
+        mesh, rec = inject(g, dtype, sev, z0=START, band_h=band_h, value=value, keep_plates=True)
         rec["id"] = 0; rec["height_pct"] = 10
         checks = check_defect(mesh, rec, base_volume)
         # predicted stiffness, % of healthy: layers side by side, each 0.2 mm (formula and beam model)

@@ -1263,15 +1263,15 @@
  "defects": [
   {
    "type": "over_extrusion",
-   "severity": "medium",
+   "severity": "severe",
    "xy_region": "whole layer",
    "z_range_mm": [
     1.0,
     4.0
    ],
-   "wall_thickness_mm": 1.44,
+   "wall_thickness_mm": 1.6,
    "normal_wall_thickness_mm": 1.2,
-   "plate_thickness_mm": 2.16,
+   "plate_thickness_mm": 1.8,
    "normal_plate_thickness_mm": 1.8,
    "id": 0,
    "height_pct": 10
@@ -1286,22 +1286,22 @@
   "watertight": true,
   "defect_on_structure": true,
   "inside_box": true,
-  "volume_change_pct": 5.32,
+  "volume_change_pct": 6.84,
   "bounds_mm": [
    [
     0.0,
-    -0.18,
+    0.0,
     0.0
    ],
    [
     50.0,
-    50.18,
+    50.0,
     10.0
    ]
   ]
  },
  "predicted": {
-  "formula_pct": 121.8,
-  "beam_pct": 117.4
+  "formula_pct": 141.1,
+  "beam_pct": 130.9
  }
 }

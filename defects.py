@@ -60,9 +60,11 @@ def union(meshes):
 
 
 # ---------------------------------------------------------------- defects
-def inject(g, dtype, severity, z0=None, band_h=None):
+def inject(g, dtype, severity, z0=None, band_h=None, value=None, keep_plates=False):
     """Return (mesh, defect_record). z0 = bottom of the defect band in mm (not used for warpage)."""
-    value = SEVERITY[dtype][severity]
+    # value: override the SEVERITY table; keep_plates: leave the end plates at normal thickness
+    # (both used for the print batch, D15, so only the lattice walls change)
+    value = SEVERITY[dtype][severity] if value is None else value
     normal = graph_to_polygon(g)
     rec = {"type": dtype, "severity": severity, "xy_region": "whole layer"}
 
@@ -70,13 +72,14 @@ def inject(g, dtype, severity, z0=None, band_h=None):
         z1 = z0 + (BAND_H if band_h is None else band_h)   # band_h: taller bands for the print batch (D15)
         # walls and end plates both change by the same flow ratio; grown plates stick out past y = 0 and 50
         ratio = value / g["wall_thickness_mm"]
-        changed = graph_to_polygon(g, thickness_override=lambda e: value, plate_scale=ratio)
+        plate_ratio = 1.0 if keep_plates else ratio
+        changed = graph_to_polygon(g, thickness_override=lambda e: value, plate_scale=plate_ratio)
         parts = [band(changed, z0, z1)]
         if z0 > 0: parts.insert(0, band(normal, 0, z0))
         if z1 < SIZE_Z: parts.append(band(normal, z1, SIZE_Z))
         pb = g["plates"]["bottom"]
         rec.update(z_range_mm=[z0, z1], wall_thickness_mm=value, normal_wall_thickness_mm=g["wall_thickness_mm"],
-                   plate_thickness_mm=round((pb[1] - pb[0]) * ratio, 3), normal_plate_thickness_mm=pb[1] - pb[0])
+                   plate_thickness_mm=round((pb[1] - pb[0]) * plate_ratio, 3), normal_plate_thickness_mm=pb[1] - pb[0])
         return union(parts), rec
 
     if dtype == "layer_shift":

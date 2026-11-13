@@ -150,6 +150,7 @@ One entry per real choice. Format: the question, the options, how we judged them
 - **Limits:** the repair cases still use the 1 mm band defects. If the strong defects matter in crush tests, the repair cases should be rebuilt to match. Defects are still drawn into the shape, not made by the printer.
 - **Files:** `build_print_batch.py`, `out/print_batch/`. `defects.inject` has a new optional `band_h` setting; everything else is unchanged.
 - **Status:** Amber.
+- **Update (2026-11-12, after a second review):** (1) over-extrusion walls changed from 1.44 mm to 1.6 mm, because 1.44 mm is 3.5 nozzle lines and the slicer would not print it as drawn; 1.6 mm is 4 lines (predicted 141.1% formula / 130.9% beam). Under-extrusion 0.84 mm is exactly 2 lines. (2) End plates stay at 1.8 mm in the defect parts (`keep_plates`), so only the lattice changes. Before, over-extrusion plates stuck out 0.18 mm on a 3 mm tall strip, which would mix plate seating into the result (brief O3); now O3 does not affect this batch. (3) No checked source for "copies differ 3 to 10%"; the 3 healthy copies per shape will measure it. Files renamed: `reentrant_under_extrusion_3mm_0p84`, `reentrant_over_extrusion_3mm_1p6`.
 
 ---
 

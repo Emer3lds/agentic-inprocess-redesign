@@ -1271,7 +1271,7 @@
    ],
    "wall_thickness_mm": 0.84,
    "normal_wall_thickness_mm": 1.2,
-   "plate_thickness_mm": 1.26,
+   "plate_thickness_mm": 1.8,
    "normal_plate_thickness_mm": 1.8,
    "id": 0,
    "height_pct": 10
@@ -1286,7 +1286,7 @@
   "watertight": true,
   "defect_on_structure": true,
   "inside_box": true,
-  "volume_change_pct": -8.32,
+  "volume_change_pct": -6.51,
   "bounds_mm": [
    [
     0.0,
