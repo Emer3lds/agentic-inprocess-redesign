@@ -309,23 +309,23 @@
    "type": "warpage",
    "start_pct": 10,
    "do_nothing": {
-    "formula_stiffness": 0.9954,
+    "formula_stiffness": 0.9955,
     "beam_stiffness": 0.9895,
-    "formula_peak": 0.9968,
+    "formula_peak": 0.9969,
     "beam_peak": 0.9832,
     "beam_first_yield": 0.6834
    },
    "simple_rule": {
-    "formula_stiffness": 0.9954,
+    "formula_stiffness": 0.9955,
     "beam_stiffness": 0.9895,
-    "formula_peak": 0.9968,
+    "formula_peak": 0.9969,
     "beam_peak": 0.9832,
     "beam_first_yield": 0.6834
    },
    "beam_tuned": {
-    "formula_stiffness": 1.0062,
+    "formula_stiffness": 1.0063,
     "beam_stiffness": 0.9998,
-    "formula_peak": 1.004,
+    "formula_peak": 1.0041,
     "beam_peak": 0.9909,
     "beam_first_yield": 0.6905
    },
@@ -338,23 +338,23 @@
    "type": "warpage",
    "start_pct": 50,
    "do_nothing": {
-    "formula_stiffness": 0.9951,
+    "formula_stiffness": 0.9955,
     "beam_stiffness": 0.9895,
-    "formula_peak": 0.9966,
+    "formula_peak": 0.9969,
     "beam_peak": 0.9832,
     "beam_first_yield": 0.6834
    },
    "simple_rule": {
-    "formula_stiffness": 0.9951,
+    "formula_stiffness": 0.9955,
     "beam_stiffness": 0.9895,
-    "formula_peak": 0.9966,
+    "formula_peak": 0.9969,
     "beam_peak": 0.9832,
     "beam_first_yield": 0.6834
    },
    "beam_tuned": {
-    "formula_stiffness": 1.0041,
+    "formula_stiffness": 1.0045,
     "beam_stiffness": 0.9981,
-    "formula_peak": 1.0026,
+    "formula_peak": 1.0029,
     "beam_peak": 0.9896,
     "beam_first_yield": 0.6893
    },
@@ -367,23 +367,23 @@
    "type": "warpage",
    "start_pct": 80,
    "do_nothing": {
-    "formula_stiffness": 0.9949,
+    "formula_stiffness": 0.9955,
     "beam_stiffness": 0.9895,
-    "formula_peak": 0.9965,
+    "formula_peak": 0.9969,
     "beam_peak": 0.9832,
     "beam_first_yield": 0.6834
    },
    "simple_rule": {
-    "formula_stiffness": 0.9949,
+    "formula_stiffness": 0.9955,
     "beam_stiffness": 0.9895,
-    "formula_peak": 0.9965,
+    "formula_peak": 0.9969,
     "beam_peak": 0.9832,
     "beam_first_yield": 0.6834
    },
    "beam_tuned": {
-    "formula_stiffness": 0.9971,
+    "formula_stiffness": 0.9977,
     "beam_stiffness": 0.9916,
-    "formula_peak": 0.998,
+    "formula_peak": 0.9984,
     "beam_peak": 0.9848,
     "beam_first_yield": 0.6849
    },

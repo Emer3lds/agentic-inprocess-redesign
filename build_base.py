@@ -62,7 +62,7 @@ if __name__ == "__main__":
         g["offset_mm"] = list(d["offset"])
         poly = graph_to_polygon(g)
         mesh = polygon_to_mesh(poly)
-        info = check_mesh(mesh)
+        info = check_mesh(mesh, outline=poly)
         # relative density of the lattice part only (plates removed)
         lat_area = poly.area - 2 * PLATE_T * SIZE_X
         info["lattice_relative_density"] = round(lat_area / (SIZE_X * (SIZE_Y - 2 * PLATE_T)), 3)

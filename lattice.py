@@ -173,8 +173,16 @@ def graph_to_mesh(g):
     return polygon_to_mesh(graph_to_polygon(g))
 
 
-def check_mesh(m):
-    return {
+def check_mesh(m, outline=None):
+    """outline: the 2D cross-section the part was extruded from. If given, also checks that the
+    side faces add up to outline length x height, which fails if faces are hidden inside the part
+    (the E8 problem: such faces pass every other check here)."""
+    out = {}
+    if outline is not None:
+        n = m.face_normals
+        side = float(m.area_faces[np.abs(n[:, 2]) < 0.5].sum())
+        out["no_inner_faces"] = bool(abs(side - outline.length * (m.bounds[1][2] - m.bounds[0][2])) < 1e-3 * side)
+    return out | {
         "watertight": bool(m.is_watertight),
         "pieces": int(m.body_count),
         "bounds_mm": np.round(m.bounds, 3).tolist(),
