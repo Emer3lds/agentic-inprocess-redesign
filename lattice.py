@@ -161,7 +161,9 @@ def polygon_to_mesh(poly, z0=0.0, z1=SIZE_Z):
     polys = list(poly.geoms) if poly.geom_type == "MultiPolygon" else [poly]
     meshes = []
     for p in polys:
-        m = trimesh.creation.extrude_polygon(p, height=z1 - z0)
+        # engine='manifold': the default (earcut) splits some faces with holes badly, leaving
+        # zero-thickness faces inside the part where walls cross (found by the 3D mesher, E8)
+        m = trimesh.creation.extrude_polygon(p, height=z1 - z0, engine="manifold")
         m.apply_translation([0, 0, z0])
         meshes.append(m)
     return trimesh.util.concatenate(meshes)

@@ -15,6 +15,7 @@ One entry per experiment. Write the first four lines **before** running.
 | E5 | How does agent v0 compare with the baselines? | agent v0, prompt v1, gemini-3.6-flash | 0 wins, 6 ties, 6 losses vs rule; answers vary between runs |
 | E6 | Does a calculation tool help the agent? | agents v0 and v1, Nemotron with thinking off, search (method B) | Calculator cuts average error from 2.76% to 1.17%. About level with the 10-use search; no wins against the simple rule |
 | E7 | Can we trust the beam model (fast FEA calculator)? | fea/beam.py, fea/trust_checks.py | Ratios to a healthy part yes; absolute stiffness not validated; peak force not trustworthy yet |
+| E8 | Does the 3D solid model (planned judge) work, and how small must its pieces be? | fea/solid3d.py, fea/e8_solid_checks.py | Exact on a block. Piece size not settled (re-entrant still changing 2.7% at 0.6 mm). Stiffer than the beam model: hexagon 15%, re-entrant 33%, triangle 5% |
 
 Template:
 - **Question:** what we want to learn.
@@ -179,3 +180,5 @@ Template:
   - **Check 3, healthy parts at 1.2 mm (provisional):** hexagon 2418 N/mm (beam model -15.4%, formula -9.7%); re-entrant 986 (beam -33.5%, formula -17.6%); triangle 4422 (beam -5.2%, formula -1.5%).
 - **What it means:** the tools work. The 3D model is stiffer than the beam model in the expected order: re-entrant most, triangle least. Likely reasons: real wall joints have size, which shortens the bending part of each wall; 10 mm deep walls bend like plates (about 14% stiffer than a 2D beam); and coarse pieces are too stiff. Only ratios to a healthy part are used for scoring, so what matters next is whether the 3D model and the beam model agree on ratios for defect parts.
 - **Limits:** piece size not settled; only healthy parts; defect and repaired parts can't be meshed from STL yet for two shapes; placeholder PLA values.
+- **Follow-up (2026-11-12): STL problem fixed.** Cause: the step that turns each flat cross-section into a solid (`polygon_to_mesh` in `lattice.py`, using trimesh's default "earcut" method) split some faces with holes badly. Switched to its "manifold" method. The 7 files in Yichen's batch were rebuilt: volumes identical to 0.01 mm³, and the side faces now add up exactly to the outline length × 10 mm (triangle before: 13,060 mm², after: 12,035 mm², true: 12,035 mm²). The 3D model now reads the STLs directly: triangle 4431 N/mm, re-entrant 990.8 N/mm at 1.2 mm (graph route, full model: 1004.7). The other 59 defect files and 12 repair-case files are not rebuilt yet.
+- **New problem:** the layer-shift part meshes, but CalculiX rejects one badly shaped piece ("nonpositive jacobian": a piece turned inside out). To fix in E9.

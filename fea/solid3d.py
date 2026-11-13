@@ -73,9 +73,9 @@ def _graph_solid(gmsh, graph_path, depth=Z_TOP):
 def mesh_part(path, size, half_z=False):
     """Part -> solid -> 10-node tetrahedra with largest piece size `size` mm.
     path: an STL (STL route) or a design graph <shape>_graph.json (graph route).
-    Note: the triangle and re-entrant STLs contain zero-thickness internal faces (two touching
-    faces pointing opposite ways where walls meet), which the mesher rejects; the graph route
-    rebuilds the same solid without them. Healthy parts only for the graph route.
+    Note: STLs made before 2026-11-12 had zero-thickness internal faces for the triangle and
+    re-entrant, which the mesher rejects; fixed in lattice.polygon_to_mesh (E8 follow-up). The graph
+    route builds the same solid from the design graph, for healthy parts only.
     Returns dict: tags (node ids), xyz (n x 3), conn (elements x 10, gmsh order), bounds, volume."""
     import gmsh
     gmsh.initialize()
